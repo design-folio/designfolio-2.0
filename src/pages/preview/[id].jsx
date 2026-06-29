@@ -1,22 +1,24 @@
-import Minimal from "@/components/comp/Minimal";
-import MacOSTemplate from "@/components/comp/MacOSTemplate";
+import dynamic from "next/dynamic";
 import Seo from "@/components/seo";
-import Template2 from "@/components/template2";
 import { useGlobalContext } from "@/context/globalContext";
 import useClient from "@/hooks/useClient";
 import { getWallpaperUrl } from "@/lib/wallpaper";
 import { TEMPLATE_IDS } from "@/lib/templates";
-import Chat from "@/components/templates/Chat";
 import { _getUser } from "@/network/get-request";
 import { useQuery } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import WallpaperBackground from "@/components/WallpaperBackground";
-import Canvas from "@/components/templates/Canvas";
-import Mono from "@/components/templates/Mono";
-import Professional from "@/components/templates/Professional";
 import MemoMadewithdesignfolio from "@/components/icons/Madewithdesignfolio";
+
+// ssr: false — templates depend on useGlobalContext and useTheme (client-only hooks).
+const Canvas = dynamic(() => import("@/components/templates/Canvas"), { ssr: false });
+const Chat = dynamic(() => import("@/components/templates/Chat"), { ssr: false });
+const Minimal = dynamic(() => import("@/components/templates/Spotlight"), { ssr: false });
+const Mono = dynamic(() => import("@/components/templates/Mono"), { ssr: false });
+const Professional = dynamic(() => import("@/components/templates/Professional"), { ssr: false });
+const MacOSTemplate = dynamic(() => import("@/components/comp/MacOSTemplate"), { ssr: false });
 
 export default function Index({ initialUserDetails }) {
   const { setTheme, theme, resolvedTheme } = useTheme();
@@ -83,7 +85,7 @@ export default function Index({ initialUserDetails }) {
     : getWallpaperUrl(wpValue ?? 0, currentTheme, finalUserDetails?.template);
   const ProBadge = !finalUserDetails?.pro && (
     <div
-      className="text-center flex justify-center relative lg:fixed lg:right-[36px] lg:bottom-[20px] xl:block cursor-pointer mb-[120px] lg:m-1"
+      className="relative mb-[120px] flex cursor-pointer justify-center text-center lg:fixed lg:right-[36px] lg:bottom-[20px] lg:m-1 xl:block"
       onClick={() => window.open("https://www.designfolio.me", "_blank")}
     >
       <MemoMadewithdesignfolio />
@@ -162,7 +164,7 @@ export default function Index({ initialUserDetails }) {
       <main
         className={
           isChatfolioTemplate
-            ? "min-h-screen bg-[#F0EDE7] dark:bg-[#1A1A1A] transition-colors duration-700 flex justify-center"
+            ? "flex min-h-screen justify-center bg-[#F0EDE7] transition-colors duration-700 dark:bg-[#1A1A1A]"
             : "min-h-screen"
         }
       >

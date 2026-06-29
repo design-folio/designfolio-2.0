@@ -11,14 +11,25 @@ import { useMutation } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/router";
 import React, { useEffect, useState, useRef, startTransition, useCallback } from "react";
-import MacOSWindowShell from "@/components/templates/MacOSDock/MacOSWindowShell";
-import MacOSTemplate from "@/components/comp/MacOSTemplate";
 import BuilderShell from "@/components/BuilderShell";
-import ProfessionalProjectInfo from "@/components/templates/Professional/ProfessionalProjectInfo";
-import ChatProjectView from "@/components/templates/Chat/ChatProjectView";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 import { modals } from "@/lib/constant";
+import dynamic from "next/dynamic";
+
+// ssr: false — these components depend on useGlobalContext and useTheme (client-only hooks).
+const MacOSWindowShell = dynamic(
+  () => import("@/components/templates/MacOSDock/MacOSWindowShell"),
+  { ssr: false }
+);
+const MacOSTemplate = dynamic(() => import("@/components/comp/MacOSTemplate"), { ssr: false });
+const ProfessionalProjectInfo = dynamic(
+  () => import("@/components/templates/Professional/ProfessionalProjectInfo"),
+  { ssr: false }
+);
+const ChatProjectView = dynamic(() => import("@/components/templates/Chat/ChatProjectView"), {
+  ssr: false,
+});
 
 export default function Index() {
   const { setTheme } = useTheme();
@@ -124,8 +135,8 @@ export default function Index() {
     return (
       <>
         <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="w-8 h-8 border-2 border-[#888] border-t-transparent rounded-full animate-spin" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#888] border-t-transparent" />
         </div>
       </>
     );
@@ -263,9 +274,9 @@ export default function Index() {
                 variant="outline"
                 size="sm"
                 onClick={() => router.back()}
-                className="rounded-full shadow-md bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm hover:bg-white dark:hover:bg-[#2A2520]"
+                className="rounded-full bg-white/90 shadow-md backdrop-blur-sm hover:bg-white dark:bg-[#2A2520]/90 dark:hover:bg-[#2A2520]"
               >
-                <ArrowLeft className="w-4 h-4" />
+                <ArrowLeft className="h-4 w-4" />
                 Back to Preview
               </Button>
             )}

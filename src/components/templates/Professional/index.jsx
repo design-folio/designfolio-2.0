@@ -1,7 +1,11 @@
 import React, { useState, useMemo, useCallback, useEffect } from "react";
 import { SmoothCursor } from "@/components/ui/smooth-cursor";
 import { Mail, Globe, FileText, Phone } from "lucide-react";
-import { FaXTwitter as Twitter, FaLinkedin as Linkedin, FaInstagram as Instagram } from "react-icons/fa6";
+import {
+  FaXTwitter as Twitter,
+  FaLinkedin as Linkedin,
+  FaInstagram as Instagram,
+} from "react-icons/fa6";
 import { _updateProject } from "@/network/post-request";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
@@ -68,17 +72,23 @@ export default function Professional({ isEditing, preview = false, publicView = 
     return projects || [];
   }, [projects, isEditing]);
 
-  const handleProjectClick = useCallback(
+  const getProfessionalProjectHref = useCallback(
     (project) => {
-      if (isEditing) {
-        router.push(`/project/${project._id}/editor`);
-      } else if (preview) {
-        router.push(`/project/${project._id}/preview`);
-      } else {
-        router.push(`/project/${project._id}`);
-      }
+      if (isEditing) return `/project/${project._id}/editor`;
+      if (preview) return `/project/${project._id}/preview`;
+      return `/project/${project._id}`;
     },
-    [isEditing, preview, router]
+    [isEditing, preview]
+  );
+
+  const handleProjectClick = useCallback(
+    (project) => router.push(getProfessionalProjectHref(project)),
+    [router, getProfessionalProjectHref]
+  );
+
+  const handlePrefetchProject = useCallback(
+    (project) => router.prefetch(getProfessionalProjectHref(project)),
+    [router, getProfessionalProjectHref]
   );
 
   const onDeleteProject = useCallback(
@@ -230,6 +240,7 @@ export default function Professional({ isEditing, preview = false, publicView = 
             visibleProjects={visibleProjects}
             onAddProject={handleAddProject}
             onProjectClick={handleProjectClick}
+            onProjectPrefetch={handlePrefetchProject}
             onEditProject={handleEditProject}
             onDeleteProject={onDeleteProject}
             onToggleVisibility={handleToggleProjectVisibility}
@@ -283,9 +294,9 @@ export default function Professional({ isEditing, preview = false, publicView = 
   };
 
   return (
-    <div className="w-full flex-1 flex flex-col gap-3 max-w-[700px] mx-auto relative min-h-screen font-inter transition-colors duration-700 bg-[#EFECE6] dark:bg-[#1A1A1A] custom-solid-x">
+    <div className="font-inter custom-solid-x relative mx-auto flex min-h-screen w-full max-w-[700px] flex-1 flex-col gap-3 bg-[#EFECE6] transition-colors duration-700 dark:bg-[#1A1A1A]">
       {!isEditing && <SmoothCursor type="professional" />}
-      <div className="w-full flex-1 flex flex-col pt-12 overflow-hidden">
+      <div className="flex w-full flex-1 flex-col overflow-hidden pt-12">
         <ProfessionalProfileHeader
           isEditing={isEditing}
           persistTheme={isEditing && !preview}

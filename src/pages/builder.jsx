@@ -20,7 +20,7 @@ import { useRouter } from "next/router";
 import { _resendOTP } from "@/network/get-request";
 import AddUsername from "@/components/addUsername";
 import Builder2 from "@/components/Builder2";
-import Minimal from "@/components/comp/Minimal";
+import Minimal from "@/components/templates/Spotlight";
 import Portfolio from "@/components/comp/Portfolio";
 import MacOSTemplate from "@/components/comp/MacOSTemplate";
 import ProWarning from "@/components/proWarning";
@@ -231,7 +231,7 @@ export default function Index() {
   if (router.query?.view === "ai-tools") {
     return (
       <SidebarProvider {...sidebarProviderProps}>
-        <div className="flex-1 min-w-0">
+        <div className="min-w-0 flex-1">
           <AiToolsWorkspace embedInBuilder />
           <Modal
             show={
@@ -279,7 +279,7 @@ export default function Index() {
 
   return (
     <SidebarProvider {...sidebarProviderProps}>
-      <div className="flex-1 min-w-0">
+      <div className="min-w-0 flex-1">
         <WallpaperBackground
           wallpaperUrl={wallpaperUrl}
           effects={
@@ -292,9 +292,9 @@ export default function Index() {
           className={cn(
             "min-h-screen",
             t === TEMPLATE_IDS.CHATFOLIO
-              ? "bg-[#F0EDE7] dark:bg-[#1A1A1A] flex justify-center transition-colors duration-700"
+              ? "flex justify-center bg-[#F0EDE7] transition-colors duration-700 dark:bg-[#1A1A1A]"
               : hasNoWallpaper(wallpaper, template) &&
-                  "bg-background flex justify-center font-inter text-foreground selection:bg-foreground selection:text-background transition-colors duration-700"
+                  "bg-background font-inter text-foreground selection:bg-foreground selection:text-background flex justify-center transition-colors duration-700"
           )}
         >
           <div
@@ -305,15 +305,15 @@ export default function Index() {
                 [TEMPLATE_IDS.SPOTLIGHT]: "pt-24",
                 [TEMPLATE_IDS.PROFESSIONAL]: "pt-24",
                 [TEMPLATE_IDS.RETRO_OS]: "",
-              }[t] ?? "px-2 md:px-4 lg:px-0 pt-24 pb-0 max-w-[880px]"
+              }[t] ?? "max-w-[880px] px-2 pt-24 pb-0 md:px-4 lg:px-0"
             )}
           >
             {userDetails && !userDetails?.pro && TEMPLATES_BY_ID[t]?.isPro && <ProWarning />}
             {userDetails && (
               <>
                 {isLoadingTemplate ? (
-                  <div className="flex items-center justify-center min-h-[calc(100vh-126px)]">
-                    <Loader2 className="animate-spin h-8 w-8 text-df-orange-color" />
+                  <div className="flex min-h-[calc(100vh-126px)] items-center justify-center">
+                    <Loader2 className="text-df-orange-color h-8 w-8 animate-spin" />
                   </div>
                 ) : (
                   renderTemplate()

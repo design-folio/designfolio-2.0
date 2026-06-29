@@ -261,10 +261,14 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
     return () => window.removeEventListener("panelOpened", handlePanelOpened);
   }, []);
 
+  const getMonoProjectHref = (projectId) => {
+    if (isEditing) return `/project/${projectId}/editor`;
+    if (preview && !publicView) return `/project/${projectId}/preview`;
+    return `/project/${projectId}`;
+  };
+
   const handleProjectClick = (projectId) => {
-    if (isEditing) router.push(`/project/${projectId}/editor`);
-    else if (preview && !publicView) router.push(`/project/${projectId}/preview`);
-    else router.push(`/project/${projectId}`);
+    router.push(getMonoProjectHref(projectId));
   };
 
   // Dino Game State
@@ -425,10 +429,10 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           {/* Projects Section */}
           <motion.div
             variants={itemVariants}
-            className="px-6 md:px-10 py-10 pb-16 relative group/section"
+            className="group/section relative px-6 py-10 pb-16 md:px-10"
           >
             {isEditing && (
-              <div className="absolute top-4 right-4 z-10 transition-opacity flex gap-2">
+              <div className="absolute top-4 right-4 z-10 flex gap-2 transition-opacity">
                 <DropdownMenu
                   open={isProjectsAddDropdownOpen}
                   onOpenChange={setIsProjectsAddDropdownOpen}
@@ -437,31 +441,31 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                     <Button
                       variant="outline"
                       size="sm"
-                      className={`h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors ${
+                      className={`h-8 w-8 rounded-full border-black/10 bg-white p-0 shadow-sm transition-colors hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520] dark:hover:bg-[#35302A] ${
                         isProjectsAddDropdownOpen
                           ? "opacity-100"
                           : "opacity-100 md:opacity-0 md:group-hover/section:opacity-100"
                       }`}
                     >
-                      <Plus className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                      <Plus className="h-3.5 w-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent
                     align="end"
-                    className="w-48 bg-white dark:bg-[#2A2520] border border-black/10 dark:border-white/10 shadow-lg rounded-xl overflow-hidden p-1"
+                    className="w-48 overflow-hidden rounded-xl border border-black/10 bg-white p-1 shadow-lg dark:border-white/10 dark:bg-[#2A2520]"
                   >
                     <DropdownMenuItem
                       onClick={() => openSidebar?.(sidebars.project)}
-                      className="flex items-center gap-2 px-3 py-2 text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer rounded-lg focus:bg-black/5 dark:focus:bg-white/5"
+                      className="flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-[13px] text-[#1A1A1A] hover:bg-black/5 focus:bg-black/5 dark:text-[#F0EDE7] dark:hover:bg-white/5 dark:focus:bg-white/5"
                     >
-                      <Pencil className="w-3.5 h-3.5" />
+                      <Pencil className="h-3.5 w-3.5" />
                       <span>Write from Scratch</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => openModal?.(modals.aiProject)}
-                      className="flex items-center gap-2 px-3 py-2 text-[13px] text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-black/5 dark:hover:bg-white/5 cursor-pointer rounded-lg focus:bg-black/5 dark:focus:bg-white/5"
+                      className="flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-[13px] text-[#1A1A1A] hover:bg-black/5 focus:bg-black/5 dark:text-[#F0EDE7] dark:hover:bg-white/5 dark:focus:bg-white/5"
                     >
-                      <Sparkles className="w-3.5 h-3.5" />
+                      <Sparkles className="h-3.5 w-3.5" />
                       <span>Write using AI</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -473,37 +477,37 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                   onOpenChange={setIsProjectsPanelOpen}
                 >
                   <SheetContent
-                    className="border-l border-black/10 dark:border-white/10 bg-white dark:bg-[#2A2520] p-0 flex flex-col"
+                    className="flex flex-col border-l border-black/10 bg-white p-0 dark:border-white/10 dark:bg-[#2A2520]"
                     hasOverlay={false}
                     onInteractOutside={(e) => {
                       e.preventDefault();
                     }}
                   >
-                    <SheetHeader className="px-5 py-4 border-b border-black/10 dark:border-white/10 shrink-0 flex flex-row items-center m-0 space-y-0 h-[65px]">
-                      <SheetTitle className="text-[#1A1A1A] dark:text-[#F0EDE7] text-[15px] font-medium m-0">
+                    <SheetHeader className="m-0 flex h-[65px] shrink-0 flex-row items-center space-y-0 border-b border-black/10 px-5 py-4 dark:border-white/10">
+                      <SheetTitle className="m-0 text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                         Add Project
                       </SheetTitle>
                     </SheetHeader>
 
-                    <div className="flex-1 overflow-y-auto p-6 space-y-6">
+                    <div className="flex-1 space-y-6 overflow-y-auto p-6">
                       <div className="space-y-4">
                         <div className="space-y-1.5">
                           <Label
                             htmlFor="proj-title"
-                            className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] ml-1"
+                            className="ml-1 text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]"
                           >
                             Project Title
                           </Label>
                           <Input
                             id="proj-title"
                             placeholder="e.g. Slate"
-                            className="h-10 bg-black/[0.03] dark:bg-white/[0.03] border-transparent rounded-xl text-[14px] text-[#1A1A1A] dark:text-[#F0EDE7] focus-visible:bg-transparent focus-visible:ring-2 focus-visible:ring-black/10 dark:focus-visible:ring-white/10 focus-visible:border-black/20 dark:focus-visible:border-white/20 transition-all px-3.5 shadow-none placeholder:text-black/30 dark:placeholder:text-white/30"
+                            className="h-10 rounded-xl border-transparent bg-black/[0.03] px-3.5 text-[14px] text-[#1A1A1A] shadow-none transition-all placeholder:text-black/30 focus-visible:border-black/20 focus-visible:bg-transparent focus-visible:ring-2 focus-visible:ring-black/10 dark:bg-white/[0.03] dark:text-[#F0EDE7] dark:placeholder:text-white/30 dark:focus-visible:border-white/20 dark:focus-visible:ring-white/10"
                           />
                         </div>
                         <div className="space-y-1.5">
                           <Label
                             htmlFor="proj-desc"
-                            className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] ml-1"
+                            className="ml-1 text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]"
                           >
                             Description
                           </Label>
@@ -511,21 +515,21 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                             id="proj-desc"
                             rows={3}
                             placeholder="Short description of the project"
-                            className="w-full bg-black/[0.03] dark:bg-white/[0.03] border-transparent rounded-xl text-[14px] text-[#1A1A1A] dark:text-[#F0EDE7] focus-visible:bg-transparent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black/10 dark:focus-visible:ring-white/10 focus-visible:border-black/20 dark:focus-visible:border-white/20 transition-all p-3.5 shadow-none placeholder:text-black/30 dark:placeholder:text-white/30 resize-none"
+                            className="w-full resize-none rounded-xl border-transparent bg-black/[0.03] p-3.5 text-[14px] text-[#1A1A1A] shadow-none transition-all placeholder:text-black/30 focus-visible:border-black/20 focus-visible:bg-transparent focus-visible:ring-2 focus-visible:ring-black/10 focus-visible:outline-none dark:bg-white/[0.03] dark:text-[#F0EDE7] dark:placeholder:text-white/30 dark:focus-visible:border-white/20 dark:focus-visible:ring-white/10"
                           />
                         </div>
                         <div className="space-y-1.5">
-                          <Label className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] ml-1">
+                          <Label className="ml-1 text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                             Cover Image
                           </Label>
                           <div className="flex items-center gap-4">
-                            <div className="w-24 h-16 rounded-xl bg-black/[0.03] dark:bg-white/[0.03] border border-black/10 dark:border-white/10 flex items-center justify-center overflow-hidden">
-                              <Plus className="w-5 h-5 text-[#7A736C] dark:text-[#9E9893]" />
+                            <div className="flex h-16 w-24 items-center justify-center overflow-hidden rounded-xl border border-black/10 bg-black/[0.03] dark:border-white/10 dark:bg-white/[0.03]">
+                              <Plus className="h-5 w-5 text-[#7A736C] dark:text-[#9E9893]" />
                             </div>
                             <Button
                               variant="outline"
                               size="sm"
-                              className="h-8 rounded-full text-[12px] border-black/10 dark:border-white/10 hover:bg-black/5 dark:hover:bg-white/5"
+                              className="h-8 rounded-full border-black/10 text-[12px] hover:bg-black/5 dark:border-white/10 dark:hover:bg-white/5"
                             >
                               Upload Image
                             </Button>
@@ -535,10 +539,10 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                         <div className="pt-2">
                           <div className="flex items-center justify-between">
                             <div className="space-y-0.5">
-                              <Label className="text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] ml-1">
+                              <Label className="ml-1 text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                                 Protect Project
                               </Label>
-                              <p className="text-[12px] text-[#7A736C] dark:text-[#9E9893] ml-1">
+                              <p className="ml-1 text-[12px] text-[#7A736C] dark:text-[#9E9893]">
                                 Require a password to view this project (e.g., for NDAs).
                               </p>
                             </div>
@@ -569,7 +573,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                                     id="proj-password"
                                     type="password"
                                     placeholder="Enter password"
-                                    className="h-10 bg-black/[0.03] dark:bg-white/[0.03] border-transparent rounded-xl text-[14px] text-[#1A1A1A] dark:text-[#F0EDE7] focus-visible:bg-transparent focus-visible:ring-2 focus-visible:ring-black/10 dark:focus-visible:ring-white/10 focus-visible:border-black/20 dark:focus-visible:border-white/20 transition-all px-3.5 shadow-none placeholder:text-black/30 dark:placeholder:text-white/30"
+                                    className="h-10 rounded-xl border-transparent bg-black/[0.03] px-3.5 text-[14px] text-[#1A1A1A] shadow-none transition-all placeholder:text-black/30 focus-visible:border-black/20 focus-visible:bg-transparent focus-visible:ring-2 focus-visible:ring-black/10 dark:bg-white/[0.03] dark:text-[#F0EDE7] dark:placeholder:text-white/30 dark:focus-visible:border-white/20 dark:focus-visible:ring-white/10"
                                   />
                                 </div>
                               </motion.div>
@@ -579,17 +583,17 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                       </div>
                     </div>
 
-                    <div className="p-5 border-t border-black/10 dark:border-white/10 flex justify-end gap-3 shrink-0 bg-white dark:bg-[#2A2520]">
+                    <div className="flex shrink-0 justify-end gap-3 border-t border-black/10 bg-white p-5 dark:border-white/10 dark:bg-[#2A2520]">
                       <SheetClose asChild>
                         <Button
                           variant="outline"
-                          className="h-9 px-4 rounded-full text-[13px] font-medium border-black/10 dark:border-white/10 text-[#1A1A1A] dark:text-[#F0EDE7] hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+                          className="h-9 rounded-full border-black/10 px-4 text-[13px] font-medium text-[#1A1A1A] transition-colors hover:bg-black/5 dark:border-white/10 dark:text-[#F0EDE7] dark:hover:bg-white/5"
                         >
                           Cancel
                         </Button>
                       </SheetClose>
                       <SheetClose asChild>
-                        <Button className="h-9 px-5 rounded-full text-[13px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm">
+                        <Button className="h-9 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90">
                           Add Project
                         </Button>
                       </SheetClose>
@@ -606,19 +610,19 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                 <SectionVisibilityButton
                   sectionId="projects"
                   showOnHoverWhenVisible
-                  className="h-8 w-8 rounded-full border border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]"
+                  className="h-8 w-8 rounded-full border border-black/10 bg-white shadow-sm hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520] dark:hover:bg-[#35302A]"
                 />
               </div>
             )}
-            <h2 className="text-[14px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-dm-mono uppercase tracking-wider mb-5">
+            <h2 className="font-dm-mono mb-5 text-[14px] font-bold tracking-wider text-[#463B34] uppercase dark:text-[#D4C9BC]">
               Projects
             </h2>
 
             {visibleProjects.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-16 px-4 text-center rounded-2xl border border-dashed border-black/10 dark:border-white/10 bg-background backdrop-blur-sm">
-                <div className="w-12 h-12 rounded-full bg-black/[0.03] dark:bg-white/[0.03] flex items-center justify-center mb-4">
+              <div className="bg-background flex flex-col items-center justify-center rounded-2xl border border-dashed border-black/10 px-4 py-16 text-center backdrop-blur-sm dark:border-white/10">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-black/[0.03] dark:bg-white/[0.03]">
                   <svg
-                    className="w-6 h-6 text-[#7A736C] dark:text-[#9E9893]"
+                    className="h-6 w-6 text-[#7A736C] dark:text-[#9E9893]"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -631,27 +635,27 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                     />
                   </svg>
                 </div>
-                <h3 className="text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] mb-1">
+                <h3 className="mb-1 text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                   No projects yet
                 </h3>
-                <p className="text-[13px] text-[#7A736C] dark:text-[#9E9893] max-w-[250px] mb-5">
+                <p className="mb-5 max-w-[250px] text-[13px] text-[#7A736C] dark:text-[#9E9893]">
                   Add some projects to showcase your work and experience.
                 </p>
                 {isEditing && (
-                  <div className="flex flex-col sm:flex-row items-center gap-3">
+                  <div className="flex flex-col items-center gap-3 sm:flex-row">
                     <Button
                       onClick={() => openSidebar?.(sidebars.project)}
-                      className="h-9 px-5 rounded-full text-[13px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm flex items-center gap-2"
+                      className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
                     >
-                      <Pencil className="w-3.5 h-3.5" />
+                      <Pencil className="h-3.5 w-3.5" />
                       Write from Scratch
                     </Button>
                     <Button
                       variant="secondary"
                       onClick={() => openModal?.(modals.aiProject)}
-                      className="h-9 px-5 rounded-full text-[13px] font-medium border-button-outline hover:border-button-outline-hover"
+                      className="border-button-outline hover:border-button-outline-hover h-9 rounded-full px-5 text-[13px] font-medium"
                     >
-                      <Sparkles className="w-3.5 h-3.5" />
+                      <Sparkles className="h-3.5 w-3.5" />
                       Write using AI
                     </Button>
                   </div>
@@ -659,12 +663,13 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-8">
+                <div className="grid grid-cols-1 gap-x-5 gap-y-8 sm:grid-cols-2">
                   {visibleProjects.map((project) => (
                     <div
                       key={project.id}
                       onClick={() => handleProjectClick(project.slug)}
-                      className="group cursor-pointer flex flex-col p-4 -m-4 rounded-2xl hover:bg-black/[0.05] dark:hover:bg-white/[0.05] transition-all duration-300 relative"
+                      onMouseEnter={() => router.prefetch(getMonoProjectHref(project.slug))}
+                      className="group relative -m-4 flex cursor-pointer flex-col rounded-2xl p-4 transition-all duration-300 hover:bg-black/[0.05] dark:hover:bg-white/[0.05]"
                     >
                       {isEditing && (
                         <div
@@ -674,13 +679,13 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                           <Button
                             variant="outline"
                             size="sm"
-                            className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-black/10 dark:border-white/10 shadow-sm hover:bg-white dark:hover:bg-[#35302A]"
+                            className="h-8 w-8 rounded-full border-black/10 bg-white/90 p-0 shadow-sm backdrop-blur-sm hover:bg-white dark:border-white/10 dark:bg-[#2A2520]/90 dark:hover:bg-[#35302A]"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleOpenProjectEditor(project);
                             }}
                           >
-                            <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                            <Pencil className="h-3.5 w-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
                           </Button>
                           <ProjectVisibilityButton
                             isHidden={!!project.hidden}
@@ -692,33 +697,33 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                           <Button
                             variant="outline"
                             size="sm"
-                            className="h-8 w-8 p-0 rounded-full bg-white/90 dark:bg-[#2A2520]/90 backdrop-blur-sm border-black/10 dark:border-white/10 shadow-sm hover:bg-red-50 dark:hover:bg-red-950/30 hover:border-red-200 dark:hover:border-red-900/50 hover:text-red-600 dark:hover:text-red-400"
+                            className="h-8 w-8 rounded-full border-black/10 bg-white/90 p-0 shadow-sm backdrop-blur-sm hover:border-red-200 hover:bg-red-50 hover:text-red-600 dark:border-white/10 dark:bg-[#2A2520]/90 dark:hover:border-red-900/50 dark:hover:bg-red-950/30 dark:hover:text-red-400"
                             onClick={(e) => {
                               e.stopPropagation();
                               handleDeleteProject(project);
                             }}
                           >
-                            <Trash2 className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                            <Trash2 className="h-3.5 w-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
                           </Button>
                         </div>
                       )}
-                      <div className="rounded-xl overflow-hidden mb-4 aspect-[3/2] bg-white dark:bg-[#2A2520] drop-shadow-sm border border-black/5 dark:border-white/10 group-hover:border-black/10 dark:group-hover:border-white/20 transition-colors relative">
+                      <div className="relative mb-4 aspect-[3/2] overflow-hidden rounded-xl border border-black/5 bg-white drop-shadow-sm transition-colors group-hover:border-black/10 dark:border-white/10 dark:bg-[#2A2520] dark:group-hover:border-white/20">
                         <img
                           src={project.image}
                           alt={project.title}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
                         {project.hidden && (
-                          <div className="absolute top-2 left-2 bg-amber-100 dark:bg-amber-950/30 text-amber-700 dark:text-amber-400 px-2 py-0.5 rounded-full text-xs font-medium flex items-center gap-1 z-10">
-                            <EyeOff className="w-3 h-3" /> Hidden from live site
+                          <div className="absolute top-2 left-2 z-10 flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-950/30 dark:text-amber-400">
+                            <EyeOff className="h-3 w-3" /> Hidden from live site
                           </div>
                         )}
                       </div>
-                      <h3 className="font-medium text-base mb-1.5 text-[#1A1A1A] dark:text-[#F0EDE7]">
+                      <h3 className="mb-1.5 text-base font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                         {project.title}
                       </h3>
                       <p
-                        className="text-base text-[#7A736C] dark:text-[#B5AFA5] leading-relaxed"
+                        className="text-base leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]"
                         style={{ fontWeight: 450 }}
                       >
                         {project.description}
@@ -727,27 +732,27 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                   ))}
                   {isEditing && (
                     <div className="flex flex-col gap-4">
-                      <div className="rounded-xl aspect-[3/2] border border-dashed border-black/15 dark:border-white/10 bg-black/[0.015] dark:bg-white/[0.015] flex flex-col items-center justify-center gap-3 transition-colors hover:bg-black/[0.03] dark:hover:bg-white/[0.03]">
-                        <div className="w-10 h-10 rounded-full bg-black/[0.05] dark:bg-white/[0.05] flex items-center justify-center">
-                          <Plus className="w-4 h-4 text-[#7A736C] dark:text-[#9E9893]" />
+                      <div className="flex aspect-[3/2] flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-black/15 bg-black/[0.015] transition-colors hover:bg-black/[0.03] dark:border-white/10 dark:bg-white/[0.015] dark:hover:bg-white/[0.03]">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-black/[0.05] dark:bg-white/[0.05]">
+                          <Plus className="h-4 w-4 text-[#7A736C] dark:text-[#9E9893]" />
                         </div>
-                        <p className="text-[11px] font-medium text-[#A09890] dark:text-[#7A736C] tracking-widest uppercase">
+                        <p className="text-[11px] font-medium tracking-widest text-[#A09890] uppercase dark:text-[#7A736C]">
                           New project
                         </p>
                         <div className="flex items-center gap-2">
                           <Button
                             onClick={() => openSidebar?.(sidebars.project)}
-                            className="h-8 px-3.5 rounded-full text-[12px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm flex items-center gap-1.5"
+                            className="flex h-8 items-center gap-1.5 rounded-full bg-[#1A1A1A] px-3.5 text-[12px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
                           >
-                            <Pencil className="w-3 h-3" />
+                            <Pencil className="h-3 w-3" />
                             Add Project
                           </Button>
                           <Button
                             variant="secondary"
                             onClick={() => openModal(modals.aiProject)}
-                            className="h-8 px-3.5 rounded-full text-[12px] font-medium flex items-center gap-1.5"
+                            className="flex h-8 items-center gap-1.5 rounded-full px-3.5 text-[12px] font-medium"
                           >
-                            <Sparkles className="w-3 h-3" />
+                            <Sparkles className="h-3 w-3" />
                             Write with AI
                           </Button>
                         </div>
@@ -779,72 +784,72 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         {/* My Story Section */}
         <motion.div
           variants={itemVariants}
-          className="px-6 md:px-10 py-10 pb-16 relative group/section"
+          className="group/section relative px-6 py-10 pb-16 md:px-10"
         >
           {isEditing && (
-            <div className="absolute top-4 right-4 transition-opacity z-10 flex gap-2">
+            <div className="absolute top-4 right-4 z-10 flex gap-2 transition-opacity">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => openSidebar?.(sidebars.about)}
-                className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors opacity-100 md:opacity-0 md:group-hover/section:opacity-100"
+                className="h-8 w-8 rounded-full border-black/10 bg-white p-0 opacity-100 shadow-sm transition-colors hover:bg-gray-50 md:opacity-0 md:group-hover/section:opacity-100 dark:border-white/10 dark:bg-[#2A2520] dark:hover:bg-[#35302A]"
               >
-                <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                <Pencil className="h-3.5 w-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
               </Button>
               <SectionVisibilityButton
                 sectionId="about"
                 showOnHoverWhenVisible
-                className="h-8 w-8 rounded-full border border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]"
+                className="h-8 w-8 rounded-full border border-black/10 bg-white shadow-sm hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520] dark:hover:bg-[#35302A]"
               />
             </div>
           )}
-          <h2 className="text-[14px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-dm-mono uppercase tracking-wider mb-5">
+          <h2 className="font-dm-mono mb-5 text-[14px] font-bold tracking-wider text-[#463B34] uppercase dark:text-[#D4C9BC]">
             My Story
           </h2>
 
-          <div className="relative mb-8 h-56 flex items-center justify-center">
+          <div className="relative mb-8 flex h-56 items-center justify-center">
             <motion.div
               initial={{ rotate: -8, x: -120, y: 0 }}
               whileHover={{ rotate: -2, scale: 1.1, zIndex: 50 }}
               onClick={() => storyImages[0] && setSelectedStoryImage(storyImages[0])}
-              className="absolute w-32 h-40 rounded-xl overflow-hidden border-4 border-white dark:border-[#2A2520] shadow-lg z-0 cursor-pointer"
+              className="absolute z-0 h-40 w-32 cursor-pointer overflow-hidden rounded-xl border-4 border-white shadow-lg dark:border-[#2A2520]"
             >
-              <img src={storyImages[0]} alt="My workspace" className="w-full h-full object-cover" />
+              <img src={storyImages[0]} alt="My workspace" className="h-full w-full object-cover" />
             </motion.div>
             <motion.div
               initial={{ rotate: 12, x: -40, y: 15 }}
               whileHover={{ rotate: 5, scale: 1.1, zIndex: 50 }}
               onClick={() => storyImages[1] && setSelectedStoryImage(storyImages[1])}
-              className="absolute w-36 h-36 rounded-xl overflow-hidden border-4 border-white dark:border-[#2A2520] shadow-lg z-10 cursor-pointer"
+              className="absolute z-10 h-36 w-36 cursor-pointer overflow-hidden rounded-xl border-4 border-white shadow-lg dark:border-[#2A2520]"
             >
-              <img src={storyImages[1]} alt="Designing" className="w-full h-full object-cover" />
+              <img src={storyImages[1]} alt="Designing" className="h-full w-full object-cover" />
             </motion.div>
             <motion.div
               initial={{ rotate: -5, x: 40, y: -10 }}
               whileHover={{ rotate: 0, scale: 1.1, zIndex: 50 }}
               onClick={() => storyImages[2] && setSelectedStoryImage(storyImages[2])}
-              className="absolute w-32 h-40 rounded-xl overflow-hidden border-4 border-white dark:border-[#2A2520] shadow-lg z-20 cursor-pointer"
+              className="absolute z-20 h-40 w-32 cursor-pointer overflow-hidden rounded-xl border-4 border-white shadow-lg dark:border-[#2A2520]"
             >
               <img
                 src={storyImages[2]}
                 alt="Coffee and notes"
-                className="w-full h-full object-cover"
+                className="h-full w-full object-cover"
               />
             </motion.div>
             <motion.div
               initial={{ rotate: 8, x: 120, y: 20 }}
               whileHover={{ rotate: 3, scale: 1.1, zIndex: 50 }}
               onClick={() => storyImages[3] && setSelectedStoryImage(storyImages[3])}
-              className="absolute w-36 h-36 rounded-xl overflow-hidden border-4 border-white dark:border-[#2A2520] shadow-lg z-30 cursor-pointer"
+              className="absolute z-30 h-36 w-36 cursor-pointer overflow-hidden rounded-xl border-4 border-white shadow-lg dark:border-[#2A2520]"
             >
               <img
                 src={storyImages[3]}
                 alt="Creative studio"
-                className="w-full h-full object-cover"
+                className="h-full w-full object-cover"
               />
             </motion.div>
           </div>
-          <p className="mb-8 -mt-2 text-center text-[10px] font-medium tracking-widest uppercase text-[#7A736C]/70 dark:text-[#B5AFA5]/60 pointer-events-none">
+          <p className="pointer-events-none -mt-2 mb-8 text-center text-[10px] font-medium tracking-widest text-[#7A736C]/70 uppercase dark:text-[#B5AFA5]/60">
             Try moving things around :)
           </p>
 
@@ -883,7 +888,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                     variant="ghost"
                     aria-expanded={aboutStoryExpanded}
                     onClick={() => setAboutStoryExpanded((v) => !v)}
-                    className="mt-3 h-auto justify-start gap-1.5 self-start px-2 py-1.5 text-[13px] font-medium text-[#1A1A1A] hover:bg-black/[0.04] dark:text-[#F0EDE7] dark:hover:bg-white/[0.06] focus-visible:ring-2 focus-visible:ring-[#1A1A1A]/20 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F0EDE7] dark:focus-visible:ring-white/25 dark:focus-visible:ring-offset-[#1A1A1A]"
+                    className="mt-3 h-auto justify-start gap-1.5 self-start px-2 py-1.5 text-[13px] font-medium text-[#1A1A1A] hover:bg-black/[0.04] focus-visible:ring-2 focus-visible:ring-[#1A1A1A]/20 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F0EDE7] dark:text-[#F0EDE7] dark:hover:bg-white/[0.06] dark:focus-visible:ring-white/25 dark:focus-visible:ring-offset-[#1A1A1A]"
                   >
                     {aboutStoryExpanded ? "View less" : "View more"}
                     <motion.span
@@ -910,7 +915,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               <button
                 type="button"
                 onClick={() => openSidebar?.(sidebars.about)}
-                className="text-left text-[13px] text-[#7A736C] dark:text-[#B5AFA5] transition-colors hover:text-[#1A1A1A] dark:hover:text-white"
+                className="text-left text-[13px] text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:hover:text-white"
               >
                 Click here to add your story...
               </button>
@@ -927,10 +932,10 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           {/* Stack Section */}
           <motion.div
             variants={itemVariants}
-            className="px-6 md:px-10 py-10 relative group/section"
+            className="group/section relative px-6 py-10 md:px-10"
           >
             {isEditing && (
-              <div className="absolute top-4 right-4 transition-opacity z-10 flex gap-2">
+              <div className="absolute top-4 right-4 z-10 flex gap-2 transition-opacity">
                 <Button
                   variant="outline"
                   size="sm"
@@ -939,25 +944,25 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                     e.stopPropagation();
                     openSidebar?.(sidebars.tools);
                   }}
-                  className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors opacity-100 md:opacity-0 md:group-hover/section:opacity-100"
+                  className="h-8 w-8 rounded-full border-black/10 bg-white p-0 opacity-100 shadow-sm transition-colors hover:bg-gray-50 md:opacity-0 md:group-hover/section:opacity-100 dark:border-white/10 dark:bg-[#2A2520] dark:hover:bg-[#35302A]"
                 >
-                  <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                  <Pencil className="h-3.5 w-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
                 </Button>
                 <SectionVisibilityButton
                   sectionId="tools"
                   showOnHoverWhenVisible
-                  className="h-8 w-8 rounded-full border border-black/10 dark:border-white/10 shadow-sm bg-white dark:bg-[#2A2520] hover:bg-gray-50 dark:hover:bg-[#35302A]"
+                  className="h-8 w-8 rounded-full border border-black/10 bg-white shadow-sm hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520] dark:hover:bg-[#35302A]"
                 />
               </div>
             )}
-            <h2 className="text-[14px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-dm-mono uppercase tracking-wider mb-5">
+            <h2 className="font-dm-mono mb-5 text-[14px] font-bold tracking-wider text-[#463B34] uppercase dark:text-[#D4C9BC]">
               Stack
             </h2>
             {activeTools.length === 0 ? (
-              <div className="flex flex-col items-center justify-center py-16 px-4 text-center rounded-2xl border border-dashed border-black/10 dark:border-white/10 bg-white/50 dark:bg-[#2A2520]/50 backdrop-blur-sm">
-                <div className="w-12 h-12 rounded-full bg-black/[0.03] dark:bg-white/[0.03] flex items-center justify-center mb-4">
+              <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-black/10 bg-white/50 px-4 py-16 text-center backdrop-blur-sm dark:border-white/10 dark:bg-[#2A2520]/50">
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-black/[0.03] dark:bg-white/[0.03]">
                   <svg
-                    className="w-6 h-6 text-[#7A736C] dark:text-[#9E9893]"
+                    className="h-6 w-6 text-[#7A736C] dark:text-[#9E9893]"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -976,36 +981,36 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                     />
                   </svg>
                 </div>
-                <h3 className="text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7] mb-1">
+                <h3 className="mb-1 text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                   No tools yet
                 </h3>
-                <p className="text-[13px] text-[#7A736C] dark:text-[#9E9893] max-w-[250px] mb-5">
+                <p className="mb-5 max-w-[250px] text-[13px] text-[#7A736C] dark:text-[#9E9893]">
                   Add tools to showcase your stack and workflow.
                 </p>
                 {isEditing && (
                   <Button
                     onClick={() => openSidebar?.(sidebars.tools)}
-                    className="h-9 px-4 rounded-full text-[13px] font-medium bg-[#1A1A1A] dark:bg-white text-white dark:text-black hover:bg-black/80 dark:hover:bg-white/90 transition-colors shadow-sm"
+                    className="h-9 rounded-full bg-[#1A1A1A] px-4 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
                   >
                     Add Tools
                   </Button>
                 )}
               </div>
             ) : (
-              <div className="flex flex-wrap gap-8 items-end">
+              <div className="flex flex-wrap items-end gap-8">
                 {activeTools.map((tool, i) => (
                   <motion.div
                     key={i}
                     whileHover={{ y: -5, scale: 1.05, rotate: i % 2 === 0 ? 2 : -2 }}
                     transition={{ type: "spring", stiffness: 350, damping: 18 }}
-                    className="flex flex-col items-center gap-1.5 cursor-pointer relative group/tool"
+                    className="group/tool relative flex cursor-pointer flex-col items-center gap-1.5"
                   >
                     <img
                       src={tool.icon}
                       alt={tool.name}
-                      className="w-10 h-10 object-contain cursor-pointer transition-[filter] duration-300 group-hover/tool:[filter:drop-shadow(0_4px_8px_rgba(0,0,0,0.18))]"
+                      className="h-10 w-10 cursor-pointer object-contain transition-[filter] duration-300 group-hover/tool:[filter:drop-shadow(0_4px_8px_rgba(0,0,0,0.18))]"
                     />
-                    <span className="text-[10px] font-medium text-[#7A736C] dark:text-[#9E9893] opacity-0 group-hover/tool:opacity-100 transition-opacity duration-200 whitespace-nowrap leading-none">
+                    <span className="text-[10px] leading-none font-medium whitespace-nowrap text-[#7A736C] opacity-0 transition-opacity duration-200 group-hover/tool:opacity-100 dark:text-[#9E9893]">
                       {tool.name}
                     </span>
                   </motion.div>
@@ -1018,10 +1023,10 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
   };
 
   return (
-    <div className="w-full flex-1 flex flex-col gap-3 pb-0 pt-0 px-4 md:px-0 max-w-[848px] mx-auto">
+    <div className="mx-auto flex w-full max-w-[848px] flex-1 flex-col gap-3 px-4 pt-0 pb-0 md:px-0">
       <motion.div
         className={
-          "w-full max-w-[848px] relative min-h-screen flex flex-col font-inter transition-colors duration-700 bg-[#F0EDE7] dark:bg-[#1A1A1A] custom-dashed-x"
+          "font-inter custom-dashed-x relative flex min-h-screen w-full max-w-[848px] flex-col bg-[#F0EDE7] transition-colors duration-700 dark:bg-[#1A1A1A]"
         }
         variants={containerVariants}
         initial="hidden"
@@ -1031,46 +1036,46 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         {/* Header Section */}
         <motion.div
           variants={itemVariants}
-          className="px-6 md:px-10 pt-12 md:pt-16 pb-8 relative group/section"
+          className="group/section relative px-6 pt-12 pb-8 md:px-10 md:pt-16"
         >
           {isEditing && (
-            <div className="absolute top-4 right-4 transition-opacity z-10 opacity-100 md:opacity-0 md:group-hover/section:opacity-100 flex gap-1.5">
+            <div className="absolute top-4 right-4 z-10 flex gap-1.5 opacity-100 transition-opacity md:opacity-0 md:group-hover/section:opacity-100">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => openSidebar?.(sidebars.profile)}
-                className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors"
+                className="h-8 w-8 rounded-full border-black/10 bg-white p-0 shadow-sm transition-colors hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520] dark:hover:bg-[#35302A]"
                 title="Edit Profile"
               >
-                <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                <Pencil className="h-3.5 w-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
               </Button>
             </div>
           )}
-          <div className="flex items-start justify-between gap-4 mb-6">
-            <Avatar className="w-[96px] h-[96px] rounded-2xl">
+          <div className="mb-6 flex items-start justify-between gap-4">
+            <Avatar className="h-[96px] w-[96px] rounded-2xl">
               <AvatarImage
                 src={avatarSrc}
                 alt={displayName || "Profile image"}
                 className="object-cover"
               />
-              <AvatarFallback className="rounded-2xl bg-[#E5D7C4] dark:bg-[#3A352E] text-[#1A1A1A] dark:text-[#F0EDE7]">
+              <AvatarFallback className="rounded-2xl bg-[#E5D7C4] text-[#1A1A1A] dark:bg-[#3A352E] dark:text-[#F0EDE7]">
                 {avatarFallbackText}
               </AvatarFallback>
             </Avatar>
-            <div className="flex items-center gap-2 mt-1">
+            <div className="mt-1 flex items-center gap-2">
               <AnimatedThemeToggler persist={isEditing && !preview} />
             </div>
           </div>
 
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4 sm:gap-0">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-0">
             <div>
-              <h1 className="text-[30px] font-semibold mb-0.5 tracking-[-0.01em] text-[#1A1A1A] dark:text-[#F0EDE7]">
+              <h1 className="mb-0.5 text-[30px] font-semibold tracking-[-0.01em] text-[#1A1A1A] dark:text-[#F0EDE7]">
                 {introduction}
               </h1>
               {isEditing ? (
-                <div className="flex items-center gap-2 group/role">
+                <div className="group/role flex items-center gap-2">
                   <p
-                    className="text-[#4A4440] dark:text-[#C8C0B5] text-[17px]"
+                    className="text-[17px] text-[#4A4440] dark:text-[#C8C0B5]"
                     style={{ fontWeight: 450 }}
                   >
                     {userRole}
@@ -1078,16 +1083,16 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="h-6 w-6 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] opacity-0 group-hover/role:opacity-100 transition-opacity shrink-0"
+                    className="h-6 w-6 shrink-0 rounded-full border-black/10 bg-white p-0 opacity-0 shadow-sm transition-opacity group-hover/role:opacity-100 hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520] dark:hover:bg-[#35302A]"
                     onClick={handleEditPersona}
                     title="Edit persona"
                   >
-                    <Pencil className="w-3 h-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                    <Pencil className="h-3 w-3 text-[#1A1A1A] dark:text-[#F0EDE7]" />
                   </Button>
                 </div>
               ) : (
                 <p
-                  className="text-[#4A4440] dark:text-[#C8C0B5] text-[17px]"
+                  className="text-[17px] text-[#4A4440] dark:text-[#C8C0B5]"
                   style={{ fontWeight: 450 }}
                 >
                   {userRole}
@@ -1098,7 +1103,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               href={resumeUrl || "#"}
               target={resumeUrl ? "_blank" : undefined}
               rel={resumeUrl ? "noopener noreferrer" : undefined}
-              className="text-[13px] font-medium flex items-center gap-1.5 border-b border-[#1A1A1A] dark:border-[#F0EDE7] pb-0.5 hover:opacity-70 transition-opacity w-fit group/download text-[#1A1A1A] dark:text-[#F0EDE7]"
+              className="group/download flex w-fit items-center gap-1.5 border-b border-[#1A1A1A] pb-0.5 text-[13px] font-medium text-[#1A1A1A] transition-opacity hover:opacity-70 dark:border-[#F0EDE7] dark:text-[#F0EDE7]"
               onMouseEnter={() => downloadRef.current?.startAnimation()}
               onMouseLeave={() => downloadRef.current?.stopAnimation()}
               onClick={(e) => {
@@ -1117,24 +1122,24 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           isEditing={isEditing}
         />
         {/* Intro Section */}
-        <motion.div variants={itemVariants} className="px-6 md:px-10 py-10 relative group/section">
+        <motion.div variants={itemVariants} className="group/section relative px-6 py-10 md:px-10">
           {isEditing && (
-            <div className="absolute top-4 right-4 transition-opacity z-10 opacity-100 md:opacity-0 md:group-hover/section:opacity-100">
+            <div className="absolute top-4 right-4 z-10 opacity-100 transition-opacity md:opacity-0 md:group-hover/section:opacity-100">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => openSidebar?.(sidebars.profile)}
-                className="h-8 w-8 p-0 rounded-full bg-white dark:bg-[#2A2520] border-black/10 dark:border-white/10 shadow-sm hover:bg-gray-50 dark:hover:bg-[#35302A] transition-colors"
+                className="h-8 w-8 rounded-full border-black/10 bg-white p-0 shadow-sm transition-colors hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520] dark:hover:bg-[#35302A]"
               >
-                <Pencil className="w-3.5 h-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                <Pencil className="h-3.5 w-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
               </Button>
             </div>
           )}
-          <h2 className="text-[14px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-dm-mono uppercase tracking-wider mb-5">
+          <h2 className="font-dm-mono mb-5 text-[14px] font-bold tracking-wider text-[#463B34] uppercase dark:text-[#D4C9BC]">
             Intro
           </h2>
           <p
-            className="text-[#7A736C] dark:text-[#B5AFA5] leading-[1.7] text-[17px]"
+            className="text-[17px] leading-[1.7] text-[#7A736C] dark:text-[#B5AFA5]"
             style={{ fontWeight: 450 }}
           >
             {bio}
@@ -1155,7 +1160,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           variants={itemVariants}
           className="relative flex flex-col items-center justify-center overflow-hidden border-b border-[#E5D7C4]/50"
         >
-          <div className="absolute top-6 left-8 right-8 flex justify-between z-10 font-dm-mono text-[10px] uppercase tracking-widest text-[#463B34] dark:text-[#C4B5A0] pointer-events-none">
+          <div className="font-dm-mono pointer-events-none absolute top-6 right-8 left-8 z-10 flex justify-between text-[10px] tracking-widest text-[#463B34] uppercase dark:text-[#C4B5A0]">
             <span>{isGameOver ? "Game Over" : isPlaying ? "Playing" : "Tap to play"}</span>
             <div className="flex gap-4">
               <span>HI {String(highScore).padStart(5, "0")}</span>
@@ -1166,16 +1171,16 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           <div
             ref={gameRef}
             onClick={jump}
-            className="w-full h-48 relative flex items-end overflow-hidden cursor-pointer select-none bg-black/[0.015] dark:bg-white/[0.03] transition-colors hover:bg-black/[0.025] dark:hover:bg-white/[0.05]"
+            className="relative flex h-48 w-full cursor-pointer items-end overflow-hidden bg-black/[0.015] transition-colors select-none hover:bg-black/[0.025] dark:bg-white/[0.03] dark:hover:bg-white/[0.05]"
           >
             {/* Ground Line */}
-            <div className="absolute bottom-12 left-0 w-full h-px bg-[#E5D7C4] dark:bg-[#3A352E]"></div>
+            <div className="absolute bottom-12 left-0 h-px w-full bg-[#E5D7C4] dark:bg-[#3A352E]"></div>
 
             {/* Dino */}
             <motion.div
               animate={{ y: -dinoY - 48 }}
               transition={{ type: "just" }}
-              className="absolute left-12 bottom-0 mb-[-2px] z-20 dino-game"
+              className="dino-game absolute bottom-0 left-12 z-20 mb-[-2px]"
             >
               <svg
                 width="40"
@@ -1204,7 +1209,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
             {obstacles.map((obs) => (
               <div
                 key={obs.id}
-                className="absolute bottom-12 mb-[-2px] z-10 dino-game"
+                className="dino-game absolute bottom-12 z-10 mb-[-2px]"
                 style={{ left: `${obs.x}px` }}
               >
                 <svg
@@ -1222,19 +1227,19 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
             ))}
 
             {/* Decorative Background Elements */}
-            <div className="absolute top-1/2 left-0 w-full h-px bg-linear-to-r from-transparent via-[#E5D7C4]/30 dark:via-[#3A352E]/40 to-transparent -translate-y-12"></div>
+            <div className="absolute top-1/2 left-0 h-px w-full -translate-y-12 bg-linear-to-r from-transparent via-[#E5D7C4]/30 to-transparent dark:via-[#3A352E]/40"></div>
 
             {isGameOver && (
-              <div className="absolute inset-0 flex items-center justify-center bg-[#F0EDE7]/40 dark:bg-[#1A1A1A]/60 backdrop-blur-[2px] z-30">
+              <div className="absolute inset-0 z-30 flex items-center justify-center bg-[#F0EDE7]/40 backdrop-blur-[2px] dark:bg-[#1A1A1A]/60">
                 <motion.div
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
-                  className="bg-white/80 dark:bg-[#2A2520]/90 backdrop-blur-md px-8 py-4 rounded-2xl border border-black/5 dark:border-white/10 shadow-xl flex flex-col items-center gap-2"
+                  className="flex flex-col items-center gap-2 rounded-2xl border border-black/5 bg-white/80 px-8 py-4 shadow-xl backdrop-blur-md dark:border-white/10 dark:bg-[#2A2520]/90"
                 >
-                  <span className="text-[11px] font-bold text-[#463B34] dark:text-[#D4C9BC] font-dm-mono uppercase tracking-[0.2em]">
+                  <span className="font-dm-mono text-[11px] font-bold tracking-[0.2em] text-[#463B34] uppercase dark:text-[#D4C9BC]">
                     Game Over
                   </span>
-                  <div className="flex flex-col items-center group">
+                  <div className="group flex flex-col items-center">
                     <svg
                       width="24"
                       height="24"
@@ -1244,12 +1249,12 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                       strokeWidth="2.5"
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      className="text-[#535353] dark:text-[#9E9893] mb-1 transition-transform group-hover:rotate-180 duration-500"
+                      className="mb-1 text-[#535353] transition-transform duration-500 group-hover:rotate-180 dark:text-[#9E9893]"
                     >
                       <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
                       <path d="M3 3v5h5" />
                     </svg>
-                    <span className="text-[9px] font-medium text-[#7A736C] dark:text-[#9E9893] uppercase tracking-widest">
+                    <span className="text-[9px] font-medium tracking-widest text-[#7A736C] uppercase dark:text-[#9E9893]">
                       Tap to Restart
                     </span>
                   </div>
@@ -1268,26 +1273,26 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setSelectedStoryImage(null)}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 sm:p-8 cursor-zoom-out"
+            className="fixed inset-0 z-[100] flex cursor-zoom-out items-center justify-center bg-black/60 p-4 backdrop-blur-sm sm:p-8"
           >
             <motion.div
               initial={{ scale: 0.9, y: 20, opacity: 0 }}
               animate={{ scale: 1, y: 0, opacity: 1 }}
               exit={{ scale: 0.9, y: 20, opacity: 0 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative max-w-4xl max-h-[90vh] rounded-2xl overflow-hidden shadow-2xl border border-white/10"
+              className="relative max-h-[90vh] max-w-4xl overflow-hidden rounded-2xl border border-white/10 shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               <button
                 onClick={() => setSelectedStoryImage(null)}
-                className="absolute top-4 right-4 z-10 w-10 h-10 bg-black/50 hover:bg-black/70 backdrop-blur-md rounded-full flex items-center justify-center text-white transition-colors"
+                className="absolute top-4 right-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-black/50 text-white backdrop-blur-md transition-colors hover:bg-black/70"
               >
-                <X className="w-5 h-5" />
+                <X className="h-5 w-5" />
               </button>
               <img
                 src={selectedStoryImage}
                 alt="Story full view"
-                className="w-auto h-auto max-w-full max-h-[90vh] object-contain"
+                className="h-auto max-h-[90vh] w-auto max-w-full object-contain"
               />
             </motion.div>
           </motion.div>

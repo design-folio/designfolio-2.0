@@ -84,14 +84,14 @@ const cedarvilleCursive = Cedarville_Cursive({
 
 const pixelifySans = Pixelify_Sans({
   subsets: ["latin"],
-  variable: "--font-pixelify-sans",
+  variable: "--font-pixelify",
   weight: ["400", "500", "600", "700"],
   preload: false, // only used in Professional template
 });
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  variable: "--font-jetbrains-mono",
+  variable: "--font-jetbrains",
   weight: ["400", "500", "600", "700"],
 });
 

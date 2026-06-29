@@ -72,7 +72,7 @@ function CanvasProfileCard({ isEditing, skills = [], persistTheme = false }) {
           )}
           <div className="relative w-full overflow-hidden rounded-b-[26px] border-t border-[#E5D7C4] bg-linear-to-b from-[#EEE9E3] to-[#F4F1EC] py-2 dark:border-white/10 dark:from-[#252119] dark:to-[#2B2620]">
             <div className="absolute top-0 bottom-0 left-0 z-10 w-12 bg-linear-to-r from-[#F0EBE5] to-transparent dark:from-[#272219]" />
-            <div className="absolute top-0 right-0 bottom-0 z-10 w-12 bg-red-500 bg-linear-to-l from-[#F0EBE5] to-transparent dark:from-[#272219]" />
+            <div className="absolute top-0 right-0 bottom-0 z-10 w-12 bg-linear-to-l from-[#F0EBE5] to-transparent dark:from-[#272219]" />
             <motion.div
               className="flex gap-4 whitespace-nowrap"
               style={{ willChange: "transform" }}

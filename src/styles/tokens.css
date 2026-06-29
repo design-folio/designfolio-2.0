@@ -14,8 +14,8 @@
   --font-gsans: var(--font-gsans);
   --font-eudoxus: var(--font-eudoxus);
   --font-dm-mono: var(--font-dm-mono);
-  --font-pixelify: var(--font-pixelify-sans), sans-serif;
-  --font-jetbrains: var(--font-jetbrains-mono), monospace;
+  --font-pixelify: var(--font-pixelify), sans-serif;
+  --font-jetbrains: var(--font-jetbrains), monospace;
 
   /* Border radius */
   --radius-lg: var(--radius);

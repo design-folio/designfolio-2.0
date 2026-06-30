@@ -233,6 +233,7 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
         damping: 12,
         delay: 0.45,
       }}
+      id="section-projects"
       className="group/section relative w-full rounded-[26px] border border-[#E5D7C4] bg-white p-4 md:p-6 dark:border-white/10 dark:bg-[#2A2520]"
     >
       {isEditing && (

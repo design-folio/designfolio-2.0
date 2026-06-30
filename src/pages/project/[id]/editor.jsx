@@ -1,9 +1,8 @@
-import Editor from "@/components/editor";
+import ProjectDetail from "@/components/project/ProjectDetail";
 import WallpaperBackground from "@/components/WallpaperBackground";
 import { useGlobalContext } from "@/context/globalContext";
 import { TEMPLATE_IDS } from "@/lib/templates";
 import { getProjectUrl } from "@/lib/utils";
-import { cn } from "@/lib/utils";
 import { _getProjectDetails, _getUserQuota } from "@/network/get-request";
 import { _updateProject, _updateUser } from "@/network/post-request";
 import { useMutation } from "@tanstack/react-query";
@@ -178,7 +177,6 @@ export default function Index() {
 
   const template = userDetails.template ?? TEMPLATE_IDS.CANVAS;
   const isMacOS = template === TEMPLATE_IDS.RETRO_OS;
-  const isChatfolio = template === TEMPLATE_IDS.CHATFOLIO;
   const isEmbed = router.query.embed === "1";
 
   const sidebarProviderProps = {
@@ -192,28 +190,19 @@ export default function Index() {
   const projectTitle = projectDetails?.project?.title || "Project";
   const currentProject = projectDetails?.project;
 
-  const projectContainerClass = (() => {
-    switch (template) {
-      case TEMPLATE_IDS.CANVAS:
-        return "max-w-[848px] mx-auto flex flex-col gap-3 pb-20 pt-24 px-4 md:px-0";
-      case TEMPLATE_IDS.CHATFOLIO:
-        return "max-w-[700px] mx-auto px-4 md:px-0";
-      case TEMPLATE_IDS.MONO:
-        return "max-w-[848px] mx-auto pb-20 pt-[80px] custom-dashed-x bg-[#F0EDE7] dark:bg-[#1A1A1A] min-h-screen";
-      case TEMPLATE_IDS.PROFESSIONAL:
-        return "max-w-[700px] mx-auto pb-20 pt-[80px]";
-      case TEMPLATE_IDS.RETRO_OS:
-        return "max-w-[848px] mx-auto py-6 px-2 md:px-4 lg:px-0";
-      default:
-        return "max-w-[848px] mx-auto flex flex-col gap-3 pb-20 pt-24 px-4 md:px-0";
-    }
-  })();
-
-  const editorContent = (
-    <div className={projectContainerClass}>
-      <Editor edit projectDetails={projectDetails} refetchProjectDetail={refetchProjectDetail} />
-    </div>
-  );
+  const editorContent = currentProject ? (
+    <ProjectDetail
+      key={currentProject._id}
+      project={currentProject}
+      mode="editor"
+      onBack={() => router.push("/builder")}
+      onWorkClick={() =>
+        router.push({ pathname: "/builder", query: { scrollTo: "section-projects" } })
+      }
+      resumeUrl={userDetails?.resumeUrl ?? null}
+      owner={userDetails}
+    />
+  ) : null;
 
   const handleDeleteProject = () => {
     if (!currentProject) return;
@@ -259,53 +248,47 @@ export default function Index() {
     return <div className="min-h-full overflow-auto bg-white">{editorContent}</div>;
   }
 
+  // Non-MacOS: clean fullscreen editor — no sidebar, no wallpaper, no builder shell
+  if (!isMacOS) {
+    return <div className="min-h-screen bg-white dark:bg-[#1A1A1A]">{editorContent}</div>;
+  }
+
+  // MacOS template: keeps sidebar, wallpaper, BuilderShell for modals
   return (
     <SidebarProvider {...sidebarProviderProps}>
       <div className="min-w-0 flex-1">
         <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
-
-        {isMacOS ? (
-          <>
-            {/* Full macOS desktop as background — menu bar, dock, widgets */}
-            <MacOSTemplate userDetails={userDetails} edit />
-            {/* Project window floats on top as a fixed overlay */}
-            <MacOSWindowShell
-              title={projectTitle}
-              projectUrl={getProjectUrl({
-                username: userDetails?.username,
-                baseDomain: process.env.NEXT_PUBLIC_BASE_DOMAIN,
-                customDomain: domainDetails?.customDomain?.domain,
-                isCustomVerified: domainDetails?.customDomain?.isCustomVerified,
-                projectId: router.query.id,
-              })}
-              tabs={[
-                { label: "Preview", href: `/project/${router.query.id}/preview` },
-                { label: "Editor", href: `/project/${router.query.id}/editor` },
-              ]}
-              activeTab="Editor"
-              canManage={!!currentProject}
-              isHidden={!!currentProject?.hidden}
-              hasPassword={!!currentProject?.protected}
-              projectId={currentProject?._id}
-              initialPassword={currentProject?.password || ""}
-              onDelete={handleDeleteProject}
-              onToggleVisibility={handleToggleVisibility}
-            >
-              {editorContent}
-            </MacOSWindowShell>
-            {/* All modals, dialogs — same as builder page */}
-            <BuilderShell />
-          </>
-        ) : (
-          <main
-            className={cn(
-              "min-h-screen",
-              isChatfolio && "font-inter bg-[#F0EDE7] dark:bg-[#1A1A1A]"
-            )}
+        <>
+          {/* Full macOS desktop as background — menu bar, dock, widgets */}
+          <MacOSTemplate userDetails={userDetails} edit />
+          {/* Project window floats on top as a fixed overlay */}
+          <MacOSWindowShell
+            title={projectTitle}
+            projectUrl={getProjectUrl({
+              username: userDetails?.username,
+              baseDomain: process.env.NEXT_PUBLIC_BASE_DOMAIN,
+              customDomain: domainDetails?.customDomain?.domain,
+              isCustomVerified: domainDetails?.customDomain?.isCustomVerified,
+              projectId: router.query.id,
+            })}
+            tabs={[
+              { label: "Preview", href: `/project/${router.query.id}/preview` },
+              { label: "Editor", href: `/project/${router.query.id}/editor` },
+            ]}
+            activeTab="Editor"
+            canManage={!!currentProject}
+            isHidden={!!currentProject?.hidden}
+            hasPassword={!!currentProject?.protected}
+            projectId={currentProject?._id}
+            initialPassword={currentProject?.password || ""}
+            onDelete={handleDeleteProject}
+            onToggleVisibility={handleToggleVisibility}
           >
             {editorContent}
-          </main>
-        )}
+          </MacOSWindowShell>
+          {/* All modals, dialogs — same as builder page */}
+          <BuilderShell />
+        </>
       </div>
       <AppSidebar />
     </SidebarProvider>
@@ -322,8 +305,7 @@ export const getServerSideProps = async (context) => {
       },
     };
   }
-  const isEmbed = context.query.embed === "1";
   return {
-    props: { dfToken: !!dfToken, ...(isEmbed && { hideHeader: true }) },
+    props: { dfToken: !!dfToken, hideHeader: true },
   };
 };

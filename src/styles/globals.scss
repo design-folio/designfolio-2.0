@@ -486,16 +486,6 @@ textarea.text-input {
   border-radius: 16px;
 }
 
-input::placeholder {
-  color: var(--input-placeholder-color);
-  opacity: 1; /* Firefox */
-}
-
-input::-ms-input-placeholder {
-  /* Edge 12-18 */
-  color: var(--input-placeholder-color);
-}
-
 .error-message {
   color: var(--input-error-color);
   margin-top: 8px;
@@ -630,7 +620,7 @@ input::-ms-input-placeholder {
 }
 
 .project-editor {
-  // overflow-x: auto;
+  overflow-x: hidden;
   position: relative;
   will-change: transform, opacity;
   word-wrap: break-word;

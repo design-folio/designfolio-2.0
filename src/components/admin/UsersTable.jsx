@@ -744,6 +744,7 @@ export default function UsersTable() {
     return COLUMNS;
   }, [filter]);
 
+  // eslint-disable-next-line react-hooks/incompatible-library
   const table = useReactTable({
     data: data?.users ?? [],
     columns: activeColumns,

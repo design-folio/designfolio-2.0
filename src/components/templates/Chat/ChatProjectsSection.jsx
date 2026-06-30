@@ -71,7 +71,11 @@ export default function ChatProjectsSection({
   );
 
   return (
-    <div className="flex flex-col gap-3" style={{ order: sectionSteps.projects - 3 }}>
+    <div
+      id="section-projects"
+      className="flex flex-col gap-3"
+      style={{ order: sectionSteps.projects - 3 }}
+    >
       {/* You: "Can I see your work?" */}
       <AnimatePresence mode="popLayout">
         {chatRevealStep >= s(7) && (visibleProjects.length > 0 || canEdit) && (

@@ -428,6 +428,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
 
           {/* Projects Section */}
           <motion.div
+            id="section-projects"
             variants={itemVariants}
             className="group/section relative px-6 py-10 pb-16 md:px-10"
           >

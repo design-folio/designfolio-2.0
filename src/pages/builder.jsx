@@ -114,7 +114,23 @@ export default function Index() {
 
   useEffect(() => {
     setIsUserDetailsFromCache(true);
-  }, []);
+  }, [setIsUserDetailsFromCache]);
+
+  // Auto-scroll to a section when ?scrollTo=<id> is in the URL (e.g. coming back from project editor)
+  useEffect(() => {
+    const sectionId = router.query?.scrollTo;
+    if (!sectionId || !userDetails) return;
+    const tryScroll = (attempts = 0) => {
+      const el = document.getElementById(sectionId);
+      if (el) {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+        router.replace({ pathname: router.pathname, query: {} }, undefined, { shallow: true });
+      } else if (attempts < 10) {
+        setTimeout(() => tryScroll(attempts + 1), 150);
+      }
+    };
+    tryScroll();
+  }, [router, router.query?.scrollTo, userDetails]);
 
   // Restore wallpaper from userDetails when component mounts
   useEffect(() => {

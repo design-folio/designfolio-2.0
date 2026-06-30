@@ -39,7 +39,7 @@ function ProfessionalProjectsTab({
   const { openModal } = useGlobalContext();
 
   return (
-    <div className="group/section grid grid-cols-1 gap-0">
+    <div id="section-projects" className="group/section grid grid-cols-1 gap-0">
       {/* Sort + Section visibility controls */}
       {isEditing && (
         <div className="flex items-center justify-end gap-2 border-b border-[#D5D0C6] px-1 py-2 dark:border-[#3A352E]">

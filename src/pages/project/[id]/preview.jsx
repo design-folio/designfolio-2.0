@@ -1,5 +1,4 @@
-import ProjectPassword from "@/components/projectPassword";
-import ProjectPreview from "@/components/projectPreview";
+import ProjectDetail from "@/components/project/ProjectDetail";
 import WallpaperBackground from "@/components/WallpaperBackground";
 import { TEMPLATE_IDS } from "@/lib/templates";
 import { useGlobalContext } from "@/context/globalContext";
@@ -168,11 +167,17 @@ export default function Index() {
     }
   })();
 
-  const previewContent = projectDetails && (
-    <div className={projectContainerClass}>
-      <ProjectPreview projectDetails={projectDetails} />
-    </div>
-  );
+  const previewContent = currentProject ? (
+    <ProjectDetail
+      key={currentProject._id}
+      project={currentProject}
+      mode="preview"
+      onBack={() => router.push("/portfolio-preview")}
+      onWorkClick={() => router.push("/portfolio-preview")}
+      resumeUrl={userDetails?.resumeUrl ?? null}
+      owner={userDetails}
+    />
+  ) : null;
 
   const handleDeleteProject = () => {
     if (!currentProject) return;
@@ -221,21 +226,7 @@ export default function Index() {
     <>
       <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
 
-      {isChatfolio && currentProject ? (
-        <>
-          <ChatProjectView
-            project={currentProject}
-            ownerUser={userDetails}
-            onBack={() => router.push("/portfolio-preview")}
-          />
-          <BuilderShell hideCourseCard />
-        </>
-      ) : isProfessional && currentProject ? (
-        <>
-          <ProfessionalProjectInfo projectDetails={currentProject} userDetails={userDetails} />
-          <BuilderShell hideCourseCard />
-        </>
-      ) : isMacOS ? (
+      {isMacOS ? (
         <>
           {/* Full macOS desktop as background — menu bar, dock, widgets */}
           <MacOSTemplate userDetails={userDetails} edit noTopNavbar />
@@ -267,22 +258,7 @@ export default function Index() {
           <BuilderShell hideCourseCard />
         </>
       ) : (
-        <main className={cn("min-h-screen")}>
-          <div className="fixed top-4 left-4 z-50">
-            {!template === TEMPLATE_IDS.MONO && (
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => router.back()}
-                className="rounded-full bg-white/90 shadow-md backdrop-blur-sm hover:bg-white dark:bg-[#2A2520]/90 dark:hover:bg-[#2A2520]"
-              >
-                <ArrowLeft className="h-4 w-4" />
-                Back to Preview
-              </Button>
-            )}
-          </div>
-          {previewContent}
-        </main>
+        <main className="min-h-screen">{previewContent}</main>
       )}
     </>
   );

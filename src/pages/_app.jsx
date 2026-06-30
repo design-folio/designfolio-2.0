@@ -257,14 +257,12 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
     (router.pathname === "/builder" ||
       router.pathname === "/jobs" ||
       router.pathname.startsWith("/jobs/") ||
-      router.pathname === "/project/[id]/editor" ||
       router.pathname === "/analytics" ||
       router.pathname === "/settings");
 
   const showBuilderTopNav =
     !!dfToken &&
     (router.pathname === "/builder" ||
-      router.pathname === "/project/[id]/editor" ||
       router.pathname === "/settings" ||
       router.pathname === "/analytics") &&
     router.query?.view !== "ai-tools";

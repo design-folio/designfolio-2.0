@@ -26,7 +26,6 @@ export default function Index() {
     userDetails,
     userDetailLoading,
     setIsUserDetailsFromCache,
-    userDetailsIsState,
     setCursor,
     setWallpaper,
     wallpaperUrl,
@@ -52,12 +51,8 @@ export default function Index() {
 
   // Enable the userDetails query — required on every authenticated page
   useEffect(() => {
-    if (userDetailsIsState) {
-      setIsUserDetailsFromCache(false);
-    } else {
-      setIsUserDetailsFromCache(true);
-    }
-  }, [userDetailsIsState, setIsUserDetailsFromCache]);
+    setIsUserDetailsFromCache(true);
+  }, []);
 
   const setProjectData = useCallback(
     (project, isFromRefetch = false) => {

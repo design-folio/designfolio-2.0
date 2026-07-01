@@ -7,6 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { _updateProject } from "@/network/post-request";
 import ProjectMetaGrid from "./ProjectMetaGrid";
+import { TextEffect } from "@/components/ui/text-effect";
 
 // ─── Inline-editable field ────────────────────────────────────────────────────
 function EditableField({ value, onChange, tag: Tag = "span", placeholder, className, readOnly }) {
@@ -332,10 +333,11 @@ export default function ProjectHero({
   const thumbnailImgRef = useRef(null);
   const isEditable = mode === "editor";
   const imageUrl = project?.thumbnail?.url || null;
+  const [titleAnimDone, setTitleAnimDone] = useState(false);
 
   // Layout values come from project (persisted), not local state
   const heroView = project?.heroView ?? "editorial";
-  const thumbnailWidth = project?.thumbnailWidth ?? "full";
+  const thumbnailWidth = project?.thumbnailWidth ?? "contained";
   const thumbnailHeight = project?.thumbnailHeight ?? null;
 
   // These are transient UI states — no need to persist
@@ -488,17 +490,36 @@ export default function ProjectHero({
                 onClick={(e) => e.stopPropagation()}
               >
                 {isEditable ? (
-                  <EditableField
-                    value={project?.title ?? ""}
-                    onChange={(v) => onChange?.({ title: v })}
-                    tag="h1"
-                    placeholder="Project title…"
-                    className="mb-8 text-[36px] leading-[1.05] font-bold tracking-[-0.02em] text-white md:text-[52px] [&:focus]:bg-white/10 [&:focus]:ring-1 [&:focus]:ring-white/20"
-                  />
+                  titleAnimDone ? (
+                    <EditableField
+                      value={project?.title ?? ""}
+                      onChange={(v) => onChange?.({ title: v })}
+                      tag="h1"
+                      placeholder="Project title…"
+                      className="mb-8 text-[36px] leading-[1.05] font-bold tracking-[-0.02em] text-white md:text-[52px] [&:focus]:bg-white/10 [&:focus]:ring-1 [&:focus]:ring-white/20"
+                    />
+                  ) : (
+                    <TextEffect
+                      as="h1"
+                      preset="blur"
+                      per="word"
+                      delay={0.1}
+                      className="mb-8 text-[36px] leading-[1.05] font-bold tracking-[-0.02em] text-white md:text-[52px]"
+                      onAnimationComplete={() => setTitleAnimDone(true)}
+                    >
+                      {project?.title || "Untitled Project"}
+                    </TextEffect>
+                  )
                 ) : (
-                  <h1 className="mb-8 text-[36px] leading-[1.05] font-bold tracking-[-0.02em] text-white md:text-[52px]">
+                  <TextEffect
+                    as="h1"
+                    preset="blur"
+                    per="word"
+                    delay={0.1}
+                    className="mb-8 text-[36px] leading-[1.05] font-bold tracking-[-0.02em] text-white md:text-[52px]"
+                  >
                     {project?.title || "Untitled Project"}
-                  </h1>
+                  </TextEffect>
                 )}
 
                 <div className="grid grid-cols-2 gap-y-5 md:grid-cols-4">
@@ -550,13 +571,26 @@ export default function ProjectHero({
             <div className="pt-14 pb-10">
               {isEditable ? (
                 <>
-                  <EditableField
-                    value={project?.title ?? ""}
-                    onChange={(v) => onChange?.({ title: v })}
-                    tag="h1"
-                    placeholder="Project title…"
-                    className="mb-5 text-[38px] leading-[1.05] font-bold tracking-[-0.02em] text-[#1A1A1A] focus:bg-black/[0.04] focus:ring-1 focus:ring-black/10 md:text-[52px] dark:text-[#F0EDE7] dark:focus:bg-white/[0.06] dark:focus:ring-white/10"
-                  />
+                  {titleAnimDone ? (
+                    <EditableField
+                      value={project?.title ?? ""}
+                      onChange={(v) => onChange?.({ title: v })}
+                      tag="h1"
+                      placeholder="Project title…"
+                      className="mb-5 text-[38px] leading-[1.05] font-bold tracking-[-0.02em] text-[#1A1A1A] focus:bg-black/[0.04] focus:ring-1 focus:ring-black/10 md:text-[52px] dark:text-[#F0EDE7] dark:focus:bg-white/[0.06] dark:focus:ring-white/10"
+                    />
+                  ) : (
+                    <TextEffect
+                      as="h1"
+                      preset="blur"
+                      per="word"
+                      delay={0.05}
+                      className="mb-5 text-[38px] leading-[1.05] font-bold tracking-[-0.02em] text-[#1A1A1A] md:text-[52px] dark:text-[#F0EDE7]"
+                      onAnimationComplete={() => setTitleAnimDone(true)}
+                    >
+                      {project?.title || "Untitled Project"}
+                    </TextEffect>
+                  )}
                   <EditableField
                     value={project?.description ?? ""}
                     onChange={(v) => onChange?.({ description: v })}
@@ -567,9 +601,15 @@ export default function ProjectHero({
                 </>
               ) : (
                 <>
-                  <h1 className="mb-5 text-[38px] leading-[1.05] font-bold tracking-[-0.02em] text-[#1A1A1A] md:text-[52px] dark:text-[#F0EDE7]">
+                  <TextEffect
+                    as="h1"
+                    preset="blur"
+                    per="word"
+                    delay={0.03}
+                    className="mb-5 text-[38px] leading-[1.05] font-bold tracking-[-0.02em] text-[#1A1A1A] md:text-[52px] dark:text-[#F0EDE7]"
+                  >
                     {project?.title || "Untitled Project"}
-                  </h1>
+                  </TextEffect>
                   {project?.description && (
                     <p className="max-w-2xl text-[18px] leading-relaxed font-[450] text-[#7A736C] dark:text-[#B5AFA5]">
                       {project.description}

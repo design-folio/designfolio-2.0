@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 import { Plus, Trash2, Loader2, Upload } from "lucide-react";
 import { uploadSectionImage } from "@/components/project/uploadSectionImage";
+import { normalizeEditableEmpty, handlePlainTextPaste } from "@/components/project/editableUtils";
 
 function ImageUploadSlot({ url, onUpload }) {
   const inputRef = useRef(null);
@@ -74,6 +75,8 @@ function CaptionEditor({ value, onChange }) {
       suppressContentEditableWarning
       data-placeholder="Add a caption…"
       className="cursor-text text-center text-[13px] leading-snug text-[#9E9893] outline-none dark:text-[#6A6460]"
+      onInput={(e) => normalizeEditableEmpty(e.currentTarget)}
+      onPaste={handlePlainTextPaste}
       onBlur={(e) => onChange(e.currentTarget.textContent ?? "")}
       onKeyDown={(e) => {
         if (e.key === "Enter") {

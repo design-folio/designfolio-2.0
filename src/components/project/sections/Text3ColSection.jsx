@@ -27,14 +27,8 @@ export default function Text3ColSection({ section, onChange, mode }) {
                   value={col.heading}
                   onChange={(v) => updateCol(i, { heading: v })}
                   placeholder="Heading…"
-                  tag="span"
+                  tag="div"
                   className="text-lg font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      e.currentTarget.blur();
-                    }
-                  }}
                 />
                 <EditableText
                   value={col.body}
@@ -47,7 +41,7 @@ export default function Text3ColSection({ section, onChange, mode }) {
             ) : (
               <>
                 {col.heading && (
-                  <h4 className="text-lg font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
+                  <h4 className="text-lg font-semibold whitespace-pre-wrap text-[#1A1A1A] dark:text-[#F0EDE7]">
                     {col.heading}
                   </h4>
                 )}

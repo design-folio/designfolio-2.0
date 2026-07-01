@@ -14,17 +14,11 @@ export default function TextSplitSection({ section, onChange, mode }) {
               value={heading}
               onChange={(v) => onChange({ ...content, heading: v })}
               placeholder="Heading…"
-              tag="span"
-              className="block text-2xl font-bold text-[#1A1A1A] md:text-3xl dark:text-[#F0EDE7]"
-              onKeyDown={(e) => {
-                if (e.key === "Enter") {
-                  e.preventDefault();
-                  e.currentTarget.blur();
-                }
-              }}
+              tag="div"
+              className="text-2xl font-bold text-[#1A1A1A] md:text-3xl dark:text-[#F0EDE7]"
             />
           ) : (
-            <h3 className="text-2xl font-bold text-[#1A1A1A] md:text-3xl dark:text-[#F0EDE7]">
+            <h3 className="text-2xl font-bold whitespace-pre-wrap text-[#1A1A1A] md:text-3xl dark:text-[#F0EDE7]">
               {heading}
             </h3>
           )}

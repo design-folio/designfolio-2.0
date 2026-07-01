@@ -8,6 +8,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 import { _updateProject } from "@/network/post-request";
 import ProjectMetaGrid from "./ProjectMetaGrid";
 import { TextEffect } from "@/components/ui/text-effect";
+import { normalizeEditableEmpty, handlePlainTextPaste } from "./editableUtils";
 
 // ─── Inline-editable field ────────────────────────────────────────────────────
 function EditableField({ value, onChange, tag: Tag = "span", placeholder, className, readOnly }) {
@@ -27,6 +28,8 @@ function EditableField({ value, onChange, tag: Tag = "span", placeholder, classN
       contentEditable
       suppressContentEditableWarning
       data-placeholder={placeholder}
+      onInput={(e) => normalizeEditableEmpty(e.currentTarget)}
+      onPaste={handlePlainTextPaste}
       onBlur={(e) => onChange?.(e.currentTarget.textContent ?? "")}
       onKeyDown={(e) => {
         if (e.key === "Enter" && Tag !== "div" && Tag !== "p") {
@@ -496,7 +499,7 @@ export default function ProjectHero({
                       onChange={(v) => onChange?.({ title: v })}
                       tag="h1"
                       placeholder="Project title…"
-                      className="mb-8 text-[36px] leading-[1.05] font-bold tracking-[-0.02em] text-white md:text-[52px] [&:focus]:bg-white/10 [&:focus]:ring-1 [&:focus]:ring-white/20"
+                      className="mb-8 text-[36px] leading-[1.05] font-semibold tracking-[-0.02em] text-white md:text-[52px] [&:focus]:bg-white/10 [&:focus]:ring-1 [&:focus]:ring-white/20"
                     />
                   ) : (
                     <TextEffect
@@ -577,7 +580,7 @@ export default function ProjectHero({
                       onChange={(v) => onChange?.({ title: v })}
                       tag="h1"
                       placeholder="Project title…"
-                      className="mb-5 text-[38px] leading-[1.05] font-bold tracking-[-0.02em] text-[#1A1A1A] focus:bg-black/[0.04] focus:ring-1 focus:ring-black/10 md:text-[52px] dark:text-[#F0EDE7] dark:focus:bg-white/[0.06] dark:focus:ring-white/10"
+                      className="mb-5 text-[38px] leading-[1.05] font-semibold tracking-[-0.02em] text-[#1A1A1A] focus:bg-black/[0.04] focus:ring-1 focus:ring-black/10 md:text-[52px] dark:text-[#F0EDE7] dark:focus:bg-white/[0.06] dark:focus:ring-white/10"
                     />
                   ) : (
                     <TextEffect

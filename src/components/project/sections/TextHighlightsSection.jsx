@@ -50,14 +50,8 @@ export default function TextHighlightsSection({ section, onChange, mode }) {
                   value={item.title}
                   onChange={(v) => updateItem(i, { title: v })}
                   placeholder="Title…"
-                  tag="span"
-                  className="block text-base font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      e.currentTarget.blur();
-                    }
-                  }}
+                  tag="div"
+                  className="text-base font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]"
                 />
                 <EditableText
                   value={item.detail}
@@ -70,7 +64,7 @@ export default function TextHighlightsSection({ section, onChange, mode }) {
             ) : (
               <>
                 {item.title && (
-                  <p className="text-base font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
+                  <p className="text-base font-semibold whitespace-pre-wrap text-[#1A1A1A] dark:text-[#F0EDE7]">
                     {item.title}
                   </p>
                 )}

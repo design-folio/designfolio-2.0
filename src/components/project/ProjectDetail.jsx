@@ -21,23 +21,20 @@ const BlockRenderer = dynamic(() => import("@/components/blockRenderer"), { ssr:
 // ─── Contact button with animated icon ───────────────────────────────────────
 function ContactButton({ label, icon: Icon, iconRotate = 0, onClick }) {
   return (
-    <motion.div whileHover="hover" initial="rest" className="flex-1">
+    <motion.div whileHover="hover" initial="rest" className="shrink-0 basis-[calc(50%-6px)]">
       <Button
-        variant="outline"
+        variant="ghost"
         size="sm"
         onClick={onClick}
-        className="group flex h-auto w-full items-center justify-between rounded-xl border-0 bg-white px-4 py-3 shadow-sm transition-colors hover:cursor-pointer hover:bg-gray-50 dark:bg-[#2A2520] dark:hover:bg-[#35302A]"
+        className="group bg-muted hover:bg-accent flex h-auto w-full items-center justify-between rounded-xl px-4 py-3 hover:cursor-pointer"
       >
-        <span className="text-sm font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">{label}</span>
+        <span className="text-foreground text-sm font-medium">{label}</span>
         <motion.div
           className="shrink-0"
           variants={{ rest: { scale: 1, rotate: 0 }, hover: { scale: 1.3, rotate: iconRotate } }}
           transition={{ type: "spring", stiffness: 400, damping: 10 }}
         >
-          <Icon
-            size={14}
-            className="text-[#7A736C] group-hover:text-[#1A1A1A] dark:text-[#9E9893] dark:group-hover:text-[#F0EDE7]"
-          />
+          <Icon size={14} className="text-muted-foreground group-hover:text-foreground" />
         </motion.div>
       </Button>
     </motion.div>
@@ -74,7 +71,7 @@ function ProjectFooter({ owner }) {
           Got a project in mind or just curious? Let&apos;s talk.
         </p>
         {(contactEmail || phone) && (
-          <div className="mb-4 grid w-full max-w-sm grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className="mb-4 flex w-full max-w-sm flex-wrap justify-center gap-3">
             {contactEmail && (
               <ContactButton
                 label={copiedField === "email" ? "Copied!" : "Copy mail"}

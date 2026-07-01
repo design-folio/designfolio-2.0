@@ -93,14 +93,8 @@ export default function ImageTextSection({ section, onChange, mode }) {
             value={heading}
             onChange={(v) => onChange({ ...content, heading: v })}
             placeholder="Heading…"
-            tag="span"
+            tag="div"
             className="text-2xl font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                e.currentTarget.blur();
-              }
-            }}
           />
           <EditableText
             value={body}
@@ -113,7 +107,9 @@ export default function ImageTextSection({ section, onChange, mode }) {
       ) : (
         <>
           {heading && (
-            <h3 className="text-2xl font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">{heading}</h3>
+            <h3 className="text-2xl font-semibold whitespace-pre-wrap text-[#1A1A1A] dark:text-[#F0EDE7]">
+              {heading}
+            </h3>
           )}
           {body && (
             <p className="text-base leading-relaxed text-[#7A736C] dark:text-[#9E9893]">{body}</p>

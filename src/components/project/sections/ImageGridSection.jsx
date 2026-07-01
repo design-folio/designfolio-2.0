@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState } from "react";
 import { Upload, Plus, Trash2, Loader2 } from "lucide-react";
 import { uploadSectionImage } from "@/components/project/uploadSectionImage";
+import { normalizeEditableEmpty, handlePlainTextPaste } from "@/components/project/editableUtils";
 
 function ImageSlot({ url, caption, onUpload, onCaptionChange, onDelete, editable }) {
   const inputRef = useRef(null);
@@ -91,6 +92,8 @@ function ImageSlot({ url, caption, onUpload, onCaptionChange, onDelete, editable
           suppressContentEditableWarning
           data-placeholder="Caption…"
           className="cursor-text text-sm text-[#7A736C] outline-none dark:text-[#9E9893]"
+          onInput={(e) => normalizeEditableEmpty(e.currentTarget)}
+          onPaste={handlePlainTextPaste}
           onBlur={(e) => onCaptionChange(e.currentTarget.textContent ?? "")}
           onKeyDown={(e) => {
             if (e.key === "Enter") {

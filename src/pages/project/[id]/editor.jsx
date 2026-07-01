@@ -245,7 +245,12 @@ export default function Index() {
 
   // Non-MacOS: renders inside FloatingPageContainer (the builder's rounded card)
   if (!isMacOS) {
-    return <div className="min-h-full bg-white dark:bg-[#1A1A1A]">{editorContent}</div>;
+    return (
+      <SidebarProvider {...sidebarProviderProps}>
+        <div className="min-h-full min-w-0 flex-1 bg-white dark:bg-[#1A1A1A]">{editorContent}</div>
+        <AppSidebar />
+      </SidebarProvider>
+    );
   }
 
   // MacOS template: keeps sidebar, wallpaper, BuilderShell for modals

@@ -996,8 +996,12 @@ body.cursor-pill-active * {
     @apply hidden;
   }
 
-  /* Placeholder styling for contentEditable div */
-  [contenteditable][data-placeholder]:empty::before {
+  /* Placeholder styling for contentEditable div.
+     :empty covers the initial mount state; [data-empty] is toggled in JS from
+     real text content (see normalizeEditableEmpty) so the placeholder never
+     lingers once a field mixes text with <br> line breaks. */
+  [contenteditable][data-placeholder]:empty::before,
+  [contenteditable][data-placeholder][data-empty]::before {
     content: attr(data-placeholder);
     color: hsl(var(--muted-foreground));
     pointer-events: none;

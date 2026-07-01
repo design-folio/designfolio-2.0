@@ -13,14 +13,8 @@ function AccordionItem({ item, index, editable, onUpdate, onDelete }) {
             value={item.question}
             onChange={(v) => onUpdate({ ...item, question: v })}
             placeholder="Question…"
-            tag="span"
+            tag="div"
             className="flex-1 text-base font-medium text-[#1A1A1A] dark:text-[#F0EDE7]"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                e.currentTarget.blur();
-              }
-            }}
           />
           <button
             onClick={onDelete}
@@ -89,17 +83,11 @@ export default function TextAccordionSection({ section, onChange, mode }) {
             value={heading}
             onChange={(v) => onChange({ ...content, heading: v })}
             placeholder="Section heading…"
-            tag="span"
-            className="mb-6 block text-xl font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                e.currentTarget.blur();
-              }
-            }}
+            tag="div"
+            className="mb-6 text-xl font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]"
           />
         ) : heading ? (
-          <h3 className="mb-6 text-xl font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
+          <h3 className="mb-6 text-xl font-semibold whitespace-pre-wrap text-[#1A1A1A] dark:text-[#F0EDE7]">
             {heading}
           </h3>
         ) : null}

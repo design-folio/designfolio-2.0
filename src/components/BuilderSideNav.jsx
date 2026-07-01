@@ -14,7 +14,8 @@ const NAV_ITEMS = [
     icon: LayoutGrid,
     label: "Portfolio",
     href: "/builder",
-    isActive: (pathname, query) => pathname === "/builder" && !query?.view,
+    isActive: (pathname, query) =>
+      (pathname === "/builder" && !query?.view) || pathname === "/project/[id]/editor",
   },
   {
     icon: BriefcaseBusiness,

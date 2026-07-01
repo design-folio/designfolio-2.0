@@ -1,4 +1,5 @@
 import { useRef, useEffect } from "react";
+import { normalizeEditableEmpty, handlePlainTextPaste } from "./editableUtils";
 
 const FIELDS = [
   { key: "client", label: "Client" },
@@ -21,6 +22,8 @@ function EditableCell({ value, onCommit, placeholder }) {
       contentEditable
       suppressContentEditableWarning
       data-placeholder={placeholder}
+      onInput={(e) => normalizeEditableEmpty(e.currentTarget)}
+      onPaste={handlePlainTextPaste}
       onBlur={(e) => onCommit(e.currentTarget.textContent ?? "")}
       onKeyDown={(e) => {
         if (e.key === "Enter") {
@@ -28,7 +31,7 @@ function EditableCell({ value, onCommit, placeholder }) {
           e.currentTarget.blur();
         }
       }}
-      className="block cursor-text rounded-sm text-[15px] font-semibold text-[#1A1A1A] transition-colors outline-none focus:bg-black/[0.04] focus:ring-1 focus:ring-black/10 dark:text-[#F0EDE7] dark:focus:bg-white/[0.06] dark:focus:ring-white/10"
+      className="block cursor-text rounded-sm text-[15px] font-medium text-[#1A1A1A] transition-colors outline-none focus:bg-black/[0.04] focus:ring-1 focus:ring-black/10 dark:text-[#F0EDE7] dark:focus:bg-white/[0.06] dark:focus:ring-white/10"
     />
   );
 }

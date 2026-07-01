@@ -186,7 +186,7 @@ export default function ProjectDetail({ project, mode, onBack, onWorkClick, resu
     role: project?.role ?? "",
     platform: project?.platform ?? "",
     heroView: project?.heroView ?? "editorial",
-    thumbnailWidth: project?.thumbnailWidth ?? "full",
+    thumbnailWidth: project?.thumbnailWidth ?? "contained",
     thumbnailHeight: project?.thumbnailHeight ?? null,
   });
 

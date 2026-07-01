@@ -258,13 +258,15 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
       router.pathname === "/jobs" ||
       router.pathname.startsWith("/jobs/") ||
       router.pathname === "/analytics" ||
-      router.pathname === "/settings");
+      router.pathname === "/settings" ||
+      router.pathname === "/project/[id]/editor");
 
   const showBuilderTopNav =
     !!dfToken &&
     (router.pathname === "/builder" ||
       router.pathname === "/settings" ||
-      router.pathname === "/analytics") &&
+      router.pathname === "/analytics" ||
+      router.pathname === "/project/[id]/editor") &&
     router.query?.view !== "ai-tools";
 
   // Stamp data-page="landing" on <html> for landing/auth/legal pages

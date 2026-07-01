@@ -243,9 +243,9 @@ export default function Index() {
     return <div className="min-h-full overflow-auto bg-white">{editorContent}</div>;
   }
 
-  // Non-MacOS: clean fullscreen editor — no sidebar, no wallpaper, no builder shell
+  // Non-MacOS: renders inside FloatingPageContainer (the builder's rounded card)
   if (!isMacOS) {
-    return <div className="min-h-screen bg-white dark:bg-[#1A1A1A]">{editorContent}</div>;
+    return <div className="min-h-full bg-white dark:bg-[#1A1A1A]">{editorContent}</div>;
   }
 
   // MacOS template: keeps sidebar, wallpaper, BuilderShell for modals

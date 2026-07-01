@@ -241,7 +241,7 @@ function NavRow({
         )}
       >
         <ChevronLeft size={16} className="transition-transform group-hover:-translate-x-1" />
-        {mode === "editor" ? "Back to Builder" : "Go Back"}
+        {"Go Back"}
       </button>
 
       {/* Right cluster */}
@@ -474,6 +474,16 @@ export default function ProjectHero({
             <div className="pointer-events-none absolute inset-0 bg-black/12" />
             <div className="pointer-events-none absolute inset-x-0 top-0 h-[28%] bg-gradient-to-b from-black/50 to-transparent" />
             <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-black/75 via-black/30 to-transparent" />
+
+            {/* Grain overlay — subtle film texture over the cover */}
+            <div
+              className="pointer-events-none absolute inset-0 opacity-[0.15] mix-blend-overlay"
+              style={{
+                backgroundImage: "url('/assets/backgrounds/grainsnow.avif')",
+                backgroundSize: "200px 200px",
+                backgroundRepeat: "repeat",
+              }}
+            />
 
             {/* Upload overlay (editor only) */}
             {hoverOverlay}
@@ -830,7 +840,7 @@ export default function ProjectHero({
 
           {/* Metadata grid below image */}
           <div className="mx-auto mt-10 w-full max-w-[880px] px-6 md:px-10">
-            <div className="border-t border-black/[0.07] dark:border-white/[0.07]">
+            <div className="border-b border-black/[0.07] dark:border-white/[0.07]">
               <ProjectMetaGrid
                 project={project}
                 onChange={(patch) => onChange?.(patch)}

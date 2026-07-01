@@ -2,23 +2,8 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 import {
-  DndContext,
-  closestCenter,
-  PointerSensor,
-  KeyboardSensor,
-  useSensor,
-  useSensors,
-} from "@dnd-kit/core";
-import {
-  SortableContext,
-  sortableKeyboardCoordinates,
-  verticalListSortingStrategy,
-  useSortable,
-  arrayMove,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import {
-  GripVertical,
+  ChevronUp,
+  ChevronDown,
   Plus,
   Trash2,
   AlignLeft,
@@ -27,6 +12,8 @@ import {
   Code2,
   X,
 } from "lucide-react";
+
+import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 
 import FreeformSection from "./sections/FreeformSection";
 import ImageGridSection from "./sections/ImageGridSection";
@@ -644,17 +631,9 @@ function AddSectionModal({ onAdd, onClose }) {
               onAdd(key);
               onClose();
             }}
-            whileHover={{
-              scale: 1.05,
-              rotate: 1.5,
-              transition: { type: "spring", stiffness: 400, damping: 18 },
-            }}
-            whileTap={{
-              scale: 0.97,
-              rotate: 0,
-              transition: { type: "spring", stiffness: 400, damping: 20 },
-            }}
-            className="group flex cursor-pointer flex-col overflow-hidden rounded-xl border border-black/[0.07] bg-[#F7F5F0] text-left hover:border-black/20 hover:shadow-lg dark:border-white/[0.07] dark:bg-[#221F18] dark:hover:border-white/15"
+            whileTap={{ scale: 0.98 }}
+            transition={{ duration: 0.1, ease: [0.23, 1, 0.32, 1] }}
+            className="group flex cursor-pointer flex-col overflow-hidden rounded-xl border border-black/[0.07] bg-[#F7F5F0] text-left transition-colors hover:border-black/20 hover:shadow-md dark:border-white/[0.07] dark:bg-[#221F18] dark:hover:border-white/15"
           >
             <div className="flex aspect-[16/9] w-full items-center justify-center p-5 text-[#1A1A1A] dark:text-[#F0EDE7]">
               <Preview />
@@ -696,7 +675,7 @@ function AddSectionModal({ onAdd, onClose }) {
         onMouseDown={(e) => e.stopPropagation()}
       >
         {/* Left sidebar */}
-        <div className="flex w-52 shrink-0 flex-col gap-1 border-r border-black/[0.08] bg-[#F7F5F0] px-3 py-5 dark:border-white/[0.08] dark:bg-[#1C1A13]">
+        <div className="flex w-52 shrink-0 flex-col gap-1 border-r border-black/[0.08] bg-[#EDE9E0] px-3 py-5 dark:border-white/[0.08] dark:bg-[#1C1A13]">
           <p className="mb-2 px-2 text-[10px] font-semibold tracking-[0.15em] text-[#B5AFA5] uppercase dark:text-[#5A5450]">
             Add section
           </p>
@@ -705,17 +684,23 @@ function AddSectionModal({ onAdd, onClose }) {
               onAdd("freeform");
               onClose();
             }}
-            className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-[13px] font-medium text-[#7A736C] transition-colors hover:bg-white/60 hover:text-[#1A1A1A] dark:text-[#9E9893] dark:hover:bg-white/5 dark:hover:text-[#F0EDE7]"
+            className="flex w-full cursor-pointer items-center justify-start gap-2 rounded-xl border border-black/[0.14] bg-white/60 px-3 py-2 text-[13px] font-medium text-[#1A1A1A] transition-[background-color,border-color,transform] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] hover:border-black/25 hover:bg-white active:scale-[0.98] dark:border-white/[0.14] dark:bg-white/[0.04] dark:text-[#F0EDE7] dark:hover:border-white/25 dark:hover:bg-white/[0.09]"
           >
             <AlignLeft size={14} strokeWidth={2} />
             Freeform
           </button>
-          <div className="mx-1 my-1.5 h-px bg-black/[0.06] dark:bg-white/[0.06]" />
+          <div className="my-2 flex items-center gap-2.5 px-1">
+            <div className="h-px flex-1 bg-black/[0.09] dark:bg-white/[0.08]" />
+            <span className="text-[10px] font-semibold tracking-[0.12em] text-[#B5AFA5] uppercase dark:text-[#5A5450]">
+              or
+            </span>
+            <div className="h-px flex-1 bg-black/[0.09] dark:bg-white/[0.08]" />
+          </div>
           {MODAL_CATEGORIES.map(({ key, label, icon: Icon }) => (
             <button
               key={key}
               onClick={() => setActiveCategory(key)}
-              className={`flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-[13px] font-medium transition-colors ${
+              className={`flex w-full cursor-pointer items-center gap-2.5 rounded-xl px-3 py-2 text-left text-[13px] font-medium transition-colors ${
                 activeCategory === key
                   ? "bg-white text-[#1A1A1A] dark:bg-[#2A2720] dark:text-[#F0EDE7]"
                   : "text-[#7A736C] hover:bg-white/60 hover:text-[#1A1A1A] dark:text-[#9E9893] dark:hover:bg-white/5 dark:hover:text-[#F0EDE7]"
@@ -1040,24 +1025,23 @@ function renderSectionComponent(section, mode, onContentChange) {
   }
 }
 
-// ─── Sortable section wrapper ─────────────────────────────────────────────────
+// ─── Section wrapper with reorder + delete controls ───────────────────────────
 
-function SortableSection({ section, mode, onContentChange, onDelete }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
-    id: section._id,
-  });
+const CONTROL_BTN =
+  "flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border border-black/[0.08] bg-white/80 text-[#9E9893] shadow-sm transition-colors hover:bg-black/[0.03] hover:text-[#1A1A1A] dark:border-white/[0.08] dark:bg-[#2A2520]/80 dark:hover:bg-white/5 dark:hover:text-[#F0EDE7]";
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.4 : 1,
-    zIndex: isDragging ? 50 : "auto",
-  };
-
+function SectionRow({
+  section,
+  mode,
+  onContentChange,
+  onDelete,
+  onMoveUp,
+  onMoveDown,
+  canMoveUp,
+  canMoveDown,
+}) {
   return (
     <motion.div
-      ref={setNodeRef}
-      style={style}
       layout
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
@@ -1067,24 +1051,51 @@ function SortableSection({ section, mode, onContentChange, onDelete }) {
     >
       {/* Left-side controls — visible on group-hover, positioned in left gutter */}
       {mode === "editor" && (
-        <div className="absolute top-1/2 -left-10 z-10 flex -translate-y-1/2 flex-col gap-1 opacity-0 transition-opacity group-hover/section:opacity-100">
-          <button
-            {...attributes}
-            {...listeners}
-            className="flex h-9 w-9 cursor-grab items-center justify-center rounded-xl border border-black/[0.08] bg-white/80 text-[#9E9893] shadow-sm transition-colors hover:text-[#1A1A1A] active:cursor-grabbing dark:border-white/[0.08] dark:bg-[#2A2520]/80 dark:hover:text-[#F0EDE7]"
-            title="Drag to reorder"
-            aria-label="Drag to reorder section"
-          >
-            <GripVertical size={17} />
-          </button>
-          <button
-            onClick={onDelete}
-            className="flex h-9 w-9 items-center justify-center rounded-xl border border-black/[0.08] bg-white/80 text-[#9E9893] shadow-sm transition-colors hover:bg-red-50 hover:text-red-500 dark:border-white/[0.08] dark:bg-[#2A2520]/80 dark:hover:bg-red-950/30"
-            title="Delete section"
-            aria-label="Delete section"
-          >
-            <Trash2 size={16} />
-          </button>
+        <div className="absolute top-1/2 -left-10 z-10 flex -translate-y-1/2 flex-col items-center gap-1 opacity-0 transition-opacity group-hover/section:opacity-100">
+          {canMoveUp && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button onClick={onMoveUp} className={CONTROL_BTN} aria-label="Move section up">
+                  <ChevronUp size={17} />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="left" className="px-2 py-1 text-[11px]">
+                Move up
+              </TooltipContent>
+            </Tooltip>
+          )}
+
+          {canMoveDown && (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button onClick={onMoveDown} className={CONTROL_BTN} aria-label="Move section down">
+                  <ChevronDown size={17} />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="left" className="px-2 py-1 text-[11px]">
+                Move down
+              </TooltipContent>
+            </Tooltip>
+          )}
+
+          {(canMoveUp || canMoveDown) && (
+            <div className="my-0.5 h-px w-4 bg-black/[0.08] dark:bg-white/[0.08]" />
+          )}
+
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={onDelete}
+                className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border border-black/[0.08] bg-white/80 text-[#9E9893] shadow-sm transition-colors hover:bg-red-50 hover:text-red-500 dark:border-white/[0.08] dark:bg-[#2A2520]/80 dark:hover:bg-red-950/30 dark:hover:text-red-400"
+                aria-label="Delete section"
+              >
+                <Trash2 size={16} />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="left" className="px-2 py-1 text-[11px]">
+              Delete
+            </TooltipContent>
+          </Tooltip>
         </div>
       )}
 
@@ -1096,11 +1107,6 @@ function SortableSection({ section, mode, onContentChange, onDelete }) {
 // ─── Main SectionManager ──────────────────────────────────────────────────────
 
 export default function SectionManager({ sections = [], onChange, mode }) {
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
-  );
-
   const handleContentChange = (id, newContent) => {
     onChange(sections.map((s) => (s._id === id ? { ...s, content: newContent } : s)));
   };
@@ -1109,12 +1115,12 @@ export default function SectionManager({ sections = [], onChange, mode }) {
     onChange(sections.filter((s) => s._id !== id));
   };
 
-  const handleDragEnd = (event) => {
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
-    const oldIndex = sections.findIndex((s) => s._id === active.id);
-    const newIndex = sections.findIndex((s) => s._id === over.id);
-    onChange(arrayMove(sections, oldIndex, newIndex));
+  const handleMove = (index, direction) => {
+    const target = index + direction;
+    if (target < 0 || target >= sections.length) return;
+    const next = [...sections];
+    [next[index], next[target]] = [next[target], next[index]];
+    onChange(next);
   };
 
   const addSection = (typeKey, afterIndex) => {
@@ -1140,36 +1146,38 @@ export default function SectionManager({ sections = [], onChange, mode }) {
   }
 
   return (
-    <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-      <SortableContext items={sections.map((s) => s._id)} strategy={verticalListSortingStrategy}>
-        <AnimatePresence mode="wait">
-          {sections.length === 0 ? (
-            <EmptyState key="empty" onAdd={addSection} />
-          ) : (
-            <motion.div
-              key="sections"
-              className="relative"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.25 }}
-            >
-              <AnimatePresence>
-                {sections.map((section, index) => (
-                  <div key={section._id}>
-                    <SortableSection
-                      section={section}
-                      mode={mode}
-                      onContentChange={handleContentChange}
-                      onDelete={() => handleDelete(section._id)}
-                    />
-                    <AddSectionButton onAdd={(typeKey) => addSection(typeKey, index)} />
-                  </div>
-                ))}
-              </AnimatePresence>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </SortableContext>
-    </DndContext>
+    <TooltipProvider delayDuration={200}>
+      <AnimatePresence mode="wait">
+        {sections.length === 0 ? (
+          <EmptyState key="empty" onAdd={addSection} />
+        ) : (
+          <motion.div
+            key="sections"
+            className="relative"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.25 }}
+          >
+            <AnimatePresence>
+              {sections.map((section, index) => (
+                <div key={section._id}>
+                  <SectionRow
+                    section={section}
+                    mode={mode}
+                    onContentChange={handleContentChange}
+                    onDelete={() => handleDelete(section._id)}
+                    onMoveUp={() => handleMove(index, -1)}
+                    onMoveDown={() => handleMove(index, 1)}
+                    canMoveUp={index > 0}
+                    canMoveDown={index < sections.length - 1}
+                  />
+                  <AddSectionButton onAdd={(typeKey) => addSection(typeKey, index)} />
+                </div>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </TooltipProvider>
   );
 }

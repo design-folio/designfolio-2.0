@@ -104,7 +104,8 @@ export default function FreeformSection({ section, onChange, mode }) {
     content: section.content?.tiptapContent || "",
     editorProps: {
       attributes: {
-        class: "prose prose-sm sm:prose lg:prose-lg focus:outline-none max-w-none",
+        class:
+          "prose prose-sm sm:prose lg:prose-lg focus:outline-none max-w-none [overflow-wrap:anywhere]",
       },
     },
     onUpdate: ({ editor }) => {

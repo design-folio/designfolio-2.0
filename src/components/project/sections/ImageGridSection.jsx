@@ -91,7 +91,7 @@ function ImageSlot({ url, caption, onUpload, onCaptionChange, onDelete, editable
           contentEditable
           suppressContentEditableWarning
           data-placeholder="Caption…"
-          className="cursor-text text-sm text-[#7A736C] outline-none dark:text-[#9E9893]"
+          className="block cursor-text text-sm [overflow-wrap:anywhere] text-[#7A736C] outline-none dark:text-[#9E9893]"
           onInput={(e) => normalizeEditableEmpty(e.currentTarget)}
           onPaste={handlePlainTextPaste}
           onBlur={(e) => onCaptionChange(e.currentTarget.textContent ?? "")}
@@ -103,7 +103,9 @@ function ImageSlot({ url, caption, onUpload, onCaptionChange, onDelete, editable
           }}
         />
       ) : caption ? (
-        <p className="text-sm text-[#7A736C] dark:text-[#9E9893]">{caption}</p>
+        <p className="text-sm [overflow-wrap:anywhere] text-[#7A736C] dark:text-[#9E9893]">
+          {caption}
+        </p>
       ) : null}
     </div>
   );

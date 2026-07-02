@@ -8,7 +8,7 @@ export default function TextSplitSection({ section, onChange, mode }) {
   return (
     <div className="mx-auto max-w-[880px] px-6 py-8 md:px-10">
       <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
-        <div>
+        <div className="min-w-0">
           {editable ? (
             <EditableText
               value={heading}
@@ -18,12 +18,12 @@ export default function TextSplitSection({ section, onChange, mode }) {
               className="text-2xl font-bold text-[#1A1A1A] md:text-3xl dark:text-[#F0EDE7]"
             />
           ) : (
-            <h3 className="text-2xl font-bold whitespace-pre-wrap text-[#1A1A1A] md:text-3xl dark:text-[#F0EDE7]">
+            <h3 className="text-2xl font-bold [overflow-wrap:anywhere] whitespace-pre-wrap text-[#1A1A1A] md:text-3xl dark:text-[#F0EDE7]">
               {heading}
             </h3>
           )}
         </div>
-        <div>
+        <div className="min-w-0">
           {editable ? (
             <EditableText
               value={body}
@@ -33,7 +33,9 @@ export default function TextSplitSection({ section, onChange, mode }) {
               className="text-base leading-relaxed text-[#7A736C] dark:text-[#9E9893]"
             />
           ) : (
-            <p className="text-base leading-relaxed text-[#7A736C] dark:text-[#9E9893]">{body}</p>
+            <p className="text-base leading-relaxed [overflow-wrap:anywhere] text-[#7A736C] dark:text-[#9E9893]">
+              {body}
+            </p>
           )}
         </div>
       </div>

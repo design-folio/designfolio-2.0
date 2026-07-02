@@ -42,7 +42,7 @@ export default function EditableText({
         onChange(text);
       }}
       onKeyDown={handleKeyDown}
-      className={`outline-none cursor-text${className ? ` ${className}` : ""}`}
+      className={`cursor-text outline-none [overflow-wrap:anywhere]${className ? ` ${className}` : ""}`}
     />
   );
 }

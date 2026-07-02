@@ -86,7 +86,7 @@ export default function ImageTextSection({ section, onChange, mode }) {
   const isTop = layout === "image-top";
 
   const textBlock = (
-    <div className="flex flex-col justify-center gap-3">
+    <div className="flex min-w-0 flex-col justify-center gap-3">
       {editable ? (
         <>
           <EditableText
@@ -107,12 +107,14 @@ export default function ImageTextSection({ section, onChange, mode }) {
       ) : (
         <>
           {heading && (
-            <h3 className="text-2xl font-semibold whitespace-pre-wrap text-[#1A1A1A] dark:text-[#F0EDE7]">
+            <h3 className="text-2xl font-semibold [overflow-wrap:anywhere] whitespace-pre-wrap text-[#1A1A1A] dark:text-[#F0EDE7]">
               {heading}
             </h3>
           )}
           {body && (
-            <p className="text-base leading-relaxed text-[#7A736C] dark:text-[#9E9893]">{body}</p>
+            <p className="text-base leading-relaxed [overflow-wrap:anywhere] text-[#7A736C] dark:text-[#9E9893]">
+              {body}
+            </p>
           )}
         </>
       )}
@@ -158,7 +160,7 @@ export default function ImageTextSection({ section, onChange, mode }) {
           className={`flex flex-col items-start gap-10 md:flex-row ${layout === "image-right" ? "md:flex-row-reverse" : ""}`}
         >
           <div className="w-full shrink-0 md:w-1/2">{imageEl}</div>
-          <div className="w-full md:w-1/2">{textBlock}</div>
+          <div className="w-full min-w-0 md:w-1/2">{textBlock}</div>
         </div>
       )}
     </div>

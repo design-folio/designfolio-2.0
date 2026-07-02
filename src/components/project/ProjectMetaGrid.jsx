@@ -54,7 +54,7 @@ function EditableCell({ value, onCommit, placeholder }) {
           e.currentTarget.blur();
         }
       }}
-      className="block cursor-text rounded-sm text-[15px] font-medium text-[#1A1A1A] transition-colors outline-none focus:bg-black/[0.04] focus:ring-1 focus:ring-black/10 dark:text-[#F0EDE7] dark:focus:bg-white/[0.06] dark:focus:ring-white/10"
+      className="block cursor-text rounded-sm text-[15px] font-medium [overflow-wrap:anywhere] text-[#1A1A1A] transition-colors outline-none focus:bg-black/[0.04] focus:ring-1 focus:ring-black/10 dark:text-[#F0EDE7] dark:focus:bg-white/[0.06] dark:focus:ring-white/10"
     />
   );
 }
@@ -73,7 +73,7 @@ export default function ProjectMetaGrid({ project, onChange, mode }) {
   return (
     <div className={`grid ${colsClass} gap-6 py-6`}>
       {visibleFields.map(({ key, label }) => (
-        <div key={key} className="flex flex-col gap-1.5">
+        <div key={key} className="flex min-w-0 flex-col gap-1.5">
           <span className="text-[11px] font-medium tracking-widest text-[#7A736C] uppercase dark:text-[#9E9893]">
             {label}
           </span>
@@ -84,7 +84,7 @@ export default function ProjectMetaGrid({ project, onChange, mode }) {
               placeholder={`Add ${label.toLowerCase()}…`}
             />
           ) : (
-            <span className="text-[15px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
+            <span className="text-[15px] font-semibold [overflow-wrap:anywhere] text-[#1A1A1A] dark:text-[#F0EDE7]">
               {project?.[key]}
             </span>
           )}

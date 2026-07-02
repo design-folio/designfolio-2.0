@@ -20,7 +20,7 @@ export default function Text3ColSection({ section, onChange, mode }) {
     <div className="mx-auto max-w-[880px] px-6 py-8 md:px-10">
       <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
         {columns.map((col, i) => (
-          <div key={i} className="flex flex-col gap-2">
+          <div key={i} className="flex min-w-0 flex-col gap-2">
             {editable ? (
               <>
                 <EditableText
@@ -41,12 +41,12 @@ export default function Text3ColSection({ section, onChange, mode }) {
             ) : (
               <>
                 {col.heading && (
-                  <h4 className="text-lg font-semibold whitespace-pre-wrap text-[#1A1A1A] dark:text-[#F0EDE7]">
+                  <h4 className="text-lg font-semibold [overflow-wrap:anywhere] whitespace-pre-wrap text-[#1A1A1A] dark:text-[#F0EDE7]">
                     {col.heading}
                   </h4>
                 )}
                 {col.body && (
-                  <p className="text-sm leading-relaxed text-[#7A736C] dark:text-[#9E9893]">
+                  <p className="text-sm leading-relaxed [overflow-wrap:anywhere] text-[#7A736C] dark:text-[#9E9893]">
                     {col.body}
                   </p>
                 )}

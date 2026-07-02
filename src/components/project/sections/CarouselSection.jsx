@@ -74,7 +74,7 @@ function CaptionEditor({ value, onChange }) {
       contentEditable
       suppressContentEditableWarning
       data-placeholder="Add a caption…"
-      className="cursor-text text-center text-[13px] leading-snug text-[#9E9893] outline-none dark:text-[#6A6460]"
+      className="block cursor-text text-center text-[13px] leading-snug [overflow-wrap:anywhere] text-[#9E9893] outline-none dark:text-[#6A6460]"
       onInput={(e) => normalizeEditableEmpty(e.currentTarget)}
       onPaste={handlePlainTextPaste}
       onBlur={(e) => onChange(e.currentTarget.textContent ?? "")}
@@ -173,7 +173,7 @@ export default function CarouselSection({ section, onChange, mode }) {
                 onChange={(v) => updateItem(safeIndex, { caption: v })}
               />
             ) : current?.caption ? (
-              <p className="text-[13px] leading-snug text-[#9E9893] dark:text-[#6A6460]">
+              <p className="text-[13px] leading-snug [overflow-wrap:anywhere] text-[#9E9893] dark:text-[#6A6460]">
                 {current.caption}
               </p>
             ) : null}

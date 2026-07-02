@@ -14,7 +14,7 @@ function AccordionItem({ item, index, editable, onUpdate, onDelete }) {
             onChange={(v) => onUpdate({ ...item, question: v })}
             placeholder="Question…"
             tag="div"
-            className="flex-1 text-base font-medium text-[#1A1A1A] dark:text-[#F0EDE7]"
+            className="min-w-0 flex-1 text-base font-medium text-[#1A1A1A] dark:text-[#F0EDE7]"
           />
           <button
             onClick={onDelete}
@@ -40,7 +40,7 @@ function AccordionItem({ item, index, editable, onUpdate, onDelete }) {
         onClick={() => setOpen((v) => !v)}
         className="flex w-full items-center justify-between gap-3 py-4 text-left"
       >
-        <span className="text-base font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+        <span className="min-w-0 flex-1 text-base font-medium [overflow-wrap:anywhere] text-[#1A1A1A] dark:text-[#F0EDE7]">
           {item.question}
         </span>
         <ChevronRight
@@ -49,7 +49,7 @@ function AccordionItem({ item, index, editable, onUpdate, onDelete }) {
         />
       </button>
       {open && (
-        <p className="pb-4 text-sm leading-relaxed text-[#7A736C] dark:text-[#9E9893]">
+        <p className="pb-4 text-sm leading-relaxed [overflow-wrap:anywhere] text-[#7A736C] dark:text-[#9E9893]">
           {item.answer}
         </p>
       )}

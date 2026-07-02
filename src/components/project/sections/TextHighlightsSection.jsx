@@ -34,7 +34,7 @@ export default function TextHighlightsSection({ section, onChange, mode }) {
         {items.map((item, i) => (
           <div
             key={i}
-            className="group/card relative rounded-xl border border-black/[0.08] bg-black/[0.02] p-5 dark:border-white/[0.08] dark:bg-white/[0.02]"
+            className="group/card relative min-w-0 rounded-xl border border-black/[0.08] bg-black/[0.02] p-5 dark:border-white/[0.08] dark:bg-white/[0.02]"
           >
             {editable && (
               <button
@@ -64,12 +64,14 @@ export default function TextHighlightsSection({ section, onChange, mode }) {
             ) : (
               <>
                 {item.title && (
-                  <p className="text-base font-semibold whitespace-pre-wrap text-[#1A1A1A] dark:text-[#F0EDE7]">
+                  <p className="text-base font-semibold [overflow-wrap:anywhere] whitespace-pre-wrap text-[#1A1A1A] dark:text-[#F0EDE7]">
                     {item.title}
                   </p>
                 )}
                 {item.detail && (
-                  <p className="mt-1 text-sm text-[#7A736C] dark:text-[#9E9893]">{item.detail}</p>
+                  <p className="mt-1 text-sm [overflow-wrap:anywhere] text-[#7A736C] dark:text-[#9E9893]">
+                    {item.detail}
+                  </p>
                 )}
               </>
             )}

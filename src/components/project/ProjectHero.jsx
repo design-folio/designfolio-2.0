@@ -1,12 +1,12 @@
 import { useRef, useState, useCallback, useEffect } from "react";
-import { motion, AnimatePresence, useScroll, useTransform } from "motion/react";
+import { motion, AnimatePresence, LayoutGroup, useScroll, useTransform } from "motion/react";
 import { ChevronLeft, Upload, Lock, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { _updateProject } from "@/network/post-request";
-import ProjectMetaGrid from "./ProjectMetaGrid";
+import ProjectMetaGrid, { hasProjectMeta, metaColsClass } from "./ProjectMetaGrid";
 import { TextEffect } from "@/components/ui/text-effect";
 import { normalizeEditableEmpty, handlePlainTextPaste } from "./editableUtils";
 
@@ -45,77 +45,74 @@ function EditableField({ value, onChange, tag: Tag = "span", placeholder, classN
   );
 }
 
-// ─── View toggle SVGs ─────────────────────────────────────────────────────────
+// ─── View toggle SVG glyphs ───────────────────────────────────────────────────
+function ImmersiveGlyph({ active, dark }) {
+  const fill = dark ? "white" : "currentColor";
+  const op = active ? (dark ? 1 : 0.85) : dark ? 0.5 : 0.4;
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+      <rect x="1" y="1" width="12" height="12" rx="1.5" fill={fill} fillOpacity={op} />
+    </svg>
+  );
+}
+
+function EditorialGlyph({ active, dark }) {
+  const fill = dark ? "white" : "currentColor";
+  const op = active ? (dark ? 1 : 0.85) : dark ? 0.5 : 0.4;
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+      <rect x="1" y="1" width="12" height="5" rx="1" fill={fill} fillOpacity={op} />
+      <rect x="1" y="8" width="7" height="1.5" rx="0.75" fill={fill} fillOpacity="0.4" />
+      <rect x="1" y="11" width="5" height="1.5" rx="0.75" fill={fill} fillOpacity="0.4" />
+    </svg>
+  );
+}
+
+// ─── View toggle — sliding-pill segmented control (landing-page style) ─────────
 function ViewToggle({ heroView, setHeroView, dark }) {
-  const activeClass = dark ? "bg-white/20" : "bg-white dark:bg-[#2A2520] shadow-sm";
-  const inactiveClass = dark ? "hover:bg-white/10" : "hover:bg-black/5 dark:hover:bg-white/5";
+  const options = [
+    { key: "immersive", title: "Immersive view", Glyph: ImmersiveGlyph },
+    { key: "editorial", title: "Editorial view", Glyph: EditorialGlyph },
+  ];
+  // Scope the layout animation per instance so the immersive (dark) and
+  // editorial toggles never share a sliding pill during the hero transition.
+  const pillId = `hero-view-pill-${dark ? "dark" : "light"}`;
 
   return (
-    <div
-      className={cn(
-        "flex items-center gap-0.5 rounded-lg p-1",
-        dark ? "bg-white/10 backdrop-blur-sm" : "bg-black/5 dark:bg-white/5"
-      )}
-    >
-      <button
-        onClick={() => setHeroView("immersive")}
-        title="Immersive view"
+    <LayoutGroup id={pillId}>
+      <div
         className={cn(
-          "flex h-7 w-7 items-center justify-center rounded-md transition-all",
-          heroView === "immersive" ? activeClass : inactiveClass
+          "flex items-center gap-0.5 rounded-lg p-1",
+          dark ? "bg-white/10 backdrop-blur-sm" : "bg-black/5 dark:bg-white/5"
         )}
       >
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <rect
-            x="1"
-            y="1"
-            width="12"
-            height="12"
-            rx="1.5"
-            fill={dark ? "white" : "currentColor"}
-            fillOpacity={heroView === "immersive" ? (dark ? 1 : 0.85) : dark ? 0.5 : 0.4}
-          />
-        </svg>
-      </button>
-      <button
-        onClick={() => setHeroView("editorial")}
-        title="Editorial view"
-        className={cn(
-          "flex h-7 w-7 items-center justify-center rounded-md transition-all",
-          heroView === "editorial" ? activeClass : inactiveClass
-        )}
-      >
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-          <rect
-            x="1"
-            y="1"
-            width="12"
-            height="5"
-            rx="1"
-            fill={dark ? "white" : "currentColor"}
-            fillOpacity={heroView === "editorial" ? (dark ? 1 : 0.85) : dark ? 0.5 : 0.4}
-          />
-          <rect
-            x="1"
-            y="8"
-            width="7"
-            height="1.5"
-            rx="0.75"
-            fill={dark ? "white" : "currentColor"}
-            fillOpacity="0.4"
-          />
-          <rect
-            x="1"
-            y="11"
-            width="5"
-            height="1.5"
-            rx="0.75"
-            fill={dark ? "white" : "currentColor"}
-            fillOpacity="0.4"
-          />
-        </svg>
-      </button>
-    </div>
+        {options.map(({ key, title, Glyph }) => {
+          const isActive = heroView === key;
+          return (
+            <button
+              key={key}
+              onClick={() => setHeroView(key)}
+              title={title}
+              className="relative flex h-7 w-7 cursor-pointer items-center justify-center rounded-md transition-colors"
+            >
+              {isActive && (
+                <motion.span
+                  layoutId="active-pill"
+                  className={cn(
+                    "absolute inset-0 rounded-md",
+                    dark ? "bg-white/20" : "bg-white shadow-sm dark:bg-[#2A2520]"
+                  )}
+                  transition={{ type: "spring", stiffness: 500, damping: 38 }}
+                />
+              )}
+              <span className="relative z-10 flex items-center justify-center">
+                <Glyph active={isActive} dark={dark} />
+              </span>
+            </button>
+          );
+        })}
+      </div>
+    </LayoutGroup>
   );
 }
 
@@ -150,15 +147,16 @@ function LockPopover({ project, dark }) {
     <Popover>
       <PopoverTrigger asChild>
         <button
-          title="Protect project"
+          title="Password protect this project"
           className={cn(
-            "flex h-7 w-7 items-center justify-center rounded-full border transition-all",
+            "group flex h-9 cursor-pointer items-center gap-1.5 rounded-full border px-3 text-[13px] font-medium transition-all",
             dark
               ? "border-white/10 bg-white/10 text-white/80 hover:bg-white/20"
               : "border-black/10 bg-white/50 text-[#1A1A1A] hover:bg-black/5 dark:border-white/10 dark:bg-[#2A2520]/50 dark:text-[#F0EDE7] dark:hover:bg-white/5"
           )}
         >
-          <Lock size={12} strokeWidth={2.5} />
+          <Lock size={15} strokeWidth={2} className="shrink-0" />
+          Password Protect
         </button>
       </PopoverTrigger>
       <PopoverContent
@@ -224,6 +222,7 @@ function NavRow({
   analyzeButtonLabel,
   analyzeTooltipMessage,
   isAnalyzeDisabled,
+  containerClass,
 }) {
   const isEditor = mode === "editor";
   const textClass = dark
@@ -231,7 +230,11 @@ function NavRow({
     : "text-[#7A736C] dark:text-[#9E9893] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7]";
 
   return (
-    <div className="px-6md:px-12 mx-auto flex w-full max-w-[1100px] items-center justify-between">
+    // Contained to the title's width so the nav's left/right edges align with
+    // the content in each view (editorial 880, immersive 1100). Buttons are
+    // split by mode — Work/Resume in public+preview, editor controls in the
+    // editor — so neither row gets crowded.
+    <div className={cn("mx-auto flex w-full items-center justify-between gap-3", containerClass)}>
       {/* Back */}
       <button
         onClick={onBack}
@@ -246,22 +249,24 @@ function NavRow({
 
       {/* Right cluster */}
       <div className="flex items-center gap-3">
-        {/* Work + Resume links */}
-        <div className={cn("flex items-center gap-4 text-[13px] font-medium", textClass)}>
-          <button onClick={onWorkClick} className="cursor-pointer transition-colors">
-            Work
-          </button>
-          {resumeUrl && (
-            <a
-              href={resumeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex cursor-pointer items-center gap-1 transition-colors"
-            >
-              <span className="text-[10px]">✦</span> Resume
-            </a>
-          )}
-        </div>
+        {/* Work + Resume — public / preview only (keeps the editor row roomy) */}
+        {!isEditor && (
+          <div className={cn("flex items-center gap-4 text-[13px] font-medium", textClass)}>
+            <button onClick={onWorkClick} className="cursor-pointer transition-colors">
+              Work
+            </button>
+            {resumeUrl && (
+              <a
+                href={resumeUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex cursor-pointer items-center gap-1 transition-colors"
+              >
+                <span className="text-[10px]">✦</span> Resume
+              </a>
+            )}
+          </div>
+        )}
 
         {/* Editor-only: Lock + Analyze */}
         {isEditor && (
@@ -281,14 +286,14 @@ function NavRow({
                         onClick={onAnalyze}
                         disabled={isAnalyzeDisabled}
                         className={cn(
-                          "flex h-7 items-center gap-1.5 rounded-full border px-3 text-[12px] font-medium transition-all",
+                          "group flex h-9 items-center gap-1.5 rounded-full border px-3 text-[13px] font-medium transition-all",
                           "disabled:cursor-not-allowed disabled:opacity-60",
                           dark
                             ? "border-white/10 bg-white/10 text-white/80 hover:bg-white/20"
                             : "border-black/10 bg-white/50 text-[#1A1A1A] hover:bg-black/5 dark:border-white/10 dark:bg-[#2A2520]/50 dark:text-[#F0EDE7] dark:hover:bg-white/5"
                         )}
                       >
-                        <Sparkles size={11} strokeWidth={2} />
+                        <Sparkles size={15} strokeWidth={2} className="shrink-0" />
                         {analyzeButtonLabel}
                       </button>
                     </span>
@@ -396,12 +401,17 @@ export default function ProjectHero({
   );
 
   // ── Meta columns (immersive bottom grid) ─────────────────────────────────
-  const immersiveMeta = [
+  const IMMERSIVE_META_FIELDS = [
     { label: "Client", key: "client" },
     { label: "Industry", key: "industry" },
     { label: "Role", key: "role" },
     { label: "Platform", key: "platform" },
   ];
+  // Editor shows all fields so they can be filled in. Public / preview only
+  // show filled fields and spread them across the width (mirrors ProjectMetaGrid).
+  const immersiveMeta = isEditable
+    ? IMMERSIVE_META_FIELDS
+    : IMMERSIVE_META_FIELDS.filter(({ key }) => String(project?.[key] ?? "").trim() !== "");
 
   const navRowProps = {
     mode,
@@ -492,7 +502,14 @@ export default function ProjectHero({
             {/* Nav */}
             <div className="pointer-events-none relative z-20 flex justify-center pt-7">
               <div className="pointer-events-auto w-full" onClick={(e) => e.stopPropagation()}>
-                <NavRow dark {...navRowProps} />
+                {/* Editor gets the full width so all controls fit and clear the
+                    centered builder pill; public/preview stays aligned to the
+                    1100px title column. */}
+                <NavRow
+                  dark
+                  containerClass={isEditable ? "px-6 md:px-12" : "max-w-[1100px] px-6 md:px-12"}
+                  {...navRowProps}
+                />
               </div>
             </div>
 
@@ -535,28 +552,30 @@ export default function ProjectHero({
                   </TextEffect>
                 )}
 
-                <div className="grid grid-cols-2 gap-y-5 md:grid-cols-4">
-                  {immersiveMeta.map(({ label, key }) => (
-                    <div key={key} className="flex flex-col gap-1">
-                      <span className="text-[11px] font-medium tracking-widest text-white/50 uppercase">
-                        {label}
-                      </span>
-                      {isEditable ? (
-                        <EditableField
-                          value={project?.[key] ?? ""}
-                          onChange={(v) => onChange?.({ [key]: v })}
-                          tag="span"
-                          placeholder={`Add ${label.toLowerCase()}…`}
-                          className="text-[15px] leading-snug font-semibold text-white [&:focus]:bg-white/10 [&:focus]:ring-1 [&:focus]:ring-white/20"
-                        />
-                      ) : (
-                        <span className="text-[15px] leading-snug font-semibold text-white">
-                          {project?.[key] || "—"}
+                {immersiveMeta.length > 0 && (
+                  <div className={cn("grid gap-y-5", metaColsClass(immersiveMeta.length))}>
+                    {immersiveMeta.map(({ label, key }) => (
+                      <div key={key} className="flex flex-col gap-1">
+                        <span className="text-[11px] font-medium tracking-widest text-white/50 uppercase">
+                          {label}
                         </span>
-                      )}
-                    </div>
-                  ))}
-                </div>
+                        {isEditable ? (
+                          <EditableField
+                            value={project?.[key] ?? ""}
+                            onChange={(v) => onChange?.({ [key]: v })}
+                            tag="span"
+                            placeholder={`Add ${label.toLowerCase()}…`}
+                            className="text-[15px] leading-snug font-semibold text-white [&:focus]:bg-white/10 [&:focus]:ring-1 [&:focus]:ring-white/20"
+                          />
+                        ) : (
+                          <span className="text-[15px] leading-snug font-semibold text-white">
+                            {project?.[key]}
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -575,7 +594,14 @@ export default function ProjectHero({
           {/* Sticky header */}
           <div className="sticky top-0 z-50 flex justify-center border-b border-black/5 bg-white/90 backdrop-blur-md dark:border-white/5 dark:bg-[#1A1A1A]/90">
             <div className="w-full py-4">
-              <NavRow dark={false} {...navRowProps} />
+              {/* Editor gets the full width so all controls fit and clear the
+                  centered builder pill; public/preview stays aligned to the
+                  880px title column. */}
+              <NavRow
+                dark={false}
+                containerClass={isEditable ? "px-6 md:px-10" : "max-w-[880px] px-6 md:px-10"}
+                {...navRowProps}
+              />
             </div>
           </div>
 
@@ -839,15 +865,17 @@ export default function ProjectHero({
           </motion.div>
 
           {/* Metadata grid below image */}
-          <div className="mx-auto mt-10 w-full max-w-[880px] px-6 md:px-10">
-            <div className="border-b border-black/[0.07] dark:border-white/[0.07]">
-              <ProjectMetaGrid
-                project={project}
-                onChange={(patch) => onChange?.(patch)}
-                mode={mode}
-              />
+          {(mode === "editor" || hasProjectMeta(project)) && (
+            <div className="mx-auto mt-10 w-full max-w-[880px] px-6 md:px-10">
+              <div className="border-b border-black/[0.07] dark:border-white/[0.07]">
+                <ProjectMetaGrid
+                  project={project}
+                  onChange={(patch) => onChange?.(patch)}
+                  mode={mode}
+                />
+              </div>
             </div>
-          </div>
+          )}
         </motion.div>
       )}
     </AnimatePresence>

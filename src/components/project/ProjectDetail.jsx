@@ -361,7 +361,8 @@ export default function ProjectDetail({ project, mode, onBack, onWorkClick, resu
   return (
     <div className="min-h-screen bg-white text-[#1A1A1A] dark:bg-[#1A1A1A] dark:text-[#F0EDE7]">
       {/* Save status pill — top-right, only in editor mode */}
-      {mode === "editor" && <SaveStatusPill saveStatus={saveStatus} onRetry={retry} />}
+      {/* Temporarily hidden — collides with the full-width editor nav controls */}
+      {/* {mode === "editor" && <SaveStatusPill saveStatus={saveStatus} onRetry={retry} />} */}
 
       <ProjectHero
         project={mergedProject}

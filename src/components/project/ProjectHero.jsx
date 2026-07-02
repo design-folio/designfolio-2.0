@@ -482,8 +482,8 @@ export default function ProjectHero({
 
             {/* Dark overlays — same as reference */}
             <div className="pointer-events-none absolute inset-0 bg-black/12" />
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-[28%] bg-gradient-to-b from-black/50 to-transparent" />
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[55%] bg-gradient-to-t from-black/75 via-black/30 to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-[28%] bg-linear-to-b from-black/50 to-transparent" />
+            <div className="pointer-events-none absolute inset-x-0 bottom-0 h-[55%] bg-linear-to-t from-black/75 via-black/30 to-transparent" />
 
             {/* Grain overlay — subtle film texture over the cover */}
             <div

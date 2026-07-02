@@ -6,7 +6,7 @@ import { uploadSectionImage } from "@/components/project/uploadSectionImage";
 const LAYOUTS = ["image-left", "image-right", "image-top"];
 const LAYOUT_LABELS = { "image-left": "Left", "image-right": "Right", "image-top": "Top" };
 
-function ImageSlot({ url, onUpload, editable }) {
+function ImageSlot({ url, onUpload, editable, className }) {
   const inputRef = useRef(null);
   const [uploading, setUploading] = useState(false);
 
@@ -26,13 +26,13 @@ function ImageSlot({ url, onUpload, editable }) {
   return (
     <div
       className={[
-        "group/img relative flex-shrink-0 overflow-hidden rounded-xl",
+        "group/img relative overflow-hidden rounded-xl",
+        className ?? "aspect-[4/3] w-full",
         !url
           ? "border border-dashed border-black/20 bg-black/[0.03] dark:border-white/20 dark:bg-white/[0.03]"
           : "",
         editable ? "cursor-pointer" : "",
       ].join(" ")}
-      style={{ minHeight: 200 }}
       onClick={() => editable && !uploading && inputRef.current?.click()}
       onDrop={(e) => {
         if (!editable) return;
@@ -124,6 +124,7 @@ export default function ImageTextSection({ section, onChange, mode }) {
       url={image?.url ?? null}
       editable={editable}
       onUpload={({ key, url }) => onChange({ ...content, image: { key, url } })}
+      className={isTop ? "aspect-[21/9] w-full" : "h-full min-h-[260px] w-full"}
     />
   );
 
@@ -148,16 +149,16 @@ export default function ImageTextSection({ section, onChange, mode }) {
         </div>
       )}
       {isTop ? (
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-8">
           <div className="w-full">{imageEl}</div>
           {textBlock}
         </div>
       ) : (
         <div
-          className={`flex flex-col items-center gap-8 md:flex-row ${layout === "image-right" ? "md:flex-row-reverse" : ""}`}
+          className={`flex flex-col items-start gap-10 md:flex-row ${layout === "image-right" ? "md:flex-row-reverse" : ""}`}
         >
-          <div className="w-full md:w-[40%]">{imageEl}</div>
-          <div className="w-full md:w-[60%]">{textBlock}</div>
+          <div className="w-full shrink-0 md:w-1/2">{imageEl}</div>
+          <div className="w-full md:w-1/2">{textBlock}</div>
         </div>
       )}
     </div>

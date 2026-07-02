@@ -849,6 +849,8 @@ function AddSectionButton({ onAdd }) {
 
 function makeSection(typeKey) {
   const _id = uid();
+  const bodyPlaceholder =
+    "You can write here as much as you want, this text will always look nice, whether you write longer paragraphs or just a few words.";
   if (typeKey === "freeform") {
     return { _id, type: "freeform", content: { tiptapContent: null } };
   }
@@ -883,25 +885,44 @@ function makeSection(typeKey) {
     return {
       _id,
       type: "image-text",
-      content: { layout: "image-left", image: { url: null }, heading: "", body: "" },
+      content: {
+        layout: "image-left",
+        image: { url: null },
+        heading: "Write your important statement here",
+        body: "You can write here as much as you want. This text will always look nice, whether you write longer paragraphs or just a few words.",
+      },
     };
   }
   if (typeKey === "image-text-right") {
     return {
       _id,
       type: "image-text",
-      content: { layout: "image-right", image: { url: null }, heading: "", body: "" },
+      content: {
+        layout: "image-right",
+        image: { url: null },
+        heading: "Write your important statement here",
+        body: "You can write here as much as you want. This text will always look nice, whether you write longer paragraphs or just a few words.",
+      },
     };
   }
   if (typeKey === "image-text-top") {
     return {
       _id,
       type: "image-text",
-      content: { layout: "image-top", image: { url: null }, heading: "", body: "" },
+      content: {
+        layout: "image-top",
+        image: { url: null },
+        heading: "Write your important statement here",
+        body: "You can write here as much as you want. This text will always look nice, whether you write longer paragraphs or just a few words.",
+      },
     };
   }
   if (typeKey === "text-split") {
-    return { _id, type: "text-split", content: { heading: "", body: "" } };
+    return {
+      _id,
+      type: "text-split",
+      content: { heading: "This is your heading", body: bodyPlaceholder },
+    };
   }
   if (typeKey === "text-3col") {
     return {
@@ -909,9 +930,9 @@ function makeSection(typeKey) {
       type: "text-3col",
       content: {
         columns: [
-          { heading: "", body: "" },
-          { heading: "", body: "" },
-          { heading: "", body: "" },
+          { heading: "This is your heading", body: bodyPlaceholder },
+          { heading: "This is your heading", body: bodyPlaceholder },
+          { heading: "This is your heading", body: bodyPlaceholder },
         ],
       },
     };
@@ -922,9 +943,9 @@ function makeSection(typeKey) {
       type: "text-highlights",
       content: {
         items: [
-          { title: "", detail: "" },
-          { title: "", detail: "" },
-          { title: "", detail: "" },
+          { title: "Highlight 1", detail: "Add some details here" },
+          { title: "Highlight 2", detail: "Add some details here" },
+          { title: "Highlight 3", detail: "Add some details here" },
         ],
       },
     };
@@ -934,11 +955,12 @@ function makeSection(typeKey) {
       _id,
       type: "text-accordion",
       content: {
-        heading: "",
+        heading: "This is your heading",
         items: [
-          { question: "", answer: "" },
-          { question: "", answer: "" },
-          { question: "", answer: "" },
+          { question: "Accordion 1", answer: bodyPlaceholder },
+          { question: "Accordion 2", answer: "" },
+          { question: "Accordion 3", answer: "" },
+          { question: "Accordion 4", answer: "" },
         ],
       },
     };

@@ -13,6 +13,7 @@ import Modal from "@/components/modal";
 import AnalyzeCaseStudy from "@/components/analyzeCaseStudy";
 import ProjectHero from "./ProjectHero";
 import SectionManager from "./SectionManager";
+import { uploadSectionImage } from "./uploadSectionImage";
 import TiptapRenderer from "@/components/tiptapRenderer";
 
 // BlockRenderer imports editorjs-blocks-react-renderer which uses browser APIs — load client-only
@@ -329,13 +330,16 @@ export default function ProjectDetail({ project, mode, onBack, onWorkClick, resu
   }, []);
 
   const handleImageUpload = useCallback(
-    (file) => {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const url = e.target?.result;
-        if (url) handleProjectChange({ thumbnail: { url } });
-      };
-      reader.readAsDataURL(file);
+    async (file) => {
+      if (!file) return;
+      try {
+        const { key, url } = await uploadSectionImage(file);
+        handleProjectChange({
+          thumbnail: { key, url, originalName: file.name, extension: file.type },
+        });
+      } catch {
+        /* upload failed — keep the existing thumbnail */
+      }
     },
     [handleProjectChange]
   );

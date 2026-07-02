@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
@@ -19,7 +19,7 @@ import { YoutubeNode } from "@/components/tiptap/YoutubeExtension";
 import { LinkNode } from "@/components/tiptap/LinkExtension";
 import { ResizableImage } from "@/components/tiptap/ResizableImage";
 import { SelectAllExtension } from "@/components/tiptap/SelectAllExtension";
-import TiptapMenuBar from "@/components/tiptap/TiptapMenuBar";
+import FreeformToolbar from "@/components/tiptap/FreeformToolbar";
 import TiptapRenderer from "@/components/tiptapRenderer";
 import { _uploadImage } from "@/network/post-request";
 
@@ -56,8 +56,6 @@ async function uploadImage(file) {
 
 export default function FreeformSection({ section, onChange, mode }) {
   const saveTimeoutRef = useRef(null);
-  const editorContainerRef = useRef(null);
-  const [showToolbar, setShowToolbar] = useState(false);
 
   const editor = useEditor({
     immediatelyRender: false,
@@ -116,17 +114,6 @@ export default function FreeformSection({ section, onChange, mode }) {
     },
   });
 
-  // Hide toolbar on click outside the editor container
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (editorContainerRef.current && !editorContainerRef.current.contains(e.target)) {
-        setShowToolbar(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
   // Drag-and-drop image upload into the editor
   useEffect(() => {
     if (!editor?.view?.dom) return;
@@ -179,15 +166,13 @@ export default function FreeformSection({ section, onChange, mode }) {
 
   return (
     <div
-      ref={editorContainerRef}
       className="project-editor-container mx-auto max-w-[880px] overflow-x-hidden px-6 py-8 md:px-10"
       onClick={() => {
-        setShowToolbar(true);
         if (editor && !editor.isFocused) editor.chain().focus().run();
       }}
     >
+      <FreeformToolbar editor={editor} onImageUpload={uploadImage} />
       <EditorContent editor={editor} />
-      <TiptapMenuBar editor={editor} showToolbar={showToolbar} onImageUpload={uploadImage} />
     </div>
   );
 }

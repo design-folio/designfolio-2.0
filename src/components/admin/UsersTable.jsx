@@ -456,7 +456,7 @@ const DELETED_EXTRA_COLUMNS = [
               </span>
             </TooltipTrigger>
             <TooltipContent side="top" className="border-0 bg-transparent p-0 shadow-none">
-              <div className="max-w-[280px] rounded-md border border-white/10 bg-[#231F1A] px-2.5 py-1.5 text-[11px] break-words text-[#F0EDE7] shadow-lg">
+              <div className="max-w-[280px] rounded-md border border-white/10 bg-[#231F1A] px-2.5 py-1.5 text-[11px] wrap-break-word text-[#F0EDE7] shadow-lg">
                 {val}
               </div>
             </TooltipContent>

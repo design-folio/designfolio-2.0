@@ -32,6 +32,7 @@ import SettingsModal from "@/components/SettingsModal";
 import { BuilderSideNav } from "@/components/BuilderSideNav";
 import { BuilderTopNav } from "@/components/BuilderTopNav";
 import { FloatingPageContainer } from "@/components/FloatingPageContainer";
+import { ProjectPageFade } from "@/components/ProjectPageFade";
 import { UpgradePill } from "@/components/loggedInHeader/navbar/UpgradePill";
 import { CursorTooltipProvider } from "@/context/cursorTooltipContext";
 import { CursorPill } from "@/components/CursorPill";
@@ -344,7 +345,9 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
                       {showBuilderTopNav && <BuilderTopNav />}
                       {isSidebarRoute && <UpgradePill />}
                       <FloatingPageContainer isSidebarRoute={isSidebarRoute}>
-                        <Component {...pageProps} />
+                        <ProjectPageFade>
+                          <Component {...pageProps} />
+                        </ProjectPageFade>
                       </FloatingPageContainer>
                       <ToastContainer position="bottom-right" />
                       <UpgradeModal />

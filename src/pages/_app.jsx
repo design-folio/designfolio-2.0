@@ -343,7 +343,9 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
                       />
                       {isSidebarRoute && <BuilderSideNav />}
                       {showBuilderTopNav && <BuilderTopNav />}
-                      {isSidebarRoute && <UpgradePill />}
+                      {isSidebarRoute && router.pathname !== "/project/[id]/editor" && (
+                        <UpgradePill />
+                      )}
                       <FloatingPageContainer isSidebarRoute={isSidebarRoute}>
                         <BlindersTransition>
                           <Component {...pageProps} />

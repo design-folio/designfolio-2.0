@@ -7,6 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { _updateProject } from "@/network/post-request";
 import ProjectMetaGrid, { hasProjectMeta, metaColsClass } from "./ProjectMetaGrid";
+import ResizeHandle from "@/components/project/ResizeHandle";
 import { TextEffect } from "@/components/ui/text-effect";
 import { normalizeEditableEmpty, handlePlainTextPaste } from "./editableUtils";
 
@@ -730,10 +731,7 @@ export default function ProjectHero({
               className="relative"
               onMouseEnter={() => isEditable && setShowHeightHandle(true)}
               onMouseLeave={() => {
-                if (!isResizingHeight) {
-                  setShowHeightHandle(false);
-                  setHeightHandleHovered(false);
-                }
+                if (!isResizingHeight) setShowHeightHandle(false);
               }}
             >
               {/* Border-radius + overflow clip layer */}
@@ -797,70 +795,22 @@ export default function ProjectHero({
                 </div>
               </motion.div>
 
-              {/* Height resize handle — editor only, 3-dot reference style */}
-              <AnimatePresence>
-                {isEditable && (showHeightHandle || isResizingHeight) && (
-                  <motion.div
-                    key="height-handle"
-                    initial={{ opacity: 0, y: -8, scale: 0.82, x: "-50%" }}
-                    animate={{ opacity: 1, y: 0, scale: 1, x: "-50%" }}
-                    exit={{ opacity: 0, y: -6, scale: 0.88, x: "-50%" }}
-                    transition={{ type: "spring", stiffness: 500, damping: 32 }}
-                    className="group/hh pointer-events-auto absolute flex cursor-ns-resize items-center justify-center select-none"
-                    style={{ bottom: -22, left: "50%", width: 160, height: 44 }}
-                    onMouseEnter={() => setHeightHandleHovered(true)}
-                    onMouseLeave={() => setHeightHandleHovered(false)}
-                    onMouseDown={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      const startY = e.clientY;
-                      const startH =
-                        thumbnailImgRef.current?.offsetHeight ?? thumbnailHeight ?? 400;
-                      setIsResizingHeight(true);
-                      const onMove = (ev) => {
-                        ev.preventDefault();
-                        setThumbnailHeight(
-                          Math.max(
-                            120,
-                            Math.min(window.innerHeight * 0.95, startH + (ev.clientY - startY))
-                          )
-                        );
-                      };
-                      const onUp = () => {
-                        setIsResizingHeight(false);
-                        window.removeEventListener("mousemove", onMove);
-                        window.removeEventListener("mouseup", onUp);
-                      };
-                      window.addEventListener("mousemove", onMove);
-                      window.addEventListener("mouseup", onUp);
-                    }}
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <div
-                      className={cn(
-                        "flex w-full flex-row items-center justify-center gap-[6px] rounded-full border border-white/[0.15] transition-all duration-200",
-                        isResizingHeight
-                          ? "scale-105 bg-[#0D0D0D]/60 shadow-[0_0_0_1px_rgba(255,255,255,0.18),0_0_24px_rgba(255,255,255,0.22)]"
-                          : "bg-[#0D0D0D]/50 backdrop-blur-sm group-hover/hh:scale-105 group-hover/hh:shadow-[0_0_0_1px_rgba(255,255,255,0.18),0_0_20px_rgba(255,255,255,0.18)]"
-                      )}
-                      style={{ height: 12 }}
-                    >
-                      {[0, 1, 2].map((i) => (
-                        <div
-                          key={i}
-                          className={cn(
-                            "rounded-full transition-colors duration-200",
-                            isResizingHeight
-                              ? "bg-white/90"
-                              : "bg-white/50 group-hover/hh:bg-white/75"
-                          )}
-                          style={{ width: 4, height: 4 }}
-                        />
-                      ))}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {/* Height resize handle — shared ResizeHandle component */}
+              {isEditable && (
+                <ResizeHandle
+                  axis="height"
+                  show={showHeightHandle}
+                  getSize={() => ({
+                    width: thumbnailImgRef.current?.offsetWidth ?? 0,
+                    height: thumbnailImgRef.current?.offsetHeight ?? thumbnailHeight ?? 400,
+                  })}
+                  min={120}
+                  max={() => Math.round(window.innerHeight * 0.95)}
+                  onResizingChange={setIsResizingHeight}
+                  onHoverChange={setHeightHandleHovered}
+                  onChange={({ height }) => setThumbnailHeight(height)}
+                />
+              )}
             </div>
           </motion.div>
 

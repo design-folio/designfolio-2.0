@@ -861,8 +861,8 @@ function makeSection(typeKey) {
       content: {
         columns: 2,
         images: [
-          { url: null, caption: "" },
-          { url: null, caption: "" },
+          { url: null, caption: "", width: null, height: null },
+          { url: null, caption: "", width: null, height: null },
         ],
       },
     };
@@ -874,9 +874,9 @@ function makeSection(typeKey) {
       content: {
         columns: 3,
         images: [
-          { url: null, caption: "" },
-          { url: null, caption: "" },
-          { url: null, caption: "" },
+          { url: null, caption: "", width: null, height: null },
+          { url: null, caption: "", width: null, height: null },
+          { url: null, caption: "", width: null, height: null },
         ],
       },
     };
@@ -887,7 +887,7 @@ function makeSection(typeKey) {
       type: "image-text",
       content: {
         layout: "image-left",
-        image: { url: null },
+        image: { url: null, width: null, height: null },
         heading: "Write your important statement here",
         body: "You can write here as much as you want. This text will always look nice, whether you write longer paragraphs or just a few words.",
       },
@@ -899,7 +899,7 @@ function makeSection(typeKey) {
       type: "image-text",
       content: {
         layout: "image-right",
-        image: { url: null },
+        image: { url: null, width: null, height: null },
         heading: "Write your important statement here",
         body: "You can write here as much as you want. This text will always look nice, whether you write longer paragraphs or just a few words.",
       },
@@ -911,7 +911,7 @@ function makeSection(typeKey) {
       type: "image-text",
       content: {
         layout: "image-top",
-        image: { url: null },
+        image: { url: null, width: null, height: null },
         heading: "Write your important statement here",
         body: "You can write here as much as you want. This text will always look nice, whether you write longer paragraphs or just a few words.",
       },

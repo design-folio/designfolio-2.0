@@ -2,11 +2,31 @@ import { useRef, useEffect, useState } from "react";
 import { Upload, Plus, Trash2, Loader2 } from "lucide-react";
 import { uploadSectionImage } from "@/components/project/uploadSectionImage";
 import { normalizeEditableEmpty, handlePlainTextPaste } from "@/components/project/editableUtils";
+import ResizeHandle from "@/components/project/ResizeHandle";
 
-function ImageSlot({ url, caption, onUpload, onCaptionChange, onDelete, editable }) {
+function ImageSlot({
+  url,
+  caption,
+  width,
+  height,
+  onUpload,
+  onCaptionChange,
+  onDelete,
+  onResize,
+  editable,
+}) {
   const inputRef = useRef(null);
   const captionRef = useRef(null);
+  const boxRef = useRef(null);
   const [uploading, setUploading] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [resizing, setResizing] = useState(false);
+  const [handleHovered, setHandleHovered] = useState(false);
+
+  const sizeStyle = { maxWidth: "100%" };
+  if (width != null) sizeStyle.width = width;
+  if (height != null) sizeStyle.height = height;
+  else sizeStyle.aspectRatio = "4/3";
 
   useEffect(() => {
     if (captionRef.current) captionRef.current.innerText = caption || "";
@@ -29,60 +49,106 @@ function ImageSlot({ url, caption, onUpload, onCaptionChange, onDelete, editable
   return (
     <div className="flex flex-col gap-2">
       <div
-        className={[
-          "relative overflow-hidden rounded-xl",
-          !url
-            ? "border border-dashed border-black/20 bg-black/[0.03] dark:border-white/20 dark:bg-white/[0.03]"
-            : "",
-          editable ? "group/slot cursor-pointer" : "",
-        ].join(" ")}
-        style={{ aspectRatio: "4/3" }}
-        onClick={() => editable && !uploading && inputRef.current?.click()}
-        onDrop={(e) => {
-          if (!editable) return;
-          e.preventDefault();
-          handleFile(e.dataTransfer.files[0]);
-        }}
-        onDragOver={(e) => editable && e.preventDefault()}
+        ref={boxRef}
+        className="relative"
+        style={sizeStyle}
+        onMouseEnter={() => editable && url && setHovered(true)}
+        onMouseLeave={() => !resizing && setHovered(false)}
       >
-        {uploading ? (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/[0.03] dark:bg-white/[0.03]">
-            <Loader2 size={20} className="animate-spin text-[#7A736C] dark:text-[#9E9893]" />
-          </div>
-        ) : url ? (
-          <img src={url} alt={caption || ""} className="h-full w-full object-cover" />
-        ) : (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-[#7A736C] dark:text-[#9E9893]">
-            <Upload size={20} className="opacity-50" />
-            <span className="text-xs opacity-50">Upload image</span>
-          </div>
-        )}
-        {editable && !uploading && (
-          <>
-            <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/0 transition-all group-hover/slot:bg-black/20">
-              <span className="flex items-center gap-1.5 rounded-full bg-black/55 px-3 py-1.5 text-[12px] font-medium text-white opacity-0 backdrop-blur-sm transition-all group-hover/slot:opacity-100">
-                <Upload size={11} /> Change photo
-              </span>
+        <div
+          className={[
+            "relative h-full w-full overflow-hidden rounded-xl",
+            !url
+              ? "border border-dashed border-black/20 bg-black/[0.03] dark:border-white/20 dark:bg-white/[0.03]"
+              : "",
+            editable ? "group/slot cursor-pointer" : "",
+          ].join(" ")}
+          style={{
+            boxShadow:
+              handleHovered || resizing
+                ? resizing
+                  ? "0 0 0 2px rgba(99,102,241,0.45), 0 0 40px rgba(99,102,241,0.1)"
+                  : "0 0 0 1.5px rgba(99,102,241,0.28), 0 0 24px rgba(99,102,241,0.08)"
+                : undefined,
+            transition: "box-shadow 0.2s ease",
+          }}
+          onClick={() => editable && !uploading && inputRef.current?.click()}
+          onDrop={(e) => {
+            if (!editable) return;
+            e.preventDefault();
+            handleFile(e.dataTransfer.files[0]);
+          }}
+          onDragOver={(e) => editable && e.preventDefault()}
+        >
+          {uploading ? (
+            <div className="absolute inset-0 flex items-center justify-center bg-black/[0.03] dark:bg-white/[0.03]">
+              <Loader2 size={20} className="animate-spin text-[#7A736C] dark:text-[#9E9893]" />
             </div>
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onDelete();
-              }}
-              className="absolute top-2 right-2 rounded-full bg-black/60 p-1 text-white opacity-0 transition-opacity group-hover/slot:opacity-100 hover:bg-black/80"
-            >
-              <Trash2 size={12} />
-            </button>
+          ) : url ? (
+            <img src={url} alt={caption || ""} className="h-full w-full object-cover" />
+          ) : (
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 text-[#7A736C] dark:text-[#9E9893]">
+              <Upload size={20} className="opacity-50" />
+              <span className="text-xs opacity-50">Upload image</span>
+            </div>
+          )}
+          {editable && !uploading && (
+            <>
+              <div className="pointer-events-none absolute inset-0 flex items-center justify-center bg-black/0 transition-all group-hover/slot:bg-black/20">
+                <span className="flex items-center gap-1.5 rounded-full bg-black/55 px-3 py-1.5 text-[12px] font-medium text-white opacity-0 backdrop-blur-sm transition-all group-hover/slot:opacity-100">
+                  <Upload size={11} /> Change photo
+                </span>
+              </div>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDelete();
+                }}
+                className="absolute top-2 right-2 rounded-full bg-black/60 p-1 text-white opacity-0 transition-opacity group-hover/slot:opacity-100 hover:bg-black/80"
+              >
+                <Trash2 size={12} />
+              </button>
+            </>
+          )}
+          {editable && (
+            <input
+              ref={inputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={(e) => handleFile(e.target.files?.[0])}
+            />
+          )}
+        </div>
+        {editable && url && !uploading && (
+          <>
+            <ResizeHandle
+              axis="height"
+              show={hovered}
+              getSize={() => ({
+                width: boxRef.current?.offsetWidth ?? 0,
+                height: boxRef.current?.offsetHeight ?? 0,
+              })}
+              min={120}
+              max={1200}
+              onResizingChange={setResizing}
+              onHoverChange={setHandleHovered}
+              onChange={onResize}
+            />
+            <ResizeHandle
+              axis="width"
+              show={hovered}
+              getSize={() => ({
+                width: boxRef.current?.offsetWidth ?? 0,
+                height: boxRef.current?.offsetHeight ?? 0,
+              })}
+              min={120}
+              max={() => boxRef.current?.parentElement?.offsetWidth ?? 2000}
+              onResizingChange={setResizing}
+              onHoverChange={setHandleHovered}
+              onChange={onResize}
+            />
           </>
-        )}
-        {editable && (
-          <input
-            ref={inputRef}
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={(e) => handleFile(e.target.files?.[0])}
-          />
         )}
       </div>
       {editable ? (
@@ -187,9 +253,12 @@ export default function ImageGridSection({ section, onChange, mode }) {
             <ImageSlot
               url={img.url}
               caption={img.caption}
+              width={img.width ?? null}
+              height={img.height ?? null}
               editable={editable}
               onUpload={({ key, url }) => updateImage(i, { key, url })}
               onCaptionChange={(caption) => updateImage(i, { caption })}
+              onResize={(patch) => updateImage(i, patch)}
               onDelete={() => removeImage(i)}
             />
           </div>

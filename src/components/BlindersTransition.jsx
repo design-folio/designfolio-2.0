@@ -7,6 +7,10 @@
  * Driven entirely by Next.js router events — no manual transitionTo() needed.
  * The SeamLoader stays visible until BOTH panels are fully closed AND the route
  * change is complete, then fades before the panels sweep open.
+ *
+ * Inside FloatingPageContainer (sidebar routes): blinders are contained within
+ * the card because FloatingPageContainer has transform: translateZ(0).
+ * Outside FloatingPageContainer (other routes): blinders cover the full viewport.
  */
 
 import { useState, useEffect, useRef } from "react";
@@ -16,7 +20,8 @@ import { useRouter } from "next/router";
 // ─── Timing ──────────────────────────────────────────────────────────────────
 
 const CLOSE_MS = 420; // panels sweep to centre
-const MIN_HOLD_MS = 1100; // minimum time panels stay closed (even for fast/cached routes)
+const PROGRESS_MS = 1200; // progress bar fills
+const MIN_HOLD_MS = 1100; // minimum time panels stay closed
 const FADE_MS = 260; // loader fades out (panels still closed)
 const OPEN_MS = 500; // panels sweep open
 
@@ -26,8 +31,6 @@ const EASE_CLOSE = [0.76, 0, 0.24, 1];
 const EASE_OPEN = [0.22, 1, 0.36, 1];
 
 // ─── Route filter ────────────────────────────────────────────────────────────
-// Mirrors the old FADE_ROUTES in ProjectPageFade — animate when navigating
-// TO one of these routes.
 
 function isAnimatedRoute(url) {
   const path = url.split("?")[0];
@@ -62,19 +65,18 @@ function SeamLoader({ show }) {
           {/* Progress track */}
           <div
             className="relative w-56 overflow-hidden rounded-full"
-            style={{ height: 4, background: "rgba(128,128,128,0.1)" }}
+            style={{ height: 4, background: "color-mix(in srgb, currentColor 7%, transparent)" }}
           >
-            {/* Fill */}
+            {/* Gradient fill */}
             <motion.div
               className="absolute inset-y-0 left-0 rounded-full"
               style={{
                 background:
-                  "linear-gradient(90deg, rgba(128,128,128,0.25) 0%, var(--foreground) 100%)",
-                opacity: 0.55,
+                  "linear-gradient(90deg, color-mix(in srgb, currentColor 30%, transparent) 0%, currentColor 100%)",
               }}
               initial={{ width: "0%" }}
               animate={{ width: "100%" }}
-              transition={{ duration: 1.6, ease: [0.33, 1, 0.68, 1] }}
+              transition={{ duration: PROGRESS_MS / 1000, ease: [0.33, 1, 0.68, 1] }}
             />
 
             {/* Leading-edge glow dot */}
@@ -84,13 +86,12 @@ function SeamLoader({ show }) {
                 width: 6,
                 height: 6,
                 translateX: "-50%",
-                background: "var(--foreground)",
-                opacity: 0.7,
-                boxShadow: "0 0 6px 2px rgba(128,128,128,0.4)",
+                background: "currentColor",
+                boxShadow: "0 0 6px 2px color-mix(in srgb, currentColor 60%, transparent)",
               }}
               initial={{ left: "0%" }}
               animate={{ left: "100%" }}
-              transition={{ duration: 1.6, ease: [0.33, 1, 0.68, 1] }}
+              transition={{ duration: PROGRESS_MS / 1000, ease: [0.33, 1, 0.68, 1] }}
             />
           </div>
         </motion.div>
@@ -105,11 +106,10 @@ export function BlindersTransition({ children }) {
   const router = useRouter();
   const [phase, setPhase] = useState("idle");
 
-  // All mutable state tracked via refs so the effect closure is stable.
   const timers = useRef([]);
   const panelsClosedRef = useRef(false);
   const routeReadyRef = useRef(false);
-  const holdReadyRef = useRef(false); // minimum hold timer elapsed
+  const holdReadyRef = useRef(false);
   const activeRef = useRef(false);
 
   const clearTimers = () => {
@@ -122,7 +122,6 @@ export function BlindersTransition({ children }) {
   };
 
   useEffect(() => {
-    // Called once ALL three gates pass: panels closed + route ready + min hold elapsed.
     const tryReveal = () => {
       if (!panelsClosedRef.current || !routeReadyRef.current || !holdReadyRef.current) return;
       setPhase("fading");
@@ -144,14 +143,12 @@ export function BlindersTransition({ children }) {
       activeRef.current = true;
       setPhase("closing");
 
-      // Gate 1: panels physically closed
       schedule(() => {
         panelsClosedRef.current = true;
         setPhase("loading");
         tryReveal();
       }, CLOSE_MS + 30);
 
-      // Gate 2: minimum hold so progress bar has time to play even on cached routes
       schedule(() => {
         holdReadyRef.current = true;
         tryReveal();
@@ -160,7 +157,6 @@ export function BlindersTransition({ children }) {
 
     const onDone = () => {
       if (!activeRef.current) return;
-      // Gate 3: actual route change complete
       routeReadyRef.current = true;
       tryReveal();
     };
@@ -175,9 +171,8 @@ export function BlindersTransition({ children }) {
       router.events.off("routeChangeError", onDone);
       clearTimers();
     };
-  }, []); // router.events is a stable emitter — empty deps is correct
+  }, []);
 
-  // Panels are at centre during closing, loading, and fading.
   const closed = phase === "closing" || phase === "loading" || phase === "fading";
   const topY = closed ? "0%" : "-100%";
   const bottomY = closed ? "0%" : "100%";
@@ -194,7 +189,8 @@ export function BlindersTransition({ children }) {
       <div className="pointer-events-none fixed inset-0 z-[500] overflow-hidden" aria-hidden="true">
         {/* Top panel */}
         <motion.div
-          className="bg-background absolute top-0 right-0 left-0 h-1/2"
+          className="absolute top-0 right-0 left-0 h-1/2"
+          style={{ background: "var(--blinder-color)" }}
           initial={{ y: "-100%" }}
           animate={{ y: topY }}
           transition={panelTransition}
@@ -202,7 +198,8 @@ export function BlindersTransition({ children }) {
 
         {/* Bottom panel */}
         <motion.div
-          className="bg-background absolute right-0 bottom-0 left-0 h-1/2"
+          className="absolute right-0 bottom-0 left-0 h-1/2"
+          style={{ background: "var(--blinder-color)" }}
           initial={{ y: "100%" }}
           animate={{ y: bottomY }}
           transition={panelTransition}

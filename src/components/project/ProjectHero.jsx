@@ -526,7 +526,7 @@ export default function ProjectHero({
                       onChange={(v) => onChange?.({ title: v })}
                       tag="h1"
                       placeholder="Project title…"
-                      className="mb-8 text-[36px] leading-[1.05] font-semibold tracking-[-0.02em] text-white md:text-[52px] [&:focus]:bg-white/10 [&:focus]:ring-1 [&:focus]:ring-white/20"
+                      className="mb-8 text-[36px] leading-[1.05] font-semibold tracking-[-0.02em] text-white md:text-[48px] [&:focus]:bg-white/10 [&:focus]:ring-1 [&:focus]:ring-white/20"
                     />
                   ) : (
                     <TextEffect
@@ -616,7 +616,7 @@ export default function ProjectHero({
                       onChange={(v) => onChange?.({ title: v })}
                       tag="h1"
                       placeholder="Project title…"
-                      className="mb-5 text-[38px] leading-[1.05] font-semibold tracking-[-0.02em] text-[#1A1A1A] focus:bg-black/[0.04] focus:ring-1 focus:ring-black/10 md:text-[52px] dark:text-[#F0EDE7] dark:focus:bg-white/[0.06] dark:focus:ring-white/10"
+                      className="mb-5 text-[38px] leading-[1.05] font-semibold tracking-[-0.02em] text-[#1A1A1A] focus:bg-black/[0.04] focus:ring-1 focus:ring-black/10 md:text-[48px] dark:text-[#F0EDE7] dark:focus:bg-white/[0.06] dark:focus:ring-white/10"
                     />
                   ) : (
                     <TextEffect

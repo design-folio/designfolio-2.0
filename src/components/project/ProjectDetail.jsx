@@ -8,6 +8,7 @@ import { containerVariants, itemVariants } from "@/lib/animationVariants";
 import { useProjectAutosave } from "./hooks/useProjectAutosave";
 import { useLazyMigration } from "./hooks/useLazyMigration";
 import { _updateProject, _analyzeCaseStudy, _analyzeCaseStudyStatus } from "@/network/post-request";
+import { DEFAULT_META_FIELDS, resolveMetaFields } from "@/lib/constant";
 import { useGlobalContext } from "@/context/globalContext";
 import Modal from "@/components/modal";
 import AnalyzeCaseStudy from "@/components/analyzeCaseStudy";
@@ -179,10 +180,9 @@ export default function ProjectDetail({ project, mode, onBack, onWorkClick, resu
     title: project?.title ?? "",
     description: project?.description ?? "",
     thumbnail: project?.thumbnail ?? null,
-    client: project?.client ?? "",
-    industry: project?.industry ?? "",
-    role: project?.role ?? "",
-    platform: project?.platform ?? "",
+    metaFields:
+      project?.metaFields ??
+      DEFAULT_META_FIELDS.map(({ defaultLabel }) => ({ label: defaultLabel, value: "" })),
     heroView: project?.heroView ?? "editorial",
     thumbnailWidth: project?.thumbnailWidth ?? "contained",
     thumbnailHeight: project?.thumbnailHeight ?? null,
@@ -229,6 +229,8 @@ export default function ProjectDetail({ project, mode, onBack, onWorkClick, resu
         ? `${wordCount} words`
         : null;
 
+  const mergedProject = useMemo(() => ({ ...project, ...projectState }), [project, projectState]);
+
   const handleAnalyzeClick = useCallback(async () => {
     if (analyzeSuggestions.length > 0) {
       setShowAnalyzeModal(true);
@@ -241,7 +243,11 @@ export default function ProjectDetail({ project, mode, onBack, onWorkClick, resu
     }
     setIsAnalyzing(true);
     try {
-      const res = await _analyzeCaseStudy({ userId: projectId, caseStudy: project, projectId });
+      const aiProject = {
+        ...mergedProject,
+        metaFields: mergedProject.metaFields?.map(({ value }) => ({ value })),
+      };
+      const res = await _analyzeCaseStudy({ userId: projectId, caseStudy: aiProject, projectId });
       setShowAnalyzeModal(true);
       setAnalyzeSuggestions(res.data.response);
       setAnalyzeRating(res.data.rating);
@@ -257,7 +263,7 @@ export default function ProjectDetail({ project, mode, onBack, onWorkClick, resu
   }, [
     analyzeSuggestions,
     analysisCreditsRemaining,
-    project,
+    mergedProject,
     projectId,
     setUpgradeModalSource,
     setShowUpgradeModal,
@@ -267,7 +273,11 @@ export default function ProjectDetail({ project, mode, onBack, onWorkClick, resu
   const handleReAnalyze = useCallback(async () => {
     setIsAnalyzing(true);
     try {
-      const res = await _analyzeCaseStudy({ userId: projectId, caseStudy: project, projectId });
+      const aiProject = {
+        ...mergedProject,
+        metaFields: mergedProject.metaFields?.map(({ value }) => ({ value })),
+      };
+      const res = await _analyzeCaseStudy({ userId: projectId, caseStudy: aiProject, projectId });
       setAnalyzeSuggestions(res.data.response);
       setAnalyzeRating(res.data.rating);
       setAnalysisCreditsRemaining((prev) =>
@@ -279,7 +289,13 @@ export default function ProjectDetail({ project, mode, onBack, onWorkClick, resu
     } finally {
       setIsAnalyzing(false);
     }
-  }, [project, projectId, setUpgradeModalSource, setShowUpgradeModal, setAnalysisCreditsRemaining]);
+  }, [
+    mergedProject,
+    projectId,
+    setUpgradeModalSource,
+    setShowUpgradeModal,
+    setAnalysisCreditsRemaining,
+  ]);
 
   const handleMigrated = useCallback(
     (migratedSections) => {
@@ -308,10 +324,7 @@ export default function ProjectDetail({ project, mode, onBack, onWorkClick, resu
       projectState.title,
       projectState.description,
       projectState.thumbnail,
-      projectState.client,
-      projectState.industry,
-      projectState.role,
-      projectState.platform,
+      projectState.metaFields,
       projectState.heroView,
       projectState.thumbnailWidth,
       projectState.thumbnailHeight,
@@ -329,6 +342,17 @@ export default function ProjectDetail({ project, mode, onBack, onWorkClick, resu
     setProjectState((prev) => ({ ...prev, ...patch }));
   }, []);
 
+  const handleMetaChange = useCallback(
+    (index, patch) => {
+      setProjectState((prev) => {
+        const base = prev.metaFields ?? resolveMetaFields(project);
+        const newMetaFields = base.map((f, i) => (i === index ? { ...f, ...patch } : f));
+        return { ...prev, metaFields: newMetaFields };
+      });
+    },
+    [project]
+  );
+
   const handleImageUpload = useCallback(
     async (file) => {
       if (!file) return;
@@ -343,8 +367,6 @@ export default function ProjectDetail({ project, mode, onBack, onWorkClick, resu
     },
     [handleProjectChange]
   );
-
-  const mergedProject = useMemo(() => ({ ...project, ...projectState }), [project, projectState]);
 
   // Legacy content fallback — only relevant in public/preview mode where useLazyMigration
   // doesn't run. If the user's live snapshot was never re-published after the v1→v2 or
@@ -371,6 +393,7 @@ export default function ProjectDetail({ project, mode, onBack, onWorkClick, resu
       <ProjectHero
         project={mergedProject}
         onChange={handleProjectChange}
+        onMetaChange={handleMetaChange}
         mode={mode}
         onImageUpload={handleImageUpload}
         onBack={onBack}

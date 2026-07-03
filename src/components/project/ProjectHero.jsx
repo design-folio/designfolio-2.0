@@ -7,6 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { _updateProject } from "@/network/post-request";
 import ProjectMetaGrid, { hasProjectMeta, metaColsClass } from "./ProjectMetaGrid";
+import { DEFAULT_META_FIELDS, getMetaLabel, getMetaValue } from "@/lib/constant";
 import ResizeHandle from "@/components/project/ResizeHandle";
 import { TextEffect } from "@/components/ui/text-effect";
 import { normalizeEditableEmpty, handlePlainTextPaste } from "./editableUtils";
@@ -326,6 +327,7 @@ function NavRow({
 export default function ProjectHero({
   project,
   onChange,
+  onMetaChange,
   mode,
   onImageUpload,
   onBack,
@@ -402,17 +404,10 @@ export default function ProjectHero({
   );
 
   // ── Meta columns (immersive bottom grid) ─────────────────────────────────
-  const IMMERSIVE_META_FIELDS = [
-    { label: "Client", key: "client" },
-    { label: "Industry", key: "industry" },
-    { label: "Role", key: "role" },
-    { label: "Platform", key: "platform" },
-  ];
-  // Editor shows all fields so they can be filled in. Public / preview only
-  // show filled fields and spread them across the width (mirrors ProjectMetaGrid).
+  // Editor shows all fields; public/preview only shows filled fields.
   const immersiveMeta = isEditable
-    ? IMMERSIVE_META_FIELDS
-    : IMMERSIVE_META_FIELDS.filter(({ key }) => String(project?.[key] ?? "").trim() !== "");
+    ? DEFAULT_META_FIELDS
+    : DEFAULT_META_FIELDS.filter(({ index }) => getMetaValue(project, index).trim() !== "");
 
   const navRowProps = {
     mode,
@@ -555,26 +550,40 @@ export default function ProjectHero({
 
                 {immersiveMeta.length > 0 && (
                   <div className={cn("grid gap-y-5", metaColsClass(immersiveMeta.length))}>
-                    {immersiveMeta.map(({ label, key }) => (
-                      <div key={key} className="flex min-w-0 flex-col gap-1">
-                        <span className="text-[11px] font-medium tracking-widest text-white/50 uppercase">
-                          {label}
-                        </span>
-                        {isEditable ? (
-                          <EditableField
-                            value={project?.[key] ?? ""}
-                            onChange={(v) => onChange?.({ [key]: v })}
-                            tag="span"
-                            placeholder={`Add ${label.toLowerCase()}…`}
-                            className="text-[15px] leading-snug font-semibold text-white [&:focus]:bg-white/10 [&:focus]:ring-1 [&:focus]:ring-white/20"
-                          />
-                        ) : (
-                          <span className="text-[15px] leading-snug font-semibold [overflow-wrap:anywhere] text-white">
-                            {project?.[key]}
-                          </span>
-                        )}
-                      </div>
-                    ))}
+                    {immersiveMeta.map(({ index, defaultLabel }) => {
+                      const label = getMetaLabel(project, index);
+                      const value = getMetaValue(project, index);
+                      return (
+                        <div key={index} className="flex min-w-0 flex-col gap-1">
+                          {isEditable ? (
+                            <EditableField
+                              value={label}
+                              onChange={(v) => onMetaChange?.(index, { label: v.trim() || null })}
+                              tag="span"
+                              placeholder={defaultLabel}
+                              className="text-[11px] font-medium tracking-widest text-white/50 uppercase [&:focus]:bg-white/10 [&:focus]:ring-1 [&:focus]:ring-white/20"
+                            />
+                          ) : (
+                            <span className="text-[11px] font-medium tracking-widest text-white/50 uppercase">
+                              {label}
+                            </span>
+                          )}
+                          {isEditable ? (
+                            <EditableField
+                              value={value}
+                              onChange={(v) => onMetaChange?.(index, { value: v })}
+                              tag="span"
+                              placeholder={`Add ${defaultLabel.toLowerCase()}…`}
+                              className="text-[15px] leading-snug font-semibold text-white [&:focus]:bg-white/10 [&:focus]:ring-1 [&:focus]:ring-white/20"
+                            />
+                          ) : (
+                            <span className="text-[15px] leading-snug font-semibold [overflow-wrap:anywhere] text-white">
+                              {value}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </div>
@@ -818,11 +827,7 @@ export default function ProjectHero({
           {(mode === "editor" || hasProjectMeta(project)) && (
             <div className="mx-auto mt-10 w-full max-w-[880px] px-6 md:px-10">
               <div className="border-b border-black/[0.07] dark:border-white/[0.07]">
-                <ProjectMetaGrid
-                  project={project}
-                  onChange={(patch) => onChange?.(patch)}
-                  mode={mode}
-                />
+                <ProjectMetaGrid project={project} onMetaChange={onMetaChange} mode={mode} />
               </div>
             </div>
           )}

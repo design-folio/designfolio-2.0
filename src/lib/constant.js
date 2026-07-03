@@ -148,3 +148,33 @@ export const FLOATING_NAV_SECTIONS = [
   { navId: "tools", sectionId: "section-tools", label: "Tools" },
   { navId: "work", sectionId: "section-works", label: "Work" },
 ];
+
+// ─── Project meta fields ──────────────────────────────────────────────────────
+// Fixed order: index 0=client, 1=industry, 2=role, 3=platform.
+// Each project stores these as metaFields: [{ label, value }, ...].
+// The label is user-customisable; the value is the actual content.
+export const DEFAULT_META_FIELDS = [
+  { index: 0, defaultLabel: "Client" },
+  { index: 1, defaultLabel: "Industry" },
+  { index: 2, defaultLabel: "Role" },
+  { index: 3, defaultLabel: "Platform" },
+];
+
+// Returns the display label for position i, falling back to the hardcoded default.
+export function getMetaLabel(project, i) {
+  const label = project?.metaFields?.[i]?.label;
+  return label && label.trim() ? label.trim() : (DEFAULT_META_FIELDS[i]?.defaultLabel ?? "");
+}
+
+// Returns the value at position i.
+export function getMetaValue(project, i) {
+  return project?.metaFields?.[i]?.value ?? "";
+}
+
+// Builds a full metaFields array from a project, guaranteeing 4 entries with defaults.
+export function resolveMetaFields(project) {
+  return DEFAULT_META_FIELDS.map(({ defaultLabel }, i) => ({
+    label: getMetaLabel(project, i) || defaultLabel,
+    value: getMetaValue(project, i),
+  }));
+}

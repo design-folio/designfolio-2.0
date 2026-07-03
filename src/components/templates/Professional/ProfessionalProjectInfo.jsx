@@ -22,6 +22,7 @@ import { useGlobalContext } from "@/context/globalContext";
 import { toast } from "react-toastify";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
+import { getMetaLabel, getMetaValue } from "@/lib/constant";
 
 const ScrewDot = ({ className }) => <div className={`absolute ${className} ${screwClass}`} />;
 
@@ -126,10 +127,6 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
     title,
     description,
     thumbnail,
-    client,
-    role,
-    industry,
-    platform,
     contentVersion,
     tiptapContent,
     _id,
@@ -201,6 +198,19 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
     });
   };
 
+  const saveMetaValue = (index, newValue) => {
+    const currentMeta = projectDetails.metaFields ?? [
+      { label: "Client", value: "" },
+      { label: "Industry", value: "" },
+      { label: "Role", value: "" },
+      { label: "Platform", value: "" },
+    ];
+    const updated = currentMeta.map((f, i) => (i === index ? { ...f, value: newValue } : f));
+    _updateProject(projectId, { metaFields: updated }).then(() => {
+      updateProjectCache("metaFields", updated);
+    });
+  };
+
   const handleOnBlur = (field, e) => {
     const val = e.target.textContent.trim();
     saveProject(field, val);
@@ -217,7 +227,11 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
       return;
     }
     setIsAnalyzing(true);
-    const data = { userId: _id, caseStudy: projectDetails, projectId: projectDetails._id };
+    const aiProject = {
+      ...projectDetails,
+      metaFields: projectDetails.metaFields?.map(({ value }) => ({ value })),
+    };
+    const data = { userId: _id, caseStudy: aiProject, projectId: projectDetails._id };
     try {
       const response = await _analyzeCaseStudy(data);
       setShowModal(true);
@@ -237,7 +251,11 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
 
   const handleReAnalyze = async () => {
     setIsAnalyzing(true);
-    const data = { userId: _id, caseStudy: projectDetails, projectId: projectDetails._id };
+    const aiProject = {
+      ...projectDetails,
+      metaFields: projectDetails.metaFields?.map(({ value }) => ({ value })),
+    };
+    const data = { userId: _id, caseStudy: aiProject, projectId: projectDetails._id };
     try {
       const response = await _analyzeCaseStudy(data);
       setShowModal(true);
@@ -271,10 +289,10 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
   };
 
   const detailFields = [
-    { label: "Client", value: client, field: "client" },
-    { label: "My Role", value: role, field: "role" },
-    { label: "Industry", value: industry, field: "industry" },
-    { label: "Platform", value: platform, field: "platform" },
+    { index: 0, label: getMetaLabel(projectDetails, 0), value: getMetaValue(projectDetails, 0) },
+    { index: 2, label: getMetaLabel(projectDetails, 2), value: getMetaValue(projectDetails, 2) },
+    { index: 1, label: getMetaLabel(projectDetails, 1), value: getMetaValue(projectDetails, 1) },
+    { index: 3, label: getMetaLabel(projectDetails, 3), value: getMetaValue(projectDetails, 3) },
   ];
 
   const viewDetailFields = detailFields.filter((f) => f.value);
@@ -522,13 +540,13 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
             className="grid grid-cols-2 gap-6 border-y border-[#D5D0C6] py-6 md:grid-cols-4 dark:border-[#3A352E]"
           >
             {edit
-              ? detailFields.map(({ label, value, field }) => (
+              ? detailFields.map(({ index, label, value }) => (
                   <EditableDetailField
-                    key={field}
+                    key={index}
                     label={label}
-                    field={field}
+                    field={index}
                     value={value}
-                    onBlur={handleOnBlur}
+                    onBlur={(idx, e) => saveMetaValue(idx, e.target.textContent.trim())}
                   />
                 ))
               : viewDetailFields.map(({ label, value }) => (

@@ -1,23 +1,14 @@
 import { useRef, useEffect } from "react";
 import { normalizeEditableEmpty, handlePlainTextPaste } from "./editableUtils";
+import { DEFAULT_META_FIELDS, getMetaLabel, getMetaValue } from "@/lib/constant";
 
-const FIELDS = [
-  { key: "client", label: "Client" },
-  { key: "industry", label: "Industry" },
-  { key: "role", label: "Role" },
-  { key: "platform", label: "Platform" },
-];
-
-const hasValue = (project, key) => String(project?.[key] ?? "").trim() !== "";
-
-// Whether any meta field is filled — used by callers to avoid rendering an
-// empty divider/wrapper around the grid in published / preview.
+// Whether any meta field has a value — used by callers to conditionally render
+// a divider/wrapper around the grid in published / preview mode.
 export function hasProjectMeta(project) {
-  return FIELDS.some(({ key }) => hasValue(project, key));
+  return DEFAULT_META_FIELDS.some(({ index }) => getMetaValue(project, index).trim() !== "");
 }
 
-// Spread the visible fields across the width by matching the column count to
-// the number of filled fields. Mobile stays at two-per-row to match the hero.
+// Spread visible fields across the width by matching column count to field count.
 const COLS_CLASS = {
   1: "grid-cols-1",
   2: "grid-cols-2",
@@ -25,12 +16,11 @@ const COLS_CLASS = {
   4: "grid-cols-2 md:grid-cols-4",
 };
 
-// Column class for a given number of visible meta fields. Shared with the
-// immersive hero grid so both views spread filled fields the same way.
 export function metaColsClass(count) {
   return COLS_CLASS[count] ?? "grid-cols-2 md:grid-cols-4";
 }
 
+// ─── Editable value cell ──────────────────────────────────────────────────────
 function EditableCell({ value, onCommit, placeholder }) {
   const ref = useRef(null);
 
@@ -59,12 +49,55 @@ function EditableCell({ value, onCommit, placeholder }) {
   );
 }
 
-export default function ProjectMetaGrid({ project, onChange, mode }) {
+// ─── Editable label cell ──────────────────────────────────────────────────────
+function EditableLabel({ label, onCommit }) {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    if (ref.current) ref.current.innerText = label || "";
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // mount only
+
+  return (
+    <span
+      ref={ref}
+      contentEditable
+      suppressContentEditableWarning
+      onPaste={handlePlainTextPaste}
+      onBlur={(e) => {
+        const text = e.currentTarget.textContent?.trim() ?? "";
+        onCommit(text || null); // null → backend stores null → frontend falls back to default
+      }}
+      onKeyDown={(e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          e.currentTarget.blur();
+        }
+        // Hard-cap at 30 chars
+        if (
+          e.currentTarget.textContent.length >= 30 &&
+          e.key.length === 1 &&
+          !e.ctrlKey &&
+          !e.metaKey
+        ) {
+          e.preventDefault();
+        }
+      }}
+      className="block cursor-text rounded-sm text-[11px] font-medium tracking-widest text-[#7A736C] uppercase transition-colors outline-none focus:bg-black/[0.04] focus:ring-1 focus:ring-black/10 dark:text-[#9E9893] dark:focus:bg-white/[0.06] dark:focus:ring-white/10"
+    />
+  );
+}
+
+// ─── Main export ──────────────────────────────────────────────────────────────
+// onMetaChange(index, patch) — patch is { label } or { value }
+export default function ProjectMetaGrid({ project, onMetaChange, mode }) {
   const isEditable = mode === "editor";
 
   // Editor shows all fields so they can be filled in. Published / preview only
   // show filled fields and spread them across the available width.
-  const visibleFields = isEditable ? FIELDS : FIELDS.filter(({ key }) => hasValue(project, key));
+  const visibleFields = isEditable
+    ? DEFAULT_META_FIELDS
+    : DEFAULT_META_FIELDS.filter(({ index }) => getMetaValue(project, index).trim() !== "");
 
   if (visibleFields.length === 0) return null;
 
@@ -72,24 +105,39 @@ export default function ProjectMetaGrid({ project, onChange, mode }) {
 
   return (
     <div className={`grid ${colsClass} gap-6 py-6`}>
-      {visibleFields.map(({ key, label }) => (
-        <div key={key} className="flex min-w-0 flex-col gap-1.5">
-          <span className="text-[11px] font-medium tracking-widest text-[#7A736C] uppercase dark:text-[#9E9893]">
-            {label}
-          </span>
-          {isEditable ? (
-            <EditableCell
-              value={project?.[key] ?? ""}
-              onCommit={(val) => onChange({ [key]: val })}
-              placeholder={`Add ${label.toLowerCase()}…`}
-            />
-          ) : (
-            <span className="text-[15px] font-semibold [overflow-wrap:anywhere] text-[#1A1A1A] dark:text-[#F0EDE7]">
-              {project?.[key]}
-            </span>
-          )}
-        </div>
-      ))}
+      {visibleFields.map(({ index, defaultLabel }) => {
+        const label = getMetaLabel(project, index);
+        const value = getMetaValue(project, index);
+
+        return (
+          <div key={index} className="flex min-w-0 flex-col gap-1.5">
+            {isEditable ? (
+              <EditableLabel
+                label={label}
+                onCommit={(newLabel) => {
+                  onMetaChange?.(index, { label: newLabel });
+                }}
+              />
+            ) : (
+              <span className="text-[11px] font-medium tracking-widest text-[#7A736C] uppercase dark:text-[#9E9893]">
+                {label}
+              </span>
+            )}
+
+            {isEditable ? (
+              <EditableCell
+                value={value}
+                onCommit={(val) => onMetaChange?.(index, { value: val })}
+                placeholder={`Add ${defaultLabel.toLowerCase()}…`}
+              />
+            ) : (
+              <span className="text-[15px] font-semibold [overflow-wrap:anywhere] text-[#1A1A1A] dark:text-[#F0EDE7]">
+                {value}
+              </span>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }

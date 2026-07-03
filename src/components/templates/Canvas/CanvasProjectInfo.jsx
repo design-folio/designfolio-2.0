@@ -21,6 +21,7 @@ import AnalyzeCaseStudy from "@/components/analyzeCaseStudy";
 import { useGlobalContext } from "@/context/globalContext";
 import { TEMPLATE_IDS } from "@/lib/templates";
 import { cn } from "@/lib/utils";
+import { getMetaLabel, getMetaValue } from "@/lib/constant";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 function AnalyzeIcon({ className = "w-4 h-4" }) {
@@ -114,8 +115,7 @@ function ProjectDetailField({ label, value, field, edit, handleOnBlur, handleInp
 }
 
 export default function CanvasProjectInfo({ projectDetails, userDetails, edit, ownerTemplate }) {
-  const { client, industry, platform, role, title, thumbnail, description, password, _id } =
-    projectDetails;
+  const { title, thumbnail, description, password, _id } = projectDetails;
 
   // Track which fields are showing the placeholder so color updates live while typing
   const [titleIsPlaceholder, setTitleIsPlaceholder] = useState(!title);
@@ -219,6 +219,20 @@ export default function CanvasProjectInfo({ projectDetails, userDetails, edit, o
     e.target.textContent = e.target.textContent.length > 0 ? e.target.textContent : "Type here...";
   };
 
+  const saveMetaValue = (index, newValue) => {
+    const currentMeta = projectDetails.metaFields ?? [
+      { label: "Client", value: "" },
+      { label: "Industry", value: "" },
+      { label: "Role", value: "" },
+      { label: "Platform", value: "" },
+    ];
+    const updated = currentMeta.map((f, i) => (i === index ? { ...f, value: newValue } : f));
+    _updateProject(projectId, { metaFields: updated }).then((res) => {
+      setTheme(res?.data?.project?.theme == 1 ? "dark" : "light");
+      updateProjectCache("metaFields", updated);
+    });
+  };
+
   const handleAnalyzeClick = async () => {
     if (suggestions.length > 0) {
       setShowModal(true);
@@ -230,7 +244,11 @@ export default function CanvasProjectInfo({ projectDetails, userDetails, edit, o
       return;
     }
     setIsAnalyzing(true);
-    const data = { userId: _id, caseStudy: projectDetails, projectId: projectDetails._id };
+    const aiProject = {
+      ...projectDetails,
+      metaFields: projectDetails.metaFields?.map(({ value }) => ({ value })),
+    };
+    const data = { userId: _id, caseStudy: aiProject, projectId: projectDetails._id };
     try {
       const response = await _analyzeCaseStudy(data);
       setShowModal(true);
@@ -250,7 +268,11 @@ export default function CanvasProjectInfo({ projectDetails, userDetails, edit, o
 
   const handleReAnalyze = async () => {
     setIsAnalyzing(true);
-    const data = { userId: _id, caseStudy: projectDetails, projectId: projectDetails._id };
+    const aiProject = {
+      ...projectDetails,
+      metaFields: projectDetails.metaFields?.map(({ value }) => ({ value })),
+    };
+    const data = { userId: _id, caseStudy: aiProject, projectId: projectDetails._id };
     try {
       const response = await _analyzeCaseStudy(data);
       setShowModal(true);
@@ -515,7 +537,7 @@ export default function CanvasProjectInfo({ projectDetails, userDetails, edit, o
       </motion.div>
 
       {/* Project Details */}
-      {(edit || !!client || !!role || !!industry || !!platform) && (
+      {(edit || [0, 1, 2, 3].some((i) => !!getMetaValue(projectDetails, i))) && (
         <motion.div
           variants={itemVariants}
           className="w-full rounded-[32px] border border-[#E5D7C4] bg-white p-6 md:p-8 dark:border-white/10 dark:bg-[#2A2520]"
@@ -525,18 +547,38 @@ export default function CanvasProjectInfo({ projectDetails, userDetails, edit, o
           </h2>
           <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
             {[
-              { label: "Client", value: client, field: "client" },
-              { label: "My Role", value: role, field: "role" },
-              { label: "Industry", value: industry, field: "industry" },
-              { label: "Platform", value: platform, field: "platform" },
-            ].map(({ label, value, field }) => (
+              {
+                index: 0,
+                label: getMetaLabel(projectDetails, 0),
+                value: getMetaValue(projectDetails, 0),
+              },
+              {
+                index: 2,
+                label: getMetaLabel(projectDetails, 2),
+                value: getMetaValue(projectDetails, 2),
+              },
+              {
+                index: 1,
+                label: getMetaLabel(projectDetails, 1),
+                value: getMetaValue(projectDetails, 1),
+              },
+              {
+                index: 3,
+                label: getMetaLabel(projectDetails, 3),
+                value: getMetaValue(projectDetails, 3),
+              },
+            ].map(({ index, label, value }) => (
               <ProjectDetailField
-                key={field}
+                key={index}
                 label={label}
                 value={value}
-                field={field}
+                field={index}
                 edit={edit}
-                handleOnBlur={handleOnBlur}
+                handleOnBlur={(idx, e) => {
+                  const text = e.target.textContent;
+                  saveMetaValue(idx, text === "Type here..." ? "" : text);
+                  e.target.textContent = text.length > 0 ? text : "Type here...";
+                }}
                 handleInput={handleInput}
               />
             ))}

@@ -188,10 +188,12 @@ export function mapPendingPortfolioToUpdatePayload(content, personas, tools) {
       return {
         title: proj.title ?? "",
         description: desc,
-        industry: proj.category ?? "",
-        client: proj.client ?? "",
-        role: proj.role ?? "",
-        platform: proj.platform ?? "",
+        metaFields: [
+          { label: "Client", value: proj.client ?? "" },
+          { label: "Industry", value: proj.category ?? "" },
+          { label: "Role", value: proj.role ?? "" },
+          { label: "Platform", value: proj.platform ?? "" },
+        ],
         contentVersion: 2,
         tiptapContent: toTiptapDoc(desc),
       };

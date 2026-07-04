@@ -220,7 +220,7 @@ export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }
           mode="public"
           onBack={() => typeof window !== "undefined" && window.history.back()}
           onWorkClick={() => typeof window !== "undefined" && window.history.back()}
-          resumeUrl={ownerUser?.resumeUrl ?? null}
+          resumeUrl={ownerUser?.resume?.url ?? null}
           owner={ownerUser}
         />
       )

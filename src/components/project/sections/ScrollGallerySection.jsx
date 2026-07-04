@@ -148,7 +148,7 @@ export default function ScrollGallerySection({ section, onChange, mode }) {
     return () => cancelAnimationFrame(animRef.current);
   }, [urlCount]);
 
-  return (
+  const inner = (
     <div className="-mx-6 py-10">
       {/* Overflow + edge fades */}
       <div
@@ -228,4 +228,9 @@ export default function ScrollGallerySection({ section, onChange, mode }) {
       )}
     </div>
   );
+
+  if (!editable) {
+    return <div className="mx-auto max-w-[880px] overflow-hidden">{inner}</div>;
+  }
+  return inner;
 }

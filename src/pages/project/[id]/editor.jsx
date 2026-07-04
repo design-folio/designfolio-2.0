@@ -194,7 +194,7 @@ export default function Index() {
       onWorkClick={() =>
         router.push({ pathname: "/builder", query: { scrollTo: "section-projects" } })
       }
-      resumeUrl={userDetails?.resumeUrl ?? null}
+      resumeUrl={userDetails?.resume?.url ?? null}
       owner={userDetails}
     />
   ) : null;

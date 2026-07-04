@@ -38,9 +38,9 @@ export default function UpdatePersonaSidebar() {
       const { persona } = userDetails;
       if (persona?.value && persona?.label) {
         const isCustom =
-          persona.__isNew__ === true || persona.label === "Others" || !!persona.custom;
+          persona.__isNew__ === true || persona.label === "Other" || !!persona.custom;
         if (isCustom) {
-          setSelectedRole("Others");
+          setSelectedRole("Other");
           setCustomRole(persona.custom || "");
           setSelectedPersonaId(persona.value);
         } else {
@@ -51,7 +51,7 @@ export default function UpdatePersonaSidebar() {
             setSelectedRole(match.label);
             setSelectedPersonaId(match._id);
           } else {
-            setSelectedRole("Others");
+            setSelectedRole("Other");
             setCustomRole(persona.label);
             setSelectedPersonaId(persona.value);
           }
@@ -65,8 +65,8 @@ export default function UpdatePersonaSidebar() {
     try {
       const persona = {
         value: selectedPersonaId,
-        label: selectedRole === "Others" ? customRole.trim() : selectedRole,
-        ...(selectedRole === "Others" && { __isNew__: true }),
+        label: selectedRole === "Other" ? customRole.trim() : selectedRole,
+        ...(selectedRole === "Other" && { __isNew__: true }),
       };
       const res = await _updateUser({ persona });
       const updated = res?.data?.user;
@@ -148,7 +148,7 @@ export default function UpdatePersonaSidebar() {
           )}
 
           <AnimatePresence>
-            {selectedRole === "Others" && (
+            {selectedRole === "Other" && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}

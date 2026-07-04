@@ -246,7 +246,7 @@ export default function ImageTextSection({ section, onChange, mode }) {
         </div>
       ) : (
         <div
-          className={`flex flex-col items-start gap-10 md:flex-row ${layout === "image-right" ? "md:flex-row-reverse" : ""}`}
+          className={`flex flex-col items-center gap-10 md:flex-row ${layout === "image-right" ? "md:flex-row-reverse" : ""}`}
         >
           <div className={imageWrapperClass} style={imageWrapperStyle}>
             {imageEl}

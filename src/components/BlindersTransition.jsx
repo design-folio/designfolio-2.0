@@ -32,15 +32,12 @@ const EASE_OPEN = [0.22, 1, 0.36, 1];
 
 // ─── Route filter ────────────────────────────────────────────────────────────
 
-function isAnimatedRoute(url) {
+function isBlindersRoute(url) {
   const path = url.split("?")[0];
   return (
     path === "/builder" ||
-    path === "/portfolio-preview" ||
-    /^\/preview\/[^/]+$/.test(path) ||
     /^\/project\/[^/]+$/.test(path) ||
-    /^\/project\/[^/]+\/editor$/.test(path) ||
-    /^\/project\/[^/]+\/preview$/.test(path)
+    /^\/project\/[^/]+\/editor$/.test(path)
   );
 }
 
@@ -135,7 +132,7 @@ export function BlindersTransition({ children }) {
     };
 
     const onStart = (url) => {
-      if (!isAnimatedRoute(url)) return;
+      if (!isBlindersRoute(url)) return;
       clearTimers();
       panelsClosedRef.current = false;
       routeReadyRef.current = false;

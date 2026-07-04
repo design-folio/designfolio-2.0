@@ -539,6 +539,7 @@ const ThemePanel = ({
                       onCheckedChange={(checked) =>
                         applyThemeChange(checked, appearanceSwitchRefLayouts.current)
                       }
+                      className="data-[state=checked]:!bg-df-orange-color"
                       data-testid={
                         isMobile ? "switch-theme-mode-layouts-mobile" : "switch-theme-mode-layouts"
                       }
@@ -603,6 +604,7 @@ const ThemePanel = ({
                     onCheckedChange={(checked) =>
                       applyThemeChange(checked, appearanceSwitchRefBackground.current)
                     }
+                    className="data-[state=checked]:!bg-df-orange-color"
                     data-testid={
                       isMobile ? "switch-wallpaper-mode-mobile" : "switch-wallpaper-mode"
                     }

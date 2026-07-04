@@ -19,6 +19,12 @@ import ResizeHandle from "@/components/project/ResizeHandle";
 import { TextEffect } from "@/components/ui/text-effect";
 import { normalizeEditableEmpty, handlePlainTextPaste } from "./editableUtils";
 
+// ─── Shared title typography — change once, applies to animation + editable ───
+const IMMERSIVE_TITLE_CLS =
+  "mb-8 text-[36px] leading-[1.25] font-semibold tracking-[-0.02em] text-white";
+const EDITORIAL_TITLE_CLS =
+  "mb-5 text-[38px] leading-[1.25] font-semibold tracking-[-0.02em] md:text-[36px]";
+
 // ─── Inline-editable field ────────────────────────────────────────────────────
 function EditableField({ value, onChange, tag: Tag = "span", placeholder, className, readOnly }) {
   const ref = useRef(null);
@@ -182,11 +188,7 @@ function LockPopover({ project, dark }) {
               Require a password to view this project (e.g., for NDAs).
             </p>
           </div>
-          <Switch
-            checked={enabled}
-            onCheckedChange={handleToggle}
-            className="mt-0.5 data-[state=checked]:bg-[#1A1A1A] dark:data-[state=checked]:bg-[#F0EDE7]"
-          />
+          <Switch checked={enabled} onCheckedChange={handleToggle} className="mt-0.5" />
         </div>
         <AnimatePresence>
           {enabled && (
@@ -534,7 +536,10 @@ export default function ProjectHero({
                       onChange={(v) => onChange?.({ title: v })}
                       tag="h1"
                       placeholder="Project title…"
-                      className="mb-8 text-[36px] leading-[1.25] font-semibold tracking-[-0.02em] text-white [&:focus]:bg-white/10 [&:focus]:ring-1 [&:focus]:ring-white/20"
+                      className={cn(
+                        IMMERSIVE_TITLE_CLS,
+                        "[&:focus]:bg-white/10 [&:focus]:ring-1 [&:focus]:ring-white/20"
+                      )}
                     />
                   ) : (
                     <TextEffect
@@ -542,7 +547,7 @@ export default function ProjectHero({
                       preset="blur"
                       per="word"
                       delay={0.1}
-                      className="mb-8 text-[36px] leading-[1.5] font-bold tracking-[-0.02em] [overflow-wrap:anywhere] text-white"
+                      className={cn(IMMERSIVE_TITLE_CLS, "[overflow-wrap:anywhere]")}
                       onAnimationComplete={() => setTitleAnimDone(true)}
                     >
                       {project?.title || "Untitled Project"}
@@ -619,11 +624,7 @@ export default function ProjectHero({
               {/* Editor gets the full width so all controls fit and clear the
                   centered builder pill; public/preview stays aligned to the
                   880px title column. */}
-              <NavRow
-                dark={false}
-                containerClass={isEditable ? "px-6 md:px-10" : "max-w-[880px] px-6 md:px-10"}
-                {...navRowProps}
-              />
+              <NavRow dark={false} containerClass="max-w-[880px] px-6 md:px-10" {...navRowProps} />
             </div>
           </div>
 
@@ -638,7 +639,10 @@ export default function ProjectHero({
                       onChange={(v) => onChange?.({ title: v })}
                       tag="h1"
                       placeholder="Project title…"
-                      className="mb-5 text-[38px] leading-[1.25] font-semibold tracking-[-0.02em] text-[#1A1A1A] focus:bg-black/[0.04] focus:ring-1 focus:ring-black/10 md:text-[36px] dark:text-[#F0EDE7] dark:focus:bg-white/[0.06] dark:focus:ring-white/10"
+                      className={cn(
+                        EDITORIAL_TITLE_CLS,
+                        "text-[#1A1A1A] focus:bg-black/[0.04] focus:ring-1 focus:ring-black/10 dark:text-[#F0EDE7] dark:focus:bg-white/[0.06] dark:focus:ring-white/10"
+                      )}
                     />
                   ) : (
                     <TextEffect
@@ -646,7 +650,10 @@ export default function ProjectHero({
                       preset="blur"
                       per="word"
                       delay={0.05}
-                      className="mb-5 text-[38px] leading-[1.05] font-bold tracking-[-0.02em] [overflow-wrap:anywhere] text-[#1A1A1A] md:text-[52px] dark:text-[#F0EDE7]"
+                      className={cn(
+                        EDITORIAL_TITLE_CLS,
+                        "[overflow-wrap:anywhere] text-[#1A1A1A] dark:text-[#F0EDE7]"
+                      )}
                       onAnimationComplete={() => setTitleAnimDone(true)}
                     >
                       {project?.title || "Untitled Project"}
@@ -667,7 +674,10 @@ export default function ProjectHero({
                     preset="blur"
                     per="word"
                     delay={0.03}
-                    className="mb-5 text-[38px] leading-[1.05] font-bold tracking-[-0.02em] [overflow-wrap:anywhere] text-[#1A1A1A] md:text-[52px] dark:text-[#F0EDE7]"
+                    className={cn(
+                      EDITORIAL_TITLE_CLS,
+                      "[overflow-wrap:anywhere] text-[#1A1A1A] dark:text-[#F0EDE7]"
+                    )}
                   >
                     {project?.title || "Untitled Project"}
                   </TextEffect>

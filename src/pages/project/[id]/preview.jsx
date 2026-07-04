@@ -174,7 +174,7 @@ export default function Index() {
       mode="preview"
       onBack={() => router.push("/portfolio-preview")}
       onWorkClick={() => router.push("/portfolio-preview")}
-      resumeUrl={userDetails?.resumeUrl ?? null}
+      resumeUrl={userDetails?.resume?.url ?? null}
       owner={userDetails}
     />
   ) : null;

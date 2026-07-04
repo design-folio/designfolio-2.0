@@ -27,7 +27,14 @@ export function useProjectAutosave({ projectId, projectState, mode, onSaveSucces
     if (!projectId || !latestStateRef.current) return;
     setSaveStatus("saving");
     try {
-      await _updateProject(projectId, latestStateRef.current);
+      const payload = { ...latestStateRef.current };
+      // Placeholder thumbnails from the backend only carry a `url` (no `key`).
+      // Sending them causes a 400 "Key is required" from the API, so we strip
+      // the thumbnail until the user uploads their own image.
+      if (payload.thumbnail && !payload.thumbnail.key) {
+        delete payload.thumbnail;
+      }
+      await _updateProject(projectId, payload);
       setSaveStatus("saved");
       onSaveSuccessRef.current?.(latestStateRef.current);
     } catch {

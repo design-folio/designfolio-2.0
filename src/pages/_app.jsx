@@ -266,8 +266,7 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
     !!dfToken &&
     (router.pathname === "/builder" ||
       router.pathname === "/settings" ||
-      router.pathname === "/analytics" ||
-      router.pathname === "/project/[id]/editor") &&
+      router.pathname === "/analytics") &&
     router.query?.view !== "ai-tools";
 
   // Stamp data-page="landing" on <html> for landing/auth/legal pages

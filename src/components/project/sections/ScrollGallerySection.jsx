@@ -2,8 +2,9 @@ import { useRef, useState, useEffect } from "react";
 import { Upload, Plus, Trash2, Loader2 } from "lucide-react";
 import { uploadSectionImage } from "@/components/project/uploadSectionImage";
 
-const SPEED = 0.3; // px per frame — slow, cinematic
+const SPEED = 0.25; // px per frame — slow, cinematic
 const GAP = 20; // must match gap-5 (20px)
+const COPIES = 6; // enough copies to always fill the viewport without gaps
 
 function ScrollCard({ item, idx, editable, onUpload, onDelete }) {
   const inputRef = useRef(null);
@@ -112,6 +113,9 @@ export default function ScrollGallerySection({ section, onChange, mode }) {
   const pausedRef = useRef(false);
   const animRef = useRef(0);
 
+  const viewItems = items.filter((i) => i.url);
+  const urlCount = viewItems.length;
+
   const updateItem = (index, patch) => {
     onChange({
       ...content,
@@ -128,9 +132,9 @@ export default function ScrollGallerySection({ section, onChange, mode }) {
     onChange({ ...content, items: next.length ? next : [{ url: null, key: null }] });
   };
 
-  // RAF-based infinite scroll — works in both editor and preview
+  // RAF-based infinite scroll — editor and view/preview
   useEffect(() => {
-    if (items.length < 2) return;
+    if (urlCount === 0) return;
     const tick = () => {
       if (!pausedRef.current && trackRef.current && firstCopyRef.current) {
         xRef.current -= SPEED;
@@ -142,10 +146,7 @@ export default function ScrollGallerySection({ section, onChange, mode }) {
     };
     animRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(animRef.current);
-  }, [items.length]);
-
-  // Only render items that have a url in the second (mirror) copy
-  const mirrorItems = items.filter((i) => i.url);
+  }, [urlCount]);
 
   return (
     <div className="-mx-6 py-10">
@@ -165,29 +166,52 @@ export default function ScrollGallerySection({ section, onChange, mode }) {
           pausedRef.current = false;
         }}
       >
-        {/* Transform track — two copies for seamless loop */}
+        {/* Transform track */}
         <div ref={trackRef} className="flex w-max gap-5 px-6" style={{ willChange: "transform" }}>
-          {/* First copy — editable, measured for loop boundary */}
-          <div ref={firstCopyRef} className="flex gap-5">
-            {items.map((item, i) => (
-              <ScrollCard
-                key={i}
-                item={item}
-                idx={i}
-                editable={editable}
-                onUpload={(patch) => updateItem(i, patch)}
-                onDelete={() => removeItem(i)}
-              />
-            ))}
-          </div>
-          {/* Second copy — display-only mirror (no upload, no delete) */}
-          <div className="flex gap-5" aria-hidden="true">
-            {mirrorItems.map((item, i) => (
-              <div key={i} className="w-[380px] shrink-0 overflow-hidden rounded-xl">
-                <img src={item.url} alt="" className="block h-auto w-[380px]" />
+          {editable ? (
+            /* Editor: editable first copy + read-only mirrors for seamless loop */
+            <>
+              <div ref={firstCopyRef} className="flex gap-5">
+                {items.map((item, i) => (
+                  <ScrollCard
+                    key={i}
+                    item={item}
+                    idx={i}
+                    editable={editable}
+                    onUpload={(patch) => updateItem(i, patch)}
+                    onDelete={() => removeItem(i)}
+                  />
+                ))}
               </div>
-            ))}
-          </div>
+              {viewItems.length > 0 &&
+                Array.from({ length: COPIES - 1 }, (_, copyIdx) => (
+                  <div key={copyIdx} className="flex gap-5" aria-hidden="true">
+                    {viewItems.map((item, i) => (
+                      <div key={i} className="w-[380px] shrink-0 overflow-hidden rounded-xl">
+                        <img src={item.url} alt="" className="block h-auto w-[380px]" />
+                      </div>
+                    ))}
+                  </div>
+                ))}
+            </>
+          ) : (
+            /* View mode: COPIES identical copies for a seamless, gap-free loop */
+            viewItems.length > 0 &&
+            Array.from({ length: COPIES }, (_, copyIdx) => (
+              <div
+                key={copyIdx}
+                ref={copyIdx === 0 ? firstCopyRef : undefined}
+                className="flex gap-5"
+                aria-hidden={copyIdx > 0 ? "true" : undefined}
+              >
+                {viewItems.map((item, i) => (
+                  <div key={i} className="w-[380px] shrink-0 overflow-hidden rounded-xl">
+                    <img src={item.url} alt="" className="block h-auto w-[380px]" />
+                  </div>
+                ))}
+              </div>
+            ))
+          )}
         </div>
       </div>
 

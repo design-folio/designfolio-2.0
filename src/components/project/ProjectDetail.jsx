@@ -174,6 +174,7 @@ export default function ProjectDetail({ project, mode, onBack, onWorkClick, resu
     setUpgradeModalSource,
     analysisCreditsRemaining,
     setAnalysisCreditsRemaining,
+    setUserDetails,
   } = useGlobalContext();
 
   const [projectState, setProjectState] = useState({
@@ -332,15 +333,43 @@ export default function ProjectDetail({ project, mode, onBack, onWorkClick, resu
     ]
   );
 
+  const handleSaveSuccess = useCallback(
+    (savedState) => {
+      if (!projectId) return;
+      const { sections: _sections, ...heroFields } = savedState;
+      setUserDetails((prev) => {
+        if (!prev) return prev;
+        const updatedProjects = (prev.projects || []).map((p) =>
+          p._id === projectId ? { ...p, ...heroFields } : p
+        );
+        return { ...prev, projects: updatedProjects };
+      });
+    },
+    [projectId, setUserDetails]
+  );
+
   const { saveStatus, retry } = useProjectAutosave({
     projectId: project?._id,
     projectState: savePayload,
     mode,
+    onSaveSuccess: handleSaveSuccess,
   });
 
-  const handleProjectChange = useCallback((patch) => {
-    setProjectState((prev) => ({ ...prev, ...patch }));
-  }, []);
+  const handleProjectChange = useCallback(
+    (patch) => {
+      setProjectState((prev) => ({ ...prev, ...patch }));
+      // Optimistically sync into the userDetails.projects cache so the portfolio
+      // builder reflects changes immediately on navigation (before autosave fires).
+      setUserDetails((prev) => {
+        if (!prev || !projectId) return prev;
+        const updatedProjects = (prev.projects || []).map((p) =>
+          p._id === projectId ? { ...p, ...patch } : p
+        );
+        return { ...prev, projects: updatedProjects };
+      });
+    },
+    [projectId, setUserDetails]
+  );
 
   const handleMetaChange = useCallback(
     (index, patch) => {

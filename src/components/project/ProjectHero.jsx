@@ -1,5 +1,12 @@
 import { useRef, useState, useCallback, useEffect } from "react";
-import { motion, AnimatePresence, LayoutGroup, useScroll, useTransform } from "motion/react";
+import {
+  motion,
+  AnimatePresence,
+  LayoutGroup,
+  useScroll,
+  useTransform,
+  useAnimation,
+} from "motion/react";
 import { ChevronLeft, Upload, Lock, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
@@ -158,7 +165,7 @@ function LockPopover({ project, dark }) {
           )}
         >
           <Lock size={15} strokeWidth={2} className="shrink-0" />
-          Password Protect
+          <span className="hidden sm:inline">Password Protect</span>
         </button>
       </PopoverTrigger>
       <PopoverContent
@@ -296,7 +303,7 @@ function NavRow({
                         )}
                       >
                         <Sparkles size={15} strokeWidth={2} className="shrink-0" />
-                        {analyzeButtonLabel}
+                        <span className="hidden sm:inline">{analyzeButtonLabel}</span>
                       </button>
                     </span>
                   </TooltipTrigger>
@@ -355,6 +362,13 @@ export default function ProjectHero({
   const [isResizingHeight, setIsResizingHeight] = useState(false);
   const [showHeightHandle, setShowHeightHandle] = useState(false);
   const [heightHandleHovered, setHeightHandleHovered] = useState(false);
+
+  const imgControls = useAnimation();
+  useEffect(() => {
+    if (heroView !== "immersive") return;
+    imgControls.set({ scale: 1.06 });
+    imgControls.start({ scale: 1, transition: { duration: 1.5, ease: [0.25, 0.46, 0.45, 0.94] } });
+  }, [heroView, imageUrl]);
 
   // Parallax (must be at top level — not inside conditional)
   const { scrollY } = useScroll();
@@ -459,9 +473,7 @@ export default function ProjectHero({
                 alt={project?.title || "Project cover"}
                 className="absolute w-full object-cover"
                 style={{ y: heroImageY, height: "130%", top: "-15%" }}
-                initial={{ scale: 1.06 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 1.5, ease: [0.25, 0.46, 0.45, 0.94] }}
+                animate={imgControls}
               />
             ) : (
               <div className="absolute inset-0 flex items-center justify-center bg-[#1A1A1A]">

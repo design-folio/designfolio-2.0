@@ -1,7 +1,7 @@
 import { startTransition, useCallback, useEffect, useRef, useState } from "react";
 import { _updateProject } from "@/network/post-request";
 
-export function useProjectAutosave({ projectId, projectState, mode }) {
+export function useProjectAutosave({ projectId, projectState, mode, onSaveSuccess }) {
   const [saveStatus, setSaveStatus] = useState("saved"); // "saved" | "unsaved" | "saving" | "error"
   const timerRef = useRef(null);
   const isFirstRun = useRef(true);
@@ -18,12 +18,18 @@ export function useProjectAutosave({ projectId, projectState, mode }) {
     startTransition(() => setSaveStatus("saved"));
   }, [projectId]);
 
+  const onSaveSuccessRef = useRef(onSaveSuccess);
+  useEffect(() => {
+    onSaveSuccessRef.current = onSaveSuccess;
+  }, [onSaveSuccess]);
+
   const doSave = useCallback(async () => {
     if (!projectId || !latestStateRef.current) return;
     setSaveStatus("saving");
     try {
       await _updateProject(projectId, latestStateRef.current);
       setSaveStatus("saved");
+      onSaveSuccessRef.current?.(latestStateRef.current);
     } catch {
       setSaveStatus("error");
     }

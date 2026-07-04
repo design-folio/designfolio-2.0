@@ -25,7 +25,7 @@ export default function RoleGrid({
         >
           {roles.map((role) => {
             const isSelected = selectedRole === role.label;
-            const isOthers = role.label === "Others";
+            const isOthers = role.label === "Other";
             return (
               <button
                 key={role.label}
@@ -73,7 +73,7 @@ export default function RoleGrid({
       </div>
 
       <AnimatePresence>
-        {selectedRole === "Others" && (
+        {selectedRole === "Other" && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}

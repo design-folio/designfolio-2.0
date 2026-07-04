@@ -95,11 +95,11 @@ export default function Onboarding() {
           const personaId = persona.value;
           const personaLabel = persona.label;
           const isCustom =
-            persona.__isNew__ === true || personaLabel === "Others" || !!persona.custom;
-          const customValue = persona.custom || (personaLabel === "Others" ? "" : personaLabel);
+            persona.__isNew__ === true || personaLabel === "Other" || !!persona.custom;
+          const customValue = persona.custom || (personaLabel === "Other" ? "" : personaLabel);
 
           if (isCustom) {
-            setSelectedRole("Others");
+            setSelectedRole("Other");
             setCustomRole(customValue);
             setSelectedPersonaId(personaId);
           } else {
@@ -112,7 +112,7 @@ export default function Onboarding() {
               setSelectedRole(matchedByLabel.label);
               setSelectedPersonaId(matchedByLabel._id);
             } else {
-              setSelectedRole("Others");
+              setSelectedRole("Other");
               setCustomRole(personaLabel);
               setSelectedPersonaId(personaId);
             }
@@ -231,7 +231,7 @@ export default function Onboarding() {
     const persona = {
       value: selectedPersonaId,
       label: selectedRole,
-      ...(selectedRole === "Others" && { __isNew__: true, label: customRole.trim() }),
+      ...(selectedRole === "Other" && { __isNew__: true, label: customRole.trim() }),
     };
 
     const skillsPayload = selectedInterests.map((label) => {

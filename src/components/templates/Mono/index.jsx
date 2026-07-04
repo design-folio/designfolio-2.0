@@ -156,7 +156,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
   const [aboutStoryExpanded, setAboutStoryExpanded] = useState(false);
   const aboutStoryReduceMotion = useReducedMotion();
   const userRole =
-    userDetails?.persona?.label !== "Others"
+    userDetails?.persona?.label !== "Other"
       ? userDetails?.persona?.label
       : userDetails?.persona?.custom;
   const visibleProjects = useMemo(

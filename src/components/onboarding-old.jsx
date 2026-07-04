@@ -171,7 +171,7 @@ export default function Onboarding() {
 
   const handleSubmit = (values, actions) => {
     if (isLastStep) {
-      if (selectedRole === "Others" && !customRole.trim()) {
+      if (selectedRole === "Other" && !customRole.trim()) {
         setPersonaError("Please tell us your role.");
         actions.setSubmitting(false);
         return;
@@ -183,7 +183,7 @@ export default function Onboarding() {
         ? {
             value: selectedPersonaId,
             label: selectedRole,
-            ...(selectedRole === "Others" && { __isNew__: true, label: customRole.trim() }),
+            ...(selectedRole === "Other" && { __isNew__: true, label: customRole.trim() }),
           }
         : undefined;
       const payload = {
@@ -236,11 +236,11 @@ export default function Onboarding() {
     if (!userDetails?.persona || roles.length === 0) return;
     const { persona } = userDetails;
     if (persona?.value && persona?.label) {
-      const isCustom = persona.__isNew__ === true || persona.label === "Others" || !!persona.custom;
+      const isCustom = persona.__isNew__ === true || persona.label === "Other" || !!persona.custom;
       startTransition(() => {
         if (isCustom) {
-          setSelectedRole("Others");
-          setCustomRole(persona.custom || (persona.label === "Others" ? "" : persona.label));
+          setSelectedRole("Other");
+          setCustomRole(persona.custom || (persona.label === "Other" ? "" : persona.label));
           setSelectedPersonaId(persona.value);
         } else {
           const matched =
@@ -250,7 +250,7 @@ export default function Onboarding() {
             setSelectedRole(matched.label);
             setSelectedPersonaId(matched._id);
           } else {
-            setSelectedRole("Others");
+            setSelectedRole("Other");
             setCustomRole(persona.label);
             setSelectedPersonaId(persona.value);
           }

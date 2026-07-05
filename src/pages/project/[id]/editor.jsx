@@ -1,4 +1,5 @@
 import ProjectDetail from "@/components/project/ProjectDetail";
+import { CaseStudyJoyride } from "@/components/project/CaseStudyJoyride";
 import WallpaperBackground from "@/components/WallpaperBackground";
 import { useGlobalContext } from "@/context/globalContext";
 import { TEMPLATE_IDS } from "@/lib/templates";
@@ -43,6 +44,7 @@ export default function Index() {
   const initializedRef = useRef(false);
   const [lastSidebar, setLastSidebar] = useState(() => activeSidebar ?? null);
   const isMobile = useIsMobile();
+  const [joyrideActive, setJoyrideActive] = useState(false);
 
   useEffect(() => {
     if (activeSidebar != null) startTransition(() => setLastSidebar(activeSidebar));
@@ -153,6 +155,52 @@ export default function Index() {
       .catch(() => {});
   }, [router.query.id, setAnalysisCreditsRemaining, setAnalysisCreditsLimit]);
 
+  // Joyride: show on first-ever editor open (existing users post-launch), or
+  // every time a brand-new (empty) project is opened — once per project.
+  // Single localStorage key: { global: true, projects: ["id1", "id2", ...] }
+  const JOYRIDE_KEY = "df-cs-joyride-v1";
+
+  const readJoyrideStore = () => {
+    try {
+      return JSON.parse(localStorage.getItem(JOYRIDE_KEY) || "{}");
+    } catch {
+      return {};
+    }
+  };
+
+  const isEmptyProject = (project) =>
+    !project.sections?.length && !project.tiptapContent && !project.content?.blocks?.length;
+
+  useEffect(() => {
+    const project = projectDetails?.project;
+    if (!project || typeof window === "undefined") return;
+
+    const store = readJoyrideStore();
+    const showForNewProject = isEmptyProject(project) && !store.projects?.includes(project._id);
+
+    if (!store.global || showForNewProject) {
+      startTransition(() => setJoyrideActive(true));
+    }
+  }, [projectDetails]);
+
+  // wasShown is false when the tour activated but its targets never rendered —
+  // in that case skip the localStorage write so it retries on the next open.
+  const handleJoyrideDone = useCallback(
+    (wasShown) => {
+      setJoyrideActive(false);
+      const project = projectDetails?.project;
+      if (typeof window === "undefined" || !project || !wasShown) return;
+
+      const store = readJoyrideStore();
+      store.global = true;
+      if (isEmptyProject(project)) {
+        store.projects = [...new Set([...(store.projects || []), project._id])];
+      }
+      localStorage.setItem(JOYRIDE_KEY, JSON.stringify(store));
+    },
+    [projectDetails]
+  );
+
   // Compensate for scrollbar gutter when sidebar opens so content doesn't shift.
   useEffect(() => {
     if (activeSidebar && !isMobile) {
@@ -262,6 +310,7 @@ export default function Index() {
       <SidebarProvider {...sidebarProviderProps}>
         <div className="min-h-full min-w-0 flex-1 bg-white dark:bg-[#1A1A1A]">{editorContent}</div>
         <AppSidebar />
+        {joyrideActive && <CaseStudyJoyride autoStart onDone={handleJoyrideDone} />}
       </SidebarProvider>
     );
   }
@@ -301,6 +350,7 @@ export default function Index() {
           </MacOSWindowShell>
           {/* All modals, dialogs — same as builder page */}
           <BuilderShell />
+          {joyrideActive && <CaseStudyJoyride autoStart onDone={handleJoyrideDone} />}
         </>
       </div>
       <AppSidebar />

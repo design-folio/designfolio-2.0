@@ -57,12 +57,10 @@ export default function LandingHeroSection({
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: 0.05, ease: "easeOut" }}
-        className="dark:text-foreground mb-5 max-w-[660px] text-center text-[35px] leading-[1.1] tracking-[-0.02em] text-(--lp-heading) text-[#463B34] sm:text-[45px]"
+        className="dark:text-foreground mb-5 max-w-[660px] text-center text-[35px] leading-[1.1] tracking-[-0.02em] text-balance text-(--lp-heading) text-[#463B34] sm:text-[45px]"
         style={{ fontWeight: 650 }}
       >
-        Build your Portfolio.
-        <br />
-        Land 6X more Interviews.
+        Building a portfolio was never meant to be hard.
       </motion.h1>
 
       <motion.p

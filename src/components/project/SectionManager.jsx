@@ -767,6 +767,7 @@ function EmptyState({ onAdd }) {
   return (
     <>
       <motion.div
+        data-joyride="add-section"
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
@@ -831,6 +832,7 @@ function AddSectionButton({ onAdd }) {
       <div className="group/addbtn relative flex w-full items-center justify-center py-4">
         <div className="absolute inset-x-0 top-1/2 h-px -translate-y-1/2 bg-black/[0.08] dark:bg-white/[0.08]" />
         <button
+          data-joyride="add-section"
           onClick={() => setOpen(true)}
           className="relative z-10 flex cursor-pointer items-center gap-2 rounded-full bg-[#1A1A1A] px-4 py-2 text-[12.5px] font-medium text-white shadow-sm transition-all duration-150 hover:opacity-80 active:scale-95 dark:bg-[#F0EDE7] dark:text-[#1A1A1A]"
           aria-label="Add section"

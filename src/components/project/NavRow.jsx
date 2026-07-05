@@ -110,7 +110,9 @@ export default function NavRow({
 
         {/* View toggle — editor only */}
         {isEditor && setHeroView && (
-          <ViewToggle heroView={heroView} setHeroView={setHeroView} dark={dark} />
+          <div data-joyride="view-toggle">
+            <ViewToggle heroView={heroView} setHeroView={setHeroView} dark={dark} />
+          </div>
         )}
       </div>
     </div>

@@ -1,21 +1,21 @@
-import { useCallback, useEffect, useMemo, useRef, useState, startTransition } from "react";
-import dynamic from "next/dynamic";
-import { motion } from "motion/react";
-import { Phone, CheckCircle2, AlertCircle, RotateCcw } from "lucide-react";
-import { AtSignIcon } from "lucide-animated";
-import { Button } from "@/components/ui/button";
-import { containerVariants, itemVariants } from "@/lib/animationVariants";
-import { useProjectAutosave } from "./hooks/useProjectAutosave";
-import { useLazyMigration } from "./hooks/useLazyMigration";
-import { _updateProject, _analyzeCaseStudy, _analyzeCaseStudyStatus } from "@/network/post-request";
-import { DEFAULT_META_FIELDS, resolveMetaFields } from "@/lib/constant";
-import { useGlobalContext } from "@/context/globalContext";
-import Modal from "@/components/modal";
 import AnalyzeCaseStudy from "@/components/analyzeCaseStudy";
+import Modal from "@/components/modal";
+import TiptapRenderer from "@/components/tiptapRenderer";
+import { Button } from "@/components/ui/button";
+import { useGlobalContext } from "@/context/globalContext";
+import { containerVariants, itemVariants } from "@/lib/animationVariants";
+import { DEFAULT_META_FIELDS, resolveMetaFields, sidebars } from "@/lib/constant";
+import { _analyzeCaseStudy, _analyzeCaseStudyStatus, _updateProject } from "@/network/post-request";
+import { AtSignIcon } from "lucide-animated";
+import { AlertCircle, AtSign, CheckCircle2, Pencil, Phone, RotateCcw } from "lucide-react";
+import { motion } from "motion/react";
+import dynamic from "next/dynamic";
+import { startTransition, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useLazyMigration } from "./hooks/useLazyMigration";
+import { useProjectAutosave } from "./hooks/useProjectAutosave";
 import ProjectHero from "./ProjectHero";
 import SectionManager from "./SectionManager";
 import { uploadSectionImage } from "./uploadSectionImage";
-import TiptapRenderer from "@/components/tiptapRenderer";
 
 // BlockRenderer imports editorjs-blocks-react-renderer which uses browser APIs — load client-only
 const BlockRenderer = dynamic(() => import("@/components/blockRenderer"), { ssr: false });
@@ -44,10 +44,13 @@ function ContactButton({ label, icon: Icon, iconRotate = 0, onClick }) {
 }
 
 // ─── Contact CTA + footer ─────────────────────────────────────────────────────
-function ProjectFooter({ owner }) {
+function ProjectFooter({ owner, mode }) {
+  const { openSidebar } = useGlobalContext();
+  const isEditor = mode === "editor";
   const fullName = [owner?.firstName, owner?.lastName].filter(Boolean).join(" ");
-  const contactEmail = owner?.contact_email || owner?.email;
+  const contactEmail = owner?.contact_email || owner?.contact?.email;
   const phone = owner?.phone;
+  const hasContact = !!(contactEmail || phone);
   const [copiedField, setCopiedField] = useState(null);
 
   const copy = useCallback((value, field) => {
@@ -59,6 +62,11 @@ function ProjectFooter({ owner }) {
 
   return (
     <>
+      {/* Divider */}
+      <div className="mx-auto w-full max-w-[880px] px-6 md:px-10">
+        <div className="border-t border-black/[0.07] dark:border-white/[0.07]" />
+      </div>
+
       {/* Contact CTA */}
       <motion.div
         variants={itemVariants}
@@ -72,7 +80,8 @@ function ProjectFooter({ owner }) {
         <p className="mb-4 max-w-sm text-[28px] leading-tight font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
           Got a project in mind or just curious? Let&apos;s talk.
         </p>
-        {(contactEmail || phone) && (
+
+        {hasContact ? (
           <div className="mb-4 flex w-full max-w-sm flex-wrap justify-center gap-3">
             {contactEmail && (
               <ContactButton
@@ -91,6 +100,24 @@ function ProjectFooter({ owner }) {
               />
             )}
           </div>
+        ) : isEditor ? (
+          <button
+            onClick={() => openSidebar(sidebars.footer)}
+            className="mb-4 flex cursor-pointer items-center gap-2 rounded-xl border border-dashed border-black/20 px-5 py-3 text-[13px] font-medium text-[#7A736C] transition-colors hover:border-black/30 hover:bg-black/[0.03] hover:text-[#1A1A1A] dark:border-white/20 dark:text-[#9E9893] dark:hover:border-white/30 dark:hover:bg-white/[0.03] dark:hover:text-[#F0EDE7]"
+          >
+            <AtSign size={14} />
+            Add contact info
+          </button>
+        ) : null}
+
+        {isEditor && hasContact && (
+          <button
+            onClick={() => openSidebar(sidebars.footer)}
+            className="flex cursor-pointer items-center gap-1.5 rounded-full border border-black/10 bg-white/50 px-3 py-1.5 text-[12px] font-medium text-[#7A736C] transition-colors hover:bg-black/5 hover:text-[#1A1A1A] dark:border-white/10 dark:bg-white/5 dark:text-[#9E9893] dark:hover:bg-white/10 dark:hover:text-[#F0EDE7]"
+          >
+            <Pencil size={12} />
+            Edit contact
+          </button>
         )}
       </motion.div>
 
@@ -456,7 +483,7 @@ export default function ProjectDetail({ project, mode, onBack, onWorkClick, resu
           </div>
         )}
 
-        <ProjectFooter owner={owner} />
+        <ProjectFooter owner={owner} mode={mode} />
       </motion.div>
 
       <Modal show={showAnalyzeModal} className="md:block">

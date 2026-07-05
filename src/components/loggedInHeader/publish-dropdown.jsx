@@ -96,11 +96,7 @@ export function PublishDropdown({ onClose }) {
   };
 
   const handleFirstPublish = () => {
-    if (!latestPublishDate) {
-      handlePublish();
-    } else {
-      setIsOpen((v) => !v);
-    }
+    setIsOpen((v) => !v);
   };
 
   return (
@@ -136,7 +132,13 @@ export function PublishDropdown({ onClose }) {
               onKeyDown={(e) => e.key === "Escape" && setIsOpen(false)}
               style={{ transformOrigin: "top right" }}
             >
-              <div className="w-full overflow-hidden rounded-2xl border border-black/10 bg-white p-1.5 shadow-lg dark:border-white/10 dark:bg-[#2A2520]">
+              <div
+                className="w-full overflow-hidden rounded-2xl border border-black/[0.08] bg-white p-1.5 dark:border-white/[0.08] dark:bg-[#2A2520]"
+                style={{
+                  boxShadow:
+                    "0 4px 6px -1px rgba(0,0,0,0.07), 0 10px 24px -4px rgba(0,0,0,0.12), 0 0 0 0.5px rgba(0,0,0,0.04)",
+                }}
+              >
                 <div className="flex flex-col">
                   <div className="flex items-center justify-between gap-3 px-3 py-2">
                     <div
@@ -146,9 +148,11 @@ export function PublishDropdown({ onClose }) {
                       <span className="truncate text-[13px] font-medium text-[#1A1A1A] underline-offset-2 hover:underline dark:text-[#F0EDE7]">
                         {domain}
                       </span>
-                      <span className="text-[12px] text-[#7A736C] dark:text-[#9E9893]">
-                        {latestPublishDate ? `Updated ${formattedDate}` : "Not published yet"}
-                      </span>
+                      {latestPublishDate && (
+                        <span className="text-[12px] text-[#7A736C] dark:text-[#9E9893]">
+                          Updated {formattedDate}
+                        </span>
+                      )}
                     </div>
                     <Button
                       variant="ghost"

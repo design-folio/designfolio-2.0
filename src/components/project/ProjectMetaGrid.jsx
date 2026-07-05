@@ -128,7 +128,7 @@ export default function ProjectMetaGrid({ project, onMetaChange, mode }) {
               <EditableCell
                 value={value}
                 onCommit={(val) => onMetaChange?.(index, { value: val })}
-                placeholder={`Add ${defaultLabel.toLowerCase()}…`}
+                placeholder="Write here…"
               />
             ) : (
               <span className="text-[15px] font-semibold [overflow-wrap:anywhere] text-[#1A1A1A] dark:text-[#F0EDE7]">

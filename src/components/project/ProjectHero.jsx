@@ -590,7 +590,7 @@ export default function ProjectHero({
                               value={value}
                               onChange={(v) => onMetaChange?.(index, { value: v })}
                               tag="span"
-                              placeholder={`Add ${defaultLabel.toLowerCase()}…`}
+                              placeholder="Write here…"
                               className="text-[15px] leading-snug font-semibold text-white [&:focus]:bg-white/10 [&:focus]:ring-1 [&:focus]:ring-white/20"
                             />
                           ) : (

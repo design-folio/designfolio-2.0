@@ -208,9 +208,9 @@ export default function ProjectDetail({ project, mode, onBack, onWorkClick, resu
     title: project?.title ?? "",
     description: project?.description ?? "",
     thumbnail: project?.thumbnail ?? null,
-    metaFields:
-      project?.metaFields ??
-      DEFAULT_META_FIELDS.map(({ defaultLabel }) => ({ label: defaultLabel, value: "" })),
+    metaFields: project?.metaFields?.length
+      ? project.metaFields
+      : DEFAULT_META_FIELDS.map(({ defaultLabel }) => ({ label: defaultLabel, value: "" })),
     heroView: project?.heroView ?? "editorial",
     thumbnailWidth: project?.thumbnailWidth ?? "contained",
     thumbnailHeight: project?.thumbnailHeight ?? null,
@@ -401,7 +401,7 @@ export default function ProjectDetail({ project, mode, onBack, onWorkClick, resu
   const handleMetaChange = useCallback(
     (index, patch) => {
       setProjectState((prev) => {
-        const base = prev.metaFields ?? resolveMetaFields(project);
+        const base = prev.metaFields?.length ? prev.metaFields : resolveMetaFields(project);
         const newMetaFields = base.map((f, i) => (i === index ? { ...f, ...patch } : f));
         return { ...prev, metaFields: newMetaFields };
       });

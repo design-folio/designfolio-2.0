@@ -21,8 +21,9 @@
 
 .ProseMirror {
   outline: none;
-  min-height: 300px;
+  /* min-height: 300px; */
 }
+/* NOTE: Override min-height for auto-resizing */
 
 .simple-tiptap-editor-wrapper {
   flex: 1;

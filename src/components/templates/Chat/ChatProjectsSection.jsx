@@ -209,29 +209,21 @@ export default function ChatProjectsSection({
             <div className="h-8 w-8 shrink-0" />
             <div className="w-full rounded-2xl rounded-tl-sm rounded-bl-sm border border-dashed border-black/15 bg-[#E5E2DB] p-3 dark:border-white/10 dark:bg-[#2A2520]">
               <div className="flex aspect-[3/2] w-full flex-col items-center justify-center gap-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.02]">
-                <div className="flex h-9 w-9 items-center justify-center rounded-full bg-black/[0.05] dark:bg-white/[0.05]">
-                  <Plus className="h-4 w-4 text-[#7A736C] dark:text-[#9E9893]" />
-                </div>
-                <p className="text-[11px] font-medium tracking-widest text-[#A09890] uppercase dark:text-[#7A736C]">
-                  New project
-                </p>
-                <div className="flex items-center gap-2">
-                  <Button
-                    onClick={() => openSidebar(sidebars.project)}
-                    className="flex h-8 items-center gap-1.5 rounded-full bg-[#1A1A1A] px-3.5 text-[12px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
-                  >
-                    <Pencil className="h-3 w-3" />
-                    Add Project
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => openModal(modals.aiProject)}
-                    className="flex h-8 items-center gap-1.5 rounded-full border-black/10 bg-white px-3.5 text-[12px] font-medium text-[#1A1A1A] shadow-sm transition-colors hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520] dark:text-[#F0EDE7] dark:hover:bg-[#35302A]"
-                  >
-                    <Sparkles className="h-3 w-3" />
-                    Write with AI
-                  </Button>
-                </div>
+                <Button
+                  onClick={() => openSidebar(sidebars.project)}
+                  className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
+                >
+                  <Pencil className="h-3.5 w-3.5" />
+                  Add Project
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => openModal(modals.aiProject)}
+                  className="flex h-9 items-center gap-2 rounded-full border-black/10 bg-white px-5 text-[13px] font-medium text-[#1A1A1A] shadow-sm transition-colors hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520] dark:text-[#F0EDE7] dark:hover:bg-[#35302A]"
+                >
+                  <Sparkles className="h-3.5 w-3.5" />
+                  Write with AI
+                </Button>
               </div>
             </div>
           </motion.div>
@@ -269,20 +261,21 @@ export default function ChatProjectsSection({
               Add some projects to showcase your work and experience.
             </p>
             {canEdit && (
-              <div className="flex flex-col items-center gap-3 sm:flex-row">
+              <div className="flex flex-col items-center gap-3">
                 <Button
                   onClick={() => openSidebar(sidebars.project)}
                   className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
                 >
                   <Pencil className="h-3.5 w-3.5" />
-                  Write from Scratch
+                  Add Project
                 </Button>
                 <Button
                   variant="outline"
                   onClick={() => openModal(modals.aiProject)}
                   className="flex h-9 items-center gap-2 rounded-full border-black/10 bg-white px-5 text-[13px] font-medium text-[#1A1A1A] shadow-sm transition-colors hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520] dark:text-[#F0EDE7] dark:hover:bg-[#35302A]"
                 >
-                  Write using AI
+                  <Sparkles className="h-3.5 w-3.5" />
+                  Write with AI
                 </Button>
               </div>
             )}

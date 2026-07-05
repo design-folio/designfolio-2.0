@@ -181,6 +181,10 @@ function CanvasCareerLadder({ isEditing, preview = false }) {
     const getScrollContainer = (el) => {
       let node = el?.parentElement;
       while (node && node !== document.documentElement) {
+        if (node === document.body) {
+          node = node.parentElement;
+          continue;
+        }
         const { overflow, overflowY } = window.getComputedStyle(node);
         if (/(auto|scroll)/.test(overflow + overflowY)) return node;
         node = node.parentElement;

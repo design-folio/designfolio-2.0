@@ -61,10 +61,10 @@ export default function LockPopover({ project, dark }) {
       >
         <div className="mb-3 flex items-start justify-between px-1">
           <div className="space-y-0.5">
-            <p className="text-[13px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
+            <p className="text-sm font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
               Protect Project
             </p>
-            <p className="max-w-[160px] text-[11px] leading-snug text-[#7A736C] dark:text-[#9E9893]">
+            <p className="max-w-[160px] text-[13px] leading-snug text-[#7A736C] dark:text-[#9E9893]">
               Require a password to view this project (e.g., for NDAs).
             </p>
           </div>
@@ -91,7 +91,7 @@ export default function LockPopover({ project, dark }) {
                     value={pwd}
                     onChange={(e) => setPwd(e.target.value)}
                     onBlur={() => save(enabled, pwd)}
-                    className="h-9 pr-9 text-[13px]"
+                    className="h-9 pr-9 text-sm"
                   />
                   <button
                     type="button"

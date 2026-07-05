@@ -684,9 +684,11 @@ function AddSectionModal({ onAdd, onClose }) {
               onAdd("freeform");
               onClose();
             }}
-            className="flex w-full cursor-pointer items-center justify-start gap-2 rounded-xl border border-black/[0.14] bg-white/60 px-3 py-2 text-[13px] font-medium text-[#1A1A1A] transition-[background-color,border-color,transform] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] hover:border-black/25 hover:bg-white active:scale-[0.98] dark:border-white/[0.14] dark:bg-white/[0.04] dark:text-[#F0EDE7] dark:hover:border-white/25 dark:hover:bg-white/[0.09]"
+            className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl bg-white px-3 py-2 text-[13px] font-medium text-[#1A1A1A] shadow-sm ring-1 ring-black/[0.07] transition-[box-shadow,transform] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] hover:shadow-md hover:ring-black/[0.13] active:scale-[0.97] dark:bg-[#2A2720] dark:text-[#F0EDE7] dark:ring-white/[0.08] dark:hover:ring-white/[0.15]"
           >
-            <AlignLeft size={14} strokeWidth={2} />
+            <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-[#1A1A1A] text-white dark:bg-[#F0EDE7] dark:text-[#1A1A1A]">
+              <Plus size={11} strokeWidth={2.5} />
+            </span>
             Freeform
           </button>
           <div className="my-2 flex items-center gap-2.5 px-1">

@@ -208,11 +208,11 @@ export default function Navbar() {
                   onClick={() => window.open(`https://${domain}`, "_blank")}
                 >
                   <span className="text-foreground truncate text-[13px] font-medium">{domain}</span>
-                  <span className="text-muted-foreground text-[11px]">
-                    {latestPublishDate
-                      ? `Updated ${formatTimestamp(latestPublishDate)}`
-                      : "Not published yet"}
-                  </span>
+                  {latestPublishDate && (
+                    <span className="text-muted-foreground text-[11px]">
+                      Updated {formatTimestamp(latestPublishDate)}
+                    </span>
+                  )}
                 </div>
                 <div className="flex shrink-0 items-center gap-2">
                   <Button

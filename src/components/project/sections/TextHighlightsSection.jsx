@@ -28,9 +28,16 @@ export default function TextHighlightsSection({ section, onChange, mode }) {
     onChange({ ...content, items: next.length ? next : [{ title: "", detail: "" }] });
   };
 
+  const gridCols =
+    items.length === 1
+      ? "grid-cols-1"
+      : items.length === 2
+        ? "grid-cols-1 sm:grid-cols-2"
+        : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3";
+
   return (
     <div className="mx-auto max-w-[880px] px-6 py-8 md:px-10">
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className={`grid gap-4 ${gridCols}`}>
         {items.map((item, i) => (
           <div
             key={i}

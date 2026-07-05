@@ -9,7 +9,10 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import { useTheme } from "next-themes";
 import React, { useEffect, useRef, useState, useCallback, startTransition } from "react";
-import { modals } from "@/lib/constant";
+import { useIsMobile } from "@/hooks/use-mobile";
+import { modals, getSidebarShiftWidth } from "@/lib/constant";
+import AppSidebar from "@/components/Sidebars";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import MacOSWindowShell from "@/components/templates/MacOSDock/MacOSWindowShell";
 import MacOSTemplate from "@/components/comp/MacOSTemplate";
 import BuilderShell from "@/components/BuilderShell";
@@ -24,6 +27,7 @@ export default function Index() {
     setCursor,
     setWallpaper,
     wallpaperUrl,
+    activeSidebar,
     wallpaperEffects,
     openModal,
     setSelectedProject,
@@ -31,11 +35,30 @@ export default function Index() {
     setShowUpgradeModal,
     setUpgradeModalUnhideProject,
     domainDetails,
+    closeSidebar,
     setAnalysisCreditsRemaining,
     setAnalysisCreditsLimit,
   } = useGlobalContext();
   const [projectDetails, setProjectDetails] = useState(null);
   const initializedRef = useRef(false);
+  const [lastSidebar, setLastSidebar] = useState(() => activeSidebar ?? null);
+  const isMobile = useIsMobile();
+
+  useEffect(() => {
+    if (activeSidebar != null) startTransition(() => setLastSidebar(activeSidebar));
+  }, [activeSidebar]);
+
+  // Close any sidebar inherited from the builder when entering the editor
+  useEffect(() => {
+    closeSidebar(true);
+  }, []);
+
+  // Close sidebar automatically when navigating away from the editor
+  useEffect(() => {
+    const handleRouteChangeStart = () => closeSidebar(true);
+    router.events.on("routeChangeStart", handleRouteChangeStart);
+    return () => router.events.off("routeChangeStart", handleRouteChangeStart);
+  }, [router.events, closeSidebar]);
 
   // Enable the userDetails query — required on every authenticated page
   useEffect(() => {
@@ -130,6 +153,20 @@ export default function Index() {
       .catch(() => {});
   }, [router.query.id, setAnalysisCreditsRemaining, setAnalysisCreditsLimit]);
 
+  // Compensate for scrollbar gutter when sidebar opens so content doesn't shift.
+  useEffect(() => {
+    if (activeSidebar && !isMobile) {
+      const el = document.documentElement;
+      const scrollbarWidth = window.innerWidth - el.clientWidth;
+      el.style.paddingRight = scrollbarWidth > 0 ? `${scrollbarWidth}px` : "";
+    } else {
+      document.documentElement.style.paddingRight = "";
+    }
+    return () => {
+      document.documentElement.style.paddingRight = "";
+    };
+  }, [activeSidebar, isMobile]);
+
   // Wait for userDetails to load before rendering — prevents a flash of the
   // wrong layout on refresh (before userDetails.template is known).
   if (!userDetails && userDetailLoading) {
@@ -148,6 +185,15 @@ export default function Index() {
   const template = userDetails.template ?? TEMPLATE_IDS.CANVAS;
   const isMacOS = template === TEMPLATE_IDS.RETRO_OS;
   const isEmbed = router.query.embed === "1";
+
+  const sidebarProviderProps = {
+    open: !!activeSidebar,
+    onOpenChange: (open) => !open && closeSidebar(true),
+    style: {
+      "--sidebar-width": getSidebarShiftWidth(lastSidebar) || "400px",
+    },
+    defaultOpen: false,
+  };
 
   const projectTitle = projectDetails?.project?.title || "Project";
   const currentProject = projectDetails?.project;
@@ -213,46 +259,52 @@ export default function Index() {
   // Non-MacOS: renders inside FloatingPageContainer (the builder's rounded card)
   if (!isMacOS) {
     return (
-      <div className="min-h-full min-w-0 flex-1 bg-white dark:bg-[#1A1A1A]">{editorContent}</div>
+      <SidebarProvider {...sidebarProviderProps}>
+        <div className="min-h-full min-w-0 flex-1 bg-white dark:bg-[#1A1A1A]">{editorContent}</div>
+        <AppSidebar />
+      </SidebarProvider>
     );
   }
 
-  // MacOS template: wallpaper, BuilderShell for modals
+  // MacOS template: keeps sidebar, wallpaper, BuilderShell for modals
   return (
-    <div className="min-w-0 flex-1">
-      <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
-      <>
-        {/* Full macOS desktop as background — menu bar, dock, widgets */}
-        <MacOSTemplate userDetails={userDetails} edit />
-        {/* Project window floats on top as a fixed overlay */}
-        <MacOSWindowShell
-          title={projectTitle}
-          projectUrl={getProjectUrl({
-            username: userDetails?.username,
-            baseDomain: process.env.NEXT_PUBLIC_BASE_DOMAIN,
-            customDomain: domainDetails?.customDomain?.domain,
-            isCustomVerified: domainDetails?.customDomain?.isCustomVerified,
-            projectId: router.query.id,
-          })}
-          tabs={[
-            { label: "Preview", href: `/project/${router.query.id}/preview` },
-            { label: "Editor", href: `/project/${router.query.id}/editor` },
-          ]}
-          activeTab="Editor"
-          canManage={!!currentProject}
-          isHidden={!!currentProject?.hidden}
-          hasPassword={!!currentProject?.protected}
-          projectId={currentProject?._id}
-          initialPassword={currentProject?.password || ""}
-          onDelete={handleDeleteProject}
-          onToggleVisibility={handleToggleVisibility}
-        >
-          {editorContent}
-        </MacOSWindowShell>
-        {/* All modals, dialogs — same as builder page */}
-        <BuilderShell />
-      </>
-    </div>
+    <SidebarProvider {...sidebarProviderProps}>
+      <div className="min-w-0 flex-1">
+        <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
+        <>
+          {/* Full macOS desktop as background — menu bar, dock, widgets */}
+          <MacOSTemplate userDetails={userDetails} edit />
+          {/* Project window floats on top as a fixed overlay */}
+          <MacOSWindowShell
+            title={projectTitle}
+            projectUrl={getProjectUrl({
+              username: userDetails?.username,
+              baseDomain: process.env.NEXT_PUBLIC_BASE_DOMAIN,
+              customDomain: domainDetails?.customDomain?.domain,
+              isCustomVerified: domainDetails?.customDomain?.isCustomVerified,
+              projectId: router.query.id,
+            })}
+            tabs={[
+              { label: "Preview", href: `/project/${router.query.id}/preview` },
+              { label: "Editor", href: `/project/${router.query.id}/editor` },
+            ]}
+            activeTab="Editor"
+            canManage={!!currentProject}
+            isHidden={!!currentProject?.hidden}
+            hasPassword={!!currentProject?.protected}
+            projectId={currentProject?._id}
+            initialPassword={currentProject?.password || ""}
+            onDelete={handleDeleteProject}
+            onToggleVisibility={handleToggleVisibility}
+          >
+            {editorContent}
+          </MacOSWindowShell>
+          {/* All modals, dialogs — same as builder page */}
+          <BuilderShell />
+        </>
+      </div>
+      <AppSidebar />
+    </SidebarProvider>
   );
 }
 

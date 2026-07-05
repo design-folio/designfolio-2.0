@@ -36,8 +36,11 @@ function isBlindersRoute(url) {
   const path = url.split("?")[0];
   return (
     path === "/builder" ||
+    path === "/portfolio-preview" ||
+    /^\/preview\/[^/]+$/.test(path) ||
     /^\/project\/[^/]+$/.test(path) ||
-    /^\/project\/[^/]+\/editor$/.test(path)
+    /^\/project\/[^/]+\/editor$/.test(path) ||
+    /^\/project\/[^/]+\/preview$/.test(path)
   );
 }
 

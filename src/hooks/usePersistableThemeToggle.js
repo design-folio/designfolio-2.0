@@ -9,7 +9,7 @@ import { useGlobalContext } from "@/context/globalContext";
  */
 export function usePersistableThemeToggle(persist) {
   const { resolvedTheme, theme, setTheme } = useTheme();
-  const { changeTheme } = useGlobalContext();
+  const { changeTheme, setViewerThemeOverride } = useGlobalContext();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -24,10 +24,13 @@ export function usePersistableThemeToggle(persist) {
       if (persist) {
         changeTheme(nextDark ? 1 : 0);
       } else {
+        // Public/preview viewer made a deliberate choice — mark it so downstream
+        // pages (e.g. /project/[id]) don't reset it to the owner's saved theme.
+        setViewerThemeOverride?.(true);
         setTheme(nextDark ? "dark" : "light");
       }
     },
-    [persist, changeTheme, setTheme]
+    [persist, changeTheme, setTheme, setViewerThemeOverride]
   );
 
   const toggleTheme = useCallback(() => {

@@ -100,6 +100,8 @@ export const GlobalProvider = ({ children }) => {
     grainIntensity: 25,
     motion: true,
   });
+
+  const [viewerThemeOverride, setViewerThemeOverride] = useState(false);
   const [isLoadingTemplate, setIsLoadingTemplate] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
   const [activeSidebar, setActiveSidebar] = useState(null);
@@ -769,6 +771,8 @@ export const GlobalProvider = ({ children }) => {
         setIsUserDetailsFromCache,
         userDetailsIsState,
         changeTheme,
+        viewerThemeOverride,
+        setViewerThemeOverride,
         isTaskCompleted,
         taskPercentage,
         checkList,

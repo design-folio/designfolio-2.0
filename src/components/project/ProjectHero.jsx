@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useRouter } from "next/router";
 import { AnimatePresence } from "motion/react";
 import ImmersiveHero from "./ImmersiveHero";
 import EditorialHero from "./EditorialHero";
@@ -19,6 +20,7 @@ export default function ProjectHero({
   isAnalyzeDisabled,
   isAnalyzing,
 }) {
+  const router = useRouter();
   const heroView = project?.heroView ?? "editorial";
 
   // Lifted so switching immersive↔editorial doesn't replay the title blur-in.
@@ -30,7 +32,8 @@ export default function ProjectHero({
     mode,
     heroView,
     setHeroView,
-    onBack: onBack || (() => typeof window !== "undefined" && window.history.back()),
+    // router.back() keeps the SPA navigation (and the viewer's theme choice) intact.
+    onBack: onBack || (() => router.back()),
     onWorkClick: onWorkClick || (() => {}),
     resumeUrl,
     onAnalyze,

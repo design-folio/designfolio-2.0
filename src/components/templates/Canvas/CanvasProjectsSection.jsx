@@ -132,13 +132,13 @@ function ProjectsEmptyState({ isEditing, openModal, openSidebar }) {
         Add some projects to showcase your work and experience.
       </p>
       {isEditing && (
-        <div className="flex flex-col items-center gap-3 sm:flex-row">
+        <div className="flex flex-col items-center gap-3">
           <Button
             onClick={() => openSidebar(sidebars.project)}
             className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
           >
             <Pencil className="h-3.5 w-3.5" />
-            Write from Scratch
+            Add Project
           </Button>
           <Button
             variant="secondary"
@@ -146,7 +146,7 @@ function ProjectsEmptyState({ isEditing, openModal, openSidebar }) {
             className="h-9 rounded-full px-5 text-[13px] font-medium"
           >
             <Sparkles className="h-3.5 w-3.5" />
-            Write using AI
+            Write with AI
           </Button>
         </div>
       )}
@@ -233,6 +233,7 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
         damping: 12,
         delay: 0.45,
       }}
+      id="section-projects"
       className="group/section relative w-full rounded-[26px] border border-[#E5D7C4] bg-white p-4 md:p-6 dark:border-white/10 dark:bg-[#2A2520]"
     >
       {isEditing && (
@@ -312,29 +313,21 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
             {isEditing && (
               <div className="flex flex-col gap-4">
                 <div className="flex aspect-[3/2] flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-black/15 bg-black/[0.015] transition-colors hover:bg-black/[0.03] dark:border-white/10 dark:bg-white/[0.015] dark:hover:bg-white/[0.03]">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-black/[0.05] dark:bg-white/[0.05]">
-                    <Plus className="h-4 w-4 text-[#7A736C] dark:text-[#9E9893]" />
-                  </div>
-                  <p className="text-[11px] font-medium tracking-widest text-[#A09890] uppercase dark:text-[#7A736C]">
-                    New project
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <Button
-                      onClick={() => openSidebar(sidebars.project)}
-                      className="flex h-8 items-center gap-1.5 rounded-full bg-[#1A1A1A] px-3.5 text-[12px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
-                    >
-                      <Plus className="h-3 w-3" />
-                      Add Project
-                    </Button>
-                    <Button
-                      variant="secondary"
-                      onClick={() => openModal(modals.aiProject)}
-                      className="flex h-8 items-center gap-1.5 rounded-full px-3.5 text-[12px] font-medium"
-                    >
-                      <Sparkles className="h-3 w-3" />
-                      Write with AI
-                    </Button>
-                  </div>
+                  <Button
+                    onClick={() => openSidebar(sidebars.project)}
+                    className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
+                  >
+                    <Pencil className="h-3.5 w-3.5" />
+                    Add Project
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    onClick={() => openModal(modals.aiProject)}
+                    className="flex h-9 items-center gap-2 rounded-full px-5 text-[13px] font-medium"
+                  >
+                    <Sparkles className="h-3.5 w-3.5" />
+                    Write with AI
+                  </Button>
                 </div>
               </div>
             )}

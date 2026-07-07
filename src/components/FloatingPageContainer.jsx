@@ -23,15 +23,12 @@ export function FloatingPageContainer({ isSidebarRoute, children }) {
   }
 
   // Builder, settings, analytics, project editor:
-  // Real card container — clips page background to the rounded boundary so
-  // bg-background doesn't bleed into the 8px shell gap areas.
-  // Window scroll is locked by html.sidebar-layout in globals.scss; only this
-  // container scrolls. Fixed children (AppSidebar, modals, tooltips) are
-  // viewport-relative and escape the clip naturally.
-  // On mobile the md: classes don't apply — children render in normal flow.
+
   return (
-    <div className="md:bg-background custom-thin-scrollbar md:fixed md:top-2 md:right-2 md:bottom-2 md:left-[72px] md:overflow-y-auto md:rounded-[32px] md:border md:border-black/[0.07] md:dark:border-white/[0.07]">
-      {children}
+    <div className="md:bg-background md:fixed md:top-2 md:right-2 md:bottom-2 md:left-[72px] md:[transform:translateZ(0)] md:overflow-hidden md:rounded-[32px] md:border md:border-black/[0.11] md:dark:border-white/[0.07]">
+      <div className="custom-thin-scrollbar md:h-full md:overflow-y-auto" data-scroll-root>
+        {children}
+      </div>
     </div>
   );
 }

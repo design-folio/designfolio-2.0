@@ -1,6 +1,7 @@
 import BlockRenderer from "@/components/blockRenderer";
 import ProjectInfo from "@/components/projectInfo";
 import ProjectPassword from "@/components/projectPassword";
+import ProjectDetail from "@/components/project/ProjectDetail";
 import Seo from "@/components/seo";
 import TiptapRenderer from "@/components/tiptapRenderer";
 import { useGlobalContext } from "@/context/globalContext";
@@ -192,79 +193,38 @@ export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }
 
   const monoCta = isMono && !isProtected && project && <MonoProjectFooter ownerUser={ownerUser} />;
 
-  const projectContent = (
-    <div
-      className={(() => {
-        switch (effectiveTemplate) {
-          case TEMPLATE_IDS.CANVAS:
-            return "mx-auto flex max-w-[848px] flex-col gap-3 px-4 pt-[40px] pb-20 md:px-0";
-          case TEMPLATE_IDS.MONO:
-            return "custom-dashed-x mx-auto min-h-screen max-w-[848px] bg-[#F0EDE7] pb-20 dark:bg-[#1A1A1A]";
-          default:
-            return "mx-auto max-w-[848px] px-2 pt-[16px] pb-[80px] md:px-4 lg:px-0 lg:py-[40px]";
-        }
-      })()}
-    >
-      <motion.div
-        className={`flex flex-1 flex-col ${isMono ? "" : "gap-3"}`}
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-      >
-        {projectData && project && (
-          <>
-            {isProtected ? (
-              <motion.div variants={itemVariants}>
-                <ProjectPassword
-                  status={1}
-                  projectDetails={project}
-                  id={router.query.id}
-                  setIsProtected={(value) => {
-                    if (!value && unlockedProjectData) {
-                      setUnlockedProjectData((prev) => ({
-                        ...prev,
-                        isProtected: false,
-                      }));
-                    }
-                  }}
-                  setProjectDetails={(newData) => {
-                    if (newData?.project) setUnlockedProjectData(newData);
-                  }}
-                />
-              </motion.div>
-            ) : (
-              <>
-                <motion.div variants={itemVariants}>
-                  <ProjectInfo projectDetails={project} ownerTemplate={ownerTemplate} />
-                </motion.div>
-                {project?.contentVersion === 2 && project?.tiptapContent ? (
-                  <motion.div
-                    variants={itemVariants}
-                    className={cn(isMono ? "px-6 py-8 md:px-10" : "")}
-                  >
-                    <TiptapRenderer
-                      key={project._id}
-                      content={project.tiptapContent}
-                      className={tiptapClassName}
-                    />
-                  </motion.div>
-                ) : project?.content ? (
-                  <motion.div
-                    variants={itemVariants}
-                    className={isMono ? "px-6 py-8 md:px-10" : ""}
-                  >
-                    <BlockRenderer editorJsData={project.content} />
-                  </motion.div>
-                ) : null}
-                {canvasCta}
-                {monoCta}
-              </>
-            )}
-          </>
-        )}
-      </motion.div>
-    </div>
-  );
+  const projectContent =
+    projectData && project ? (
+      isProtected ? (
+        <div className="mx-auto max-w-[848px] px-4 pt-20 pb-20">
+          <motion.div variants={itemVariants} initial="hidden" animate="visible">
+            <ProjectPassword
+              status={1}
+              projectDetails={project}
+              id={router.query.id}
+              setIsProtected={(value) => {
+                if (!value && unlockedProjectData) {
+                  setUnlockedProjectData((prev) => ({ ...prev, isProtected: false }));
+                }
+              }}
+              setProjectDetails={(newData) => {
+                if (newData?.project) setUnlockedProjectData(newData);
+              }}
+            />
+          </motion.div>
+        </div>
+      ) : (
+        <ProjectDetail
+          key={project._id}
+          project={project}
+          mode="public"
+          onBack={() => typeof window !== "undefined" && window.history.back()}
+          onWorkClick={() => typeof window !== "undefined" && window.history.back()}
+          resumeUrl={ownerUser?.resume?.url ?? null}
+          owner={ownerUser}
+        />
+      )
+    ) : null;
 
   return (
     <>
@@ -279,11 +239,7 @@ export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }
       />
       <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={effects} />
 
-      {isChatfolio && !isProtected && project ? (
-        <ChatProjectView project={project} ownerUser={ownerUser} onBack={() => router.back()} />
-      ) : isProfessional && !isProtected && project ? (
-        <ProfessionalProjectInfo projectDetails={project} userDetails={ownerUser} />
-      ) : isMacOS ? (
+      {isMacOS ? (
         <>
           {/* Full macOS desktop: use owner's profile when visitor has no userDetails */}
           {effectiveUserDetails && (
@@ -310,7 +266,7 @@ export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }
           {projectContent}
           {!ownerUser?.pro && (
             <div
-              className={`fixed right-0 bottom-0 left-0 mb-2 flex cursor-pointer justify-center text-center lg:right-[unset] lg:bottom-[24px] lg:left-1/2 lg:-translate-x-1/2 xl:block`}
+              className="fixed right-0 bottom-0 left-0 mb-2 flex cursor-pointer justify-center text-center lg:right-[unset] lg:bottom-[24px] lg:left-1/2 lg:-translate-x-1/2 xl:block"
               onClick={() => window.open("https://www.designfolio.me", "_blank")}
             >
               <MemoMadewithdesignfolio />

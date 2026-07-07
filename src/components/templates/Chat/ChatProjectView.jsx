@@ -21,6 +21,7 @@ import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
+import { getMetaLabel, getMetaValue } from "@/lib/constant";
 import { toast } from "react-toastify";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ImageWithOverlayAndPicker } from "@/components/ImageWithOverlayAndPicker";
@@ -94,11 +95,11 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
 
   // Build a details grid from whatever project fields are present
   const detailFields = [
-    (edit || project?.client) && { key: "client", label: "Client", value: project?.client },
-    (edit || project?.role) && { key: "role", label: "Role", value: project?.role },
-    (edit || project?.industry) && { key: "industry", label: "Industry", value: project?.industry },
-    (edit || project?.platform) && { key: "platform", label: "Platform", value: project?.platform },
-  ].filter(Boolean);
+    { index: 0, label: getMetaLabel(project, 0), value: getMetaValue(project, 0) },
+    { index: 2, label: getMetaLabel(project, 2), value: getMetaValue(project, 2) },
+    { index: 1, label: getMetaLabel(project, 1), value: getMetaValue(project, 1) },
+    { index: 3, label: getMetaLabel(project, 3), value: getMetaValue(project, 3) },
+  ].filter(({ value }) => edit || !!value);
 
   const hasContent = (project?.contentVersion === 2 && project?.tiptapContent) || project?.content;
   const showProcessPrompt = hasContent || edit;
@@ -143,6 +144,21 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
       e.target.textContent.trim().length > 0 ? e.target.textContent : "Type here...";
   };
 
+  const saveMetaValue = (index, newValue) => {
+    if (!projectId) return;
+    const currentMeta = project?.metaFields ?? [
+      { label: "Client", value: "" },
+      { label: "Industry", value: "" },
+      { label: "Role", value: "" },
+      { label: "Platform", value: "" },
+    ];
+    const updated = currentMeta.map((f, i) => (i === index ? { ...f, value: newValue } : f));
+    _updateProject(projectId, { metaFields: updated }).then((res) => {
+      setTheme(res?.data?.project?.theme == 1 ? "dark" : "light");
+      updateProjectCache("metaFields", updated);
+    });
+  };
+
   const handleInput = (e) => {
     const textContent = e.target.textContent;
     if (textContent.length > 110) {
@@ -181,7 +197,11 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
       return;
     }
     setIsAnalyzing(true);
-    const data = { userId: projectId, caseStudy: project, projectId: project?._id };
+    const aiProject = {
+      ...project,
+      metaFields: project?.metaFields?.map(({ value }) => ({ value })),
+    };
+    const data = { userId: projectId, caseStudy: aiProject, projectId: project?._id };
     try {
       const response = await _analyzeCaseStudy(data);
       setShowModal(true);
@@ -201,7 +221,11 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
 
   const handleReAnalyze = async () => {
     setIsAnalyzing(true);
-    const data = { userId: projectId, caseStudy: project, projectId: project?._id };
+    const aiProject = {
+      ...project,
+      metaFields: project?.metaFields?.map(({ value }) => ({ value })),
+    };
+    const data = { userId: projectId, caseStudy: aiProject, projectId: project?._id };
     try {
       const response = await _analyzeCaseStudy(data);
       setShowModal(true);
@@ -494,8 +518,8 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
                     Sure! Here are the core details:
                   </p>
                   <div className="grid grid-cols-2 gap-x-6 gap-y-4">
-                    {detailFields.map(({ key, label, value }) => (
-                      <div key={key} className="flex flex-col gap-1">
+                    {detailFields.map(({ index, label, value }) => (
+                      <div key={index} className="flex flex-col gap-1">
                         <span className="text-[12px] font-medium tracking-wide text-[#7A736C] uppercase dark:text-[#9E9893]">
                           {label}
                         </span>
@@ -506,7 +530,11 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
                           )}
                           contentEditable={edit}
                           suppressContentEditableWarning
-                          onBlur={(e) => handleOnBlur(key, e)}
+                          onBlur={(e) => {
+                            const text = e.target.textContent;
+                            saveMetaValue(index, text === "Type here..." ? "" : text.trim());
+                            e.target.textContent = text.trim().length > 0 ? text : "Type here...";
+                          }}
                           onFocus={(e) => {
                             if (e.target.textContent === "Type here...") e.target.textContent = "";
                           }}

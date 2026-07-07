@@ -146,7 +146,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
     "";
   const introduction = userDetails?.introduction || "Hey there";
   const bio = userDetails?.bio || "";
-  const email = userDetails?.contact_email || userDetails?.email || "";
+  const email = userDetails?.contact_email || "";
   const socials = userDetails?.socials || {};
   const portfolios = userDetails?.portfolios || {};
   const resumeUrl = userDetails?.resume?.url || "";
@@ -428,6 +428,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
 
           {/* Projects Section */}
           <motion.div
+            id="section-projects"
             variants={itemVariants}
             className="group/section relative px-6 py-10 pb-16 md:px-10"
           >
@@ -642,13 +643,13 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                   Add some projects to showcase your work and experience.
                 </p>
                 {isEditing && (
-                  <div className="flex flex-col items-center gap-3 sm:flex-row">
+                  <div className="flex flex-col items-center gap-3">
                     <Button
                       onClick={() => openSidebar?.(sidebars.project)}
                       className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
                     >
                       <Pencil className="h-3.5 w-3.5" />
-                      Write from Scratch
+                      Add Project
                     </Button>
                     <Button
                       variant="secondary"
@@ -656,7 +657,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                       className="border-button-outline hover:border-button-outline-hover h-9 rounded-full px-5 text-[13px] font-medium"
                     >
                       <Sparkles className="h-3.5 w-3.5" />
-                      Write using AI
+                      Write with AI
                     </Button>
                   </div>
                 )}
@@ -733,29 +734,21 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                   {isEditing && (
                     <div className="flex flex-col gap-4">
                       <div className="flex aspect-[3/2] flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-black/15 bg-black/[0.015] transition-colors hover:bg-black/[0.03] dark:border-white/10 dark:bg-white/[0.015] dark:hover:bg-white/[0.03]">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-black/[0.05] dark:bg-white/[0.05]">
-                          <Plus className="h-4 w-4 text-[#7A736C] dark:text-[#9E9893]" />
-                        </div>
-                        <p className="text-[11px] font-medium tracking-widest text-[#A09890] uppercase dark:text-[#7A736C]">
-                          New project
-                        </p>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            onClick={() => openSidebar?.(sidebars.project)}
-                            className="flex h-8 items-center gap-1.5 rounded-full bg-[#1A1A1A] px-3.5 text-[12px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
-                          >
-                            <Pencil className="h-3 w-3" />
-                            Add Project
-                          </Button>
-                          <Button
-                            variant="secondary"
-                            onClick={() => openModal(modals.aiProject)}
-                            className="flex h-8 items-center gap-1.5 rounded-full px-3.5 text-[12px] font-medium"
-                          >
-                            <Sparkles className="h-3 w-3" />
-                            Write with AI
-                          </Button>
-                        </div>
+                        <Button
+                          onClick={() => openSidebar?.(sidebars.project)}
+                          className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
+                        >
+                          <Pencil className="h-3.5 w-3.5" />
+                          Add Project
+                        </Button>
+                        <Button
+                          variant="secondary"
+                          onClick={() => openModal(modals.aiProject)}
+                          className="flex h-9 items-center gap-2 rounded-full px-5 text-[13px] font-medium"
+                        >
+                          <Sparkles className="h-3.5 w-3.5" />
+                          Write with AI
+                        </Button>
                       </div>
                     </div>
                   )}

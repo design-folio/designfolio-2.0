@@ -109,8 +109,7 @@ const FooterSettingsPanel = () => {
     const contactEmail = typeof rawContactEmail === "string" ? rawContactEmail.trim() : "";
 
     return {
-      // If contact_email is empty/missing/null, show account email by default
-      contact_email: contactEmail ? rawContactEmail : userDetails?.email || "",
+      contact_email: contactEmail,
       phone: userDetails?.phone || "",
       blogs: userDetails?.portfolios?.medium || "",
       linkedin: userDetails?.socials?.linkedin || "",
@@ -168,7 +167,7 @@ const FooterSettingsPanel = () => {
             <div className="flex flex-1 flex-col gap-8 overflow-auto p-6">
               {/* Resume Section */}
               <div className="flex flex-col gap-3">
-                <Label className="text-foreground-landing/40 px-1 text-xs font-semibold tracking-wider uppercase">
+                <Label className="text-foreground-landing/40 text-xs font-semibold tracking-wider uppercase">
                   Resume
                 </Label>
                 <input
@@ -273,11 +272,11 @@ const FooterSettingsPanel = () => {
               </div>
 
               {/* Contact Info Section */}
-              <div className="space-y-6">
-                <Label className="text-foreground-landing/40 px-1 text-xs font-semibold tracking-wider uppercase">
+              <div className="flex flex-col gap-4">
+                <Label className="text-foreground-landing/40 text-xs font-semibold tracking-wider uppercase">
                   Contact Info
                 </Label>
-                <div className="space-y-5">
+                <div className="flex flex-col gap-5">
                   <div>
                     <Text size={"p-xxsmall"} className="font-medium">
                       Contact Email
@@ -318,11 +317,11 @@ const FooterSettingsPanel = () => {
               </div>
 
               {/* Links & Socials Section */}
-              <div className="space-y-6">
-                <Label className="text-foreground-landing/40 px-1 text-xs font-semibold tracking-wider uppercase">
+              <div className="flex flex-col gap-4">
+                <Label className="text-foreground-landing/40 text-xs font-semibold tracking-wider uppercase">
                   Links & Socials
                 </Label>
-                <div className="space-y-5">
+                <div className="flex flex-col gap-5">
                   <div>
                     <Text size={"p-xxsmall"} className="font-medium">
                       Blogs (Medium)

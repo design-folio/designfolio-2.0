@@ -127,6 +127,7 @@
     "react-medium-image-zoom": "^5.2.10",
     "react-resizable-panels": "^2.1.7",
     "react-select": "^5.8.1",
+    "react-syntax-highlighter": "^16.1.1",
     "react-toastify": "^10.0.5",
     "recharts": "^3.9.0",
     "remark-gfm": "^4.0.1",

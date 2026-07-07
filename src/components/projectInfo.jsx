@@ -18,7 +18,7 @@ import { Label } from "@/components/ui/label";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { AnimatePresence, motion } from "motion/react";
 import { cn } from "@/lib/utils";
-import { popovers } from "@/lib/constant";
+import { popovers, getMetaLabel, getMetaValue } from "@/lib/constant";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import Toggle from "./toggle";
 import Text from "./text";
@@ -46,18 +46,7 @@ export default function ProjectInfo({
   edit,
   ownerTemplate,
 }) {
-  const {
-    client,
-    industry,
-    platform,
-    role,
-    title,
-    thumbnail,
-    description,
-    password,
-    _id,
-    template,
-  } = projectDetails;
+  const { title, thumbnail, description, password, _id, template } = projectDetails;
 
   const [isPassword, setPassword] = useState(projectDetails?.protected);
   const [passwordInput, setPasswordInput] = useState(password || "");
@@ -142,6 +131,19 @@ export default function ProjectInfo({
     e.target.textContent = e.target.textContent.length > 0 ? e.target.textContent : "Type here...";
   };
 
+  const saveMetaValue = (index, newValue) => {
+    const currentMeta = projectDetails.metaFields ?? [
+      { label: "Client", value: "" },
+      { label: "Industry", value: "" },
+      { label: "Role", value: "" },
+      { label: "Platform", value: "" },
+    ];
+    const updated = currentMeta.map((f, i) => (i === index ? { ...f, value: newValue } : f));
+    _updateProject(projectId, { metaFields: updated }).then(() => {
+      updateProjectCache("metaFields", updated);
+    });
+  };
+
   const needsMoreWords = suggestions?.length === 0 && wordCount !== null && wordCount < 400;
   const outOfCredits = analysisCreditsRemaining !== null && analysisCreditsRemaining <= 0;
   const isAnalyzeDisabled = isAnalyzing || needsMoreWords;
@@ -169,9 +171,13 @@ export default function ProjectInfo({
       return;
     }
     setIsAnalyzing(true);
+    const aiProject = {
+      ...projectDetails,
+      metaFields: projectDetails.metaFields?.map(({ value }) => ({ value })),
+    };
     const data = {
       userId: _id,
-      caseStudy: projectDetails,
+      caseStudy: aiProject,
       projectId: projectDetails._id,
     };
     try {
@@ -193,9 +199,13 @@ export default function ProjectInfo({
 
   const handleReAnalyze = async () => {
     setIsAnalyzing(true);
+    const aiProject = {
+      ...projectDetails,
+      metaFields: projectDetails.metaFields?.map(({ value }) => ({ value })),
+    };
     const data = {
       userId: _id,
-      caseStudy: projectDetails,
+      caseStudy: aiProject,
       projectId: projectDetails._id,
     };
     try {
@@ -285,10 +295,10 @@ export default function ProjectInfo({
   // ─── Mono (template 3) layout ─────────────────────────────────────────────
   if (isMono) {
     const monoDetailFields = [
-      { key: "client", label: "Client", value: client },
-      { key: "role", label: "My Role", value: role },
-      { key: "industry", label: "Industry", value: industry },
-      { key: "platform", label: "Platform", value: platform },
+      { index: 0, label: getMetaLabel(projectDetails, 0), value: getMetaValue(projectDetails, 0) },
+      { index: 2, label: getMetaLabel(projectDetails, 2), value: getMetaValue(projectDetails, 2) },
+      { index: 1, label: getMetaLabel(projectDetails, 1), value: getMetaValue(projectDetails, 1) },
+      { index: 3, label: getMetaLabel(projectDetails, 3), value: getMetaValue(projectDetails, 3) },
     ].filter(({ value }) => edit || !!value);
 
     return (
@@ -554,10 +564,10 @@ export default function ProjectInfo({
               </h2>
             </div>
             <div className="overflow-hidden rounded-lg border border-[#C8C4BD] bg-[#E7E3D9] dark:border-[#3A352E] dark:bg-[#2A2520]">
-              {monoDetailFields.map(({ key, label, value }, index) => (
+              {monoDetailFields.map(({ index: fieldIndex, label, value }, i) => (
                 <div
-                  key={key}
-                  className={`flex items-center justify-between px-4 py-3 ${index !== monoDetailFields.length - 1 ? "border-b border-[#C8C4BD] dark:border-[#3A352E]" : ""}`}
+                  key={fieldIndex}
+                  className={`flex items-center justify-between px-4 py-3 ${i !== monoDetailFields.length - 1 ? "border-b border-[#C8C4BD] dark:border-[#3A352E]" : ""}`}
                 >
                   <span className="text-[12px] font-medium tracking-wide text-[#463B34] uppercase dark:text-[#D4C9BC]">
                     {label}
@@ -567,7 +577,11 @@ export default function ProjectInfo({
                     style={{ fontWeight: 450 }}
                     contentEditable={edit}
                     suppressContentEditableWarning
-                    onBlur={(e) => handleOnBlur(key, e)}
+                    onBlur={(e) => {
+                      const text = e.target.textContent;
+                      saveMetaValue(fieldIndex, text === "Type here..." ? "" : text);
+                      e.target.textContent = text.length > 0 ? text : "Type here...";
+                    }}
                     onFocus={(e) => {
                       if (e.target.textContent === "Type here...") e.target.textContent = "";
                     }}

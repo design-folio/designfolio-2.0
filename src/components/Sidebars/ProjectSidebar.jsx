@@ -145,12 +145,15 @@ export default function AddProject() {
                   },
                   description: values.description,
                   title: values.title,
-                  client: values.client,
-                  industry: values.industry,
-                  role: values.role,
-                  platform: values.platform,
+                  metaFields: [
+                    { label: "Client", value: "" },
+                    { label: "Industry", value: "" },
+                    { label: "Role", value: "" },
+                    { label: "Platform", value: "" },
+                  ],
                   password: values.password,
                   protected: isPassword,
+                  heroView: "immersive",
                   contentVersion: 2,
                   tiptapContent: {
                     type: "doc",
@@ -165,9 +168,6 @@ export default function AddProject() {
                 updateCache("userDetails", res?.data?.user);
                 phEvent(POSTHOG_EVENT_NAMES.PROJECT_ADDED, {
                   project_title: values.title,
-                  industry: values.industry || null,
-                  client: values.client || null,
-                  role: values.role || null,
                   has_password: isPassword,
                 });
                 posthog.people.set({

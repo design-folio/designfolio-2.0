@@ -410,7 +410,7 @@ function JobsPreview({ parsed }) {
 // ── Right preview panel — defined outside component to avoid remount on every keystroke ──
 function PreviewContent({ tab, onTabChange, parsed }) {
   return (
-    <div className="relative flex h-full flex-1 flex-col overflow-hidden bg-[#f0ede7] dark:bg-[#1a1a1a]">
+    <div className="relative flex h-full flex-1 flex-col overflow-hidden bg-[#EFECE6] dark:bg-[#141414]">
       {/* Top fade */}
       <div className="from-background pointer-events-none absolute top-0 right-0 left-0 z-20 h-20 bg-gradient-to-b to-transparent" />
 
@@ -458,7 +458,7 @@ function PreviewContent({ tab, onTabChange, parsed }) {
 function Field({ label, children }) {
   return (
     <div className="flex flex-col gap-1.5">
-      <Label className="text-[11px] font-bold tracking-[0.1em] text-(--lp-text-faint) uppercase">
+      <Label className="dark:text-foreground/60 text-[11px] font-bold tracking-[0.1em] text-[#1A1A1A]/60 uppercase">
         {label}
       </Label>
       {children}
@@ -582,7 +582,8 @@ export default function ResumeSignup() {
     try {
       const raw = sessionStorage.getItem("df_parsed_resume");
       if (!raw) return;
-      await _postResumeApply(JSON.parse(raw));
+      // Create resume case studies in immersive mode, matching manual/AI creation.
+      await _postResumeApply({ ...JSON.parse(raw), heroView: "immersive" });
       sessionStorage.removeItem("df_parsed_resume");
     } catch {
       /* silent */
@@ -919,7 +920,7 @@ export default function ResumeSignup() {
         </motion.div>
 
         {/* ── Divider ────────────────────────────────── */}
-        <div className="hidden w-px shrink-0 bg-(--lp-border) md:block" />
+        <div className="hidden w-px shrink-0 bg-(--lp-border) md:block dark:bg-(--lp-border)/15" />
 
         {/* ── RIGHT: Preview panel (desktop) ──────────── */}
         <motion.div
@@ -953,7 +954,7 @@ export default function ResumeSignup() {
               >
                 {/* Handle */}
                 <div className="flex shrink-0 justify-center pt-3 pb-1">
-                  <div className="bg-foreground/10 h-1 w-9 rounded-full" />
+                  <div className="bg-foreground h-1 w-9 rounded-full" />
                 </div>
 
                 {/* Top fade */}

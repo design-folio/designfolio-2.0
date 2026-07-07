@@ -55,6 +55,7 @@
     --slider-thumb-bg: #fafafa;
     --switch-unchecked-bg: #cfc4af;
     --shell-bg: #e9e3db;
+    --blinder-color: hsl(42, 20%, 83%);
 
     /* Sidebar variables */
     --sidebar: 0 0% 100%;
@@ -193,6 +194,7 @@
     --slider-thumb-bg: #f6f2ef;
     --switch-unchecked-bg: #3f4358;
     --shell-bg: #1c1c1c;
+    --blinder-color: hsl(20, 8%, 17%);
 
     /* Sidebar variables */
     --sidebar: 223 16% 9%;
@@ -486,16 +488,6 @@ textarea.text-input {
   border-radius: 16px;
 }
 
-input::placeholder {
-  color: var(--input-placeholder-color);
-  opacity: 1; /* Firefox */
-}
-
-input::-ms-input-placeholder {
-  /* Edge 12-18 */
-  color: var(--input-placeholder-color);
-}
-
 .error-message {
   color: var(--input-error-color);
   margin-top: 8px;
@@ -630,7 +622,7 @@ input::-ms-input-placeholder {
 }
 
 .project-editor {
-  // overflow-x: auto;
+  overflow-x: hidden;
   position: relative;
   will-change: transform, opacity;
   word-wrap: break-word;
@@ -1006,8 +998,12 @@ body.cursor-pill-active * {
     @apply hidden;
   }
 
-  /* Placeholder styling for contentEditable div */
-  [contenteditable][data-placeholder]:empty::before {
+  /* Placeholder styling for contentEditable div.
+     :empty covers the initial mount state; [data-empty] is toggled in JS from
+     real text content (see normalizeEditableEmpty) so the placeholder never
+     lingers once a field mixes text with <br> line breaks. */
+  [contenteditable][data-placeholder]:empty::before,
+  [contenteditable][data-placeholder][data-empty]::before {
     content: attr(data-placeholder);
     color: hsl(var(--muted-foreground));
     pointer-events: none;

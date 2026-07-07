@@ -39,7 +39,7 @@ function ProfessionalProjectsTab({
   const { openModal } = useGlobalContext();
 
   return (
-    <div className="group/section grid grid-cols-1 gap-0">
+    <div id="section-projects" className="group/section grid grid-cols-1 gap-0">
       {/* Sort + Section visibility controls */}
       {isEditing && (
         <div className="flex items-center justify-end gap-2 border-b border-[#D5D0C6] px-1 py-2 dark:border-[#3A352E]">
@@ -130,35 +130,27 @@ function ProfessionalProjectsTab({
           <FrameBorders />
           <div className="relative flex min-h-[140px] flex-1 flex-col items-center justify-center gap-3 overflow-hidden bg-white/50 p-6 md:min-h-[180px] md:p-8 dark:bg-[#1A1A1A]/50">
             <FrameScrews />
-            <div className="flex h-10 w-10 items-center justify-center rounded-full border border-dashed border-[#D5D0C6] bg-[#EFECE6] dark:border-[#3A352E] dark:bg-[#2A2520]">
-              <Plus className="h-4 w-4 text-[#7A736C] dark:text-[#9E9893]" />
-            </div>
-            <p className="font-jetbrains text-[10px] font-medium tracking-widest text-[#A09890] uppercase dark:text-[#5A5550]">
-              New project slot
-            </p>
-            <div className="flex items-center gap-2">
-              <Button
-                className="font-jetbrains flex h-8 items-center gap-1.5 rounded-full bg-[#1A1A1A] px-3.5 text-[12px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onAddProject();
-                }}
-              >
-                <Pencil className="h-3 w-3" />
-                Add Project
-              </Button>
-              <Button
-                variant="outline"
-                className="font-jetbrains flex h-8 items-center gap-1.5 rounded-full border-[#D5D0C6] bg-[#EFECE6] px-3.5 text-[12px] font-medium text-[#7A736C] transition-colors hover:bg-[#E5E0D8] hover:text-[#1A1A1A] dark:border-[#3A352E] dark:bg-[#1A1A1A] dark:text-[#9E9893] dark:hover:bg-[#2A2520] dark:hover:text-[#F0EDE7]"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  openModal(modals.aiProject);
-                }}
-              >
-                <Sparkles className="h-3 w-3" />
-                Write with AI
-              </Button>
-            </div>
+            <Button
+              className="font-jetbrains flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
+              onClick={(e) => {
+                e.stopPropagation();
+                onAddProject();
+              }}
+            >
+              <Pencil className="h-3.5 w-3.5" />
+              Add Project
+            </Button>
+            <Button
+              variant="outline"
+              className="font-jetbrains flex h-9 items-center gap-2 rounded-full border-[#D5D0C6] bg-[#EFECE6] px-5 text-[13px] font-medium text-[#7A736C] transition-colors hover:bg-[#E5E0D8] hover:text-[#1A1A1A] dark:border-[#3A352E] dark:bg-[#1A1A1A] dark:text-[#9E9893] dark:hover:bg-[#2A2520] dark:hover:text-[#F0EDE7]"
+              onClick={(e) => {
+                e.stopPropagation();
+                openModal(modals.aiProject);
+              }}
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+              Write with AI
+            </Button>
           </div>
         </div>
       )}

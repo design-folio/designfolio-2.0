@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion } from "motion/react";
-import { Eye, EyeOff, Pencil } from "lucide-react";
+import { Eye, EyeOff, Pencil, Sparkles } from "lucide-react";
+import { Button as UIButton } from "@/components/ui/button";
 import { useCursorTooltip } from "@/context/cursorTooltipContext";
 import { useRouter } from "next/router";
 import Button from "@/components/button";
 import DeleteIcon from "../../../../public/assets/svgs/deleteIcon.svg";
-import AddCard from "@/components/AddCard";
 import { useGlobalContext } from "@/context/globalContext";
 import { modals, sidebars } from "@/lib/constant";
 import DragHandle from "@/components/DragHandle";
@@ -28,8 +28,6 @@ import {
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import ProjectLock from "@/components/projectLock";
-import MemoCasestudy from "@/components/icons/Casestudy";
 import Text from "@/components/text";
 import { cn } from "@/lib/utils";
 
@@ -358,7 +356,51 @@ export const SpotlightProjectsSection = ({ userDetails: userDetailsProp, edit, h
         <h2 className="text-2xl font-bold">Featured Projects</h2>
         {headerActions && <div className="shrink-0">{headerActions}</div>}
       </div>
-      {sortedProjects.length > 0 && (
+
+      {visibleProjects.length === 0 ? (
+        edit && (
+          <div className="bg-background flex flex-col items-center justify-center rounded-2xl border border-dashed border-black/10 px-4 py-16 text-center dark:border-white/10">
+            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-black/[0.03] dark:bg-white/[0.03]">
+              <svg
+                className="h-6 w-6 text-[#7A736C] dark:text-[#9E9893]"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
+                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                />
+              </svg>
+            </div>
+            <h3 className="mb-1 text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+              No projects yet
+            </h3>
+            <p className="mb-5 max-w-[250px] text-[13px] text-[#7A736C] dark:text-[#9E9893]">
+              Add some projects to showcase your work and experience.
+            </p>
+            <div className="flex flex-col items-center gap-3">
+              <UIButton
+                onClick={() => openSidebar(sidebars.project)}
+                className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
+              >
+                <Pencil className="h-3.5 w-3.5" />
+                Add Project
+              </UIButton>
+              <UIButton
+                variant="secondary"
+                onClick={() => openModal(modals.aiProject)}
+                className="h-9 rounded-full px-5 text-[13px] font-medium"
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                Write with AI
+              </UIButton>
+            </div>
+          </div>
+        )
+      ) : (
         <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
           <SortableContext
             items={visibleProjects.map((project) => project._id)}
@@ -378,29 +420,28 @@ export const SpotlightProjectsSection = ({ userDetails: userDetailsProp, edit, h
           </SortableContext>
         </DndContext>
       )}
-      {edit &&
-        (userDetails?.pro || (userDetails?.projects || []).filter((p) => !p.hidden).length < 2 ? (
-          <AddCard
-            title={`${
-              visibleProjects.length === 0 ? "Upload your first case study" : "Add case study"
-            }`}
-            subTitle="Show off your best work."
-            first={sortedProjects.length !== 0}
-            buttonTitle="Add case study"
-            secondaryButtonTitle="Write using AI"
-            onClick={() => openSidebar(sidebars.project)}
-            icon={<MemoCasestudy className="size-[72px] cursor-pointer" />}
-            openModal={openModal}
-            className={`bg-secondary mt-6 flex items-center justify-center ${
-              visibleProjects.length !== 0 &&
-              "shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)] hover:shadow-[0px_0px_16.4px_0px_rgba(0,0,0,0.02)]"
-            }`}
-          />
-        ) : (
-          <div className="mt-6">
-            <ProjectLock />
+
+      {edit && visibleProjects.length > 0 && (
+        <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div className="flex aspect-[4/3] flex-col items-center justify-center gap-3 rounded-3xl border border-dashed border-black/15 bg-black/[0.015] transition-colors hover:bg-black/[0.03] dark:border-white/10 dark:bg-white/[0.015] dark:hover:bg-white/[0.03]">
+            <UIButton
+              onClick={() => openSidebar(sidebars.project)}
+              className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
+            >
+              <Pencil className="h-3.5 w-3.5" />
+              Add Project
+            </UIButton>
+            <UIButton
+              variant="secondary"
+              onClick={() => openModal(modals.aiProject)}
+              className="h-9 rounded-full px-5 text-[13px] font-medium"
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+              Write with AI
+            </UIButton>
           </div>
-        ))}
+        </div>
+      )}
     </section>
   );
 };

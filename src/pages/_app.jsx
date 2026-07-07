@@ -32,6 +32,7 @@ import SettingsModal from "@/components/SettingsModal";
 import { BuilderSideNav } from "@/components/BuilderSideNav";
 import { BuilderTopNav } from "@/components/BuilderTopNav";
 import { FloatingPageContainer } from "@/components/FloatingPageContainer";
+import { BlindersTransition } from "@/components/BlindersTransition";
 import { UpgradePill } from "@/components/loggedInHeader/navbar/UpgradePill";
 import { CursorTooltipProvider } from "@/context/cursorTooltipContext";
 import { CursorPill } from "@/components/CursorPill";
@@ -257,14 +258,13 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
     (router.pathname === "/builder" ||
       router.pathname === "/jobs" ||
       router.pathname.startsWith("/jobs/") ||
-      router.pathname === "/project/[id]/editor" ||
       router.pathname === "/analytics" ||
-      router.pathname === "/settings");
+      router.pathname === "/settings" ||
+      router.pathname === "/project/[id]/editor");
 
   const showBuilderTopNav =
     !!dfToken &&
     (router.pathname === "/builder" ||
-      router.pathname === "/project/[id]/editor" ||
       router.pathname === "/settings" ||
       router.pathname === "/analytics") &&
     router.query?.view !== "ai-tools";
@@ -342,9 +342,13 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
                       />
                       {isSidebarRoute && <BuilderSideNav />}
                       {showBuilderTopNav && <BuilderTopNav />}
-                      {isSidebarRoute && <UpgradePill />}
+                      {isSidebarRoute && router.pathname !== "/project/[id]/editor" && (
+                        <UpgradePill />
+                      )}
                       <FloatingPageContainer isSidebarRoute={isSidebarRoute}>
-                        <Component {...pageProps} />
+                        <BlindersTransition>
+                          <Component {...pageProps} />
+                        </BlindersTransition>
                       </FloatingPageContainer>
                       <ToastContainer position="bottom-right" />
                       <UpgradeModal />

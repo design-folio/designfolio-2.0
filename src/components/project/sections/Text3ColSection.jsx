@@ -35,7 +35,7 @@ export default function Text3ColSection({ section, onChange, mode }) {
                   onChange={(v) => updateCol(i, { body: v })}
                   placeholder="Body…"
                   tag="div"
-                  className="text-sm leading-relaxed text-[#7A736C] dark:text-[#9E9893]"
+                  className="text-sm leading-relaxed font-[450] text-[#7A736C] dark:text-[#9E9893]"
                 />
               </>
             ) : (
@@ -46,7 +46,7 @@ export default function Text3ColSection({ section, onChange, mode }) {
                   </h4>
                 )}
                 {col.body && (
-                  <p className="text-sm leading-relaxed [overflow-wrap:anywhere] text-[#7A736C] dark:text-[#9E9893]">
+                  <p className="text-sm leading-relaxed font-[450] [overflow-wrap:anywhere] text-[#7A736C] dark:text-[#9E9893]">
                     {col.body}
                   </p>
                 )}

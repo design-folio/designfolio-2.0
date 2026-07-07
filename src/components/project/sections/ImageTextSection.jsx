@@ -176,7 +176,7 @@ export default function ImageTextSection({ section, onChange, mode }) {
             onChange={(v) => onChange({ ...content, body: v })}
             placeholder="Body text…"
             tag="div"
-            className="text-base leading-relaxed text-[#7A736C] dark:text-[#9E9893]"
+            className="text-base leading-relaxed font-[450] text-[#7A736C] dark:text-[#9E9893]"
           />
         </>
       ) : (
@@ -187,7 +187,7 @@ export default function ImageTextSection({ section, onChange, mode }) {
             </h3>
           )}
           {body && (
-            <p className="text-base leading-relaxed [overflow-wrap:anywhere] text-[#7A736C] dark:text-[#9E9893]">
+            <p className="text-base leading-relaxed font-[450] [overflow-wrap:anywhere] text-[#7A736C] dark:text-[#9E9893]">
               {body}
             </p>
           )}

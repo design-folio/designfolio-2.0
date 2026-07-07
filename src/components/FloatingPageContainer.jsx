@@ -23,15 +23,9 @@ export function FloatingPageContainer({ isSidebarRoute, children }) {
   }
 
   // Builder, settings, analytics, project editor:
-  // Outer: overflow-hidden + transform:translateZ(0) makes this the containing
-  // block for fixed descendants (AppSidebar, blinders) so they open inside the
-  // card and don't scroll with content.
-  // Inner: the actual scroll container, so the fixed AppSidebar stays pinned.
+
   return (
-    <div
-      className="md:bg-background md:fixed md:top-2 md:right-2 md:bottom-2 md:left-[72px] md:overflow-hidden md:rounded-[32px] md:border md:border-black/[0.11] md:dark:border-white/[0.07]"
-      style={{ transform: "translateZ(0)" }}
-    >
+    <div className="md:bg-background md:fixed md:top-2 md:right-2 md:bottom-2 md:left-[72px] md:[transform:translateZ(0)] md:overflow-hidden md:rounded-[32px] md:border md:border-black/[0.11] md:dark:border-white/[0.07]">
       <div className="custom-thin-scrollbar md:h-full md:overflow-y-auto" data-scroll-root>
         {children}
       </div>

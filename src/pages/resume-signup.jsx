@@ -953,7 +953,7 @@ export default function ResumeSignup() {
               >
                 {/* Handle */}
                 <div className="flex shrink-0 justify-center pt-3 pb-1">
-                  <div className="bg-foreground/10 h-1 w-9 rounded-full" />
+                  <div className="bg-foreground h-1 w-9 rounded-full" />
                 </div>
 
                 {/* Top fade */}

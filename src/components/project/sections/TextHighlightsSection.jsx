@@ -65,7 +65,7 @@ export default function TextHighlightsSection({ section, onChange, mode }) {
                   onChange={(v) => updateItem(i, { detail: v })}
                   placeholder="Detail…"
                   tag="div"
-                  className="mt-1 text-sm text-[#7A736C] dark:text-[#9E9893]"
+                  className="mt-1 text-sm font-[450] text-[#7A736C] dark:text-[#9E9893]"
                 />
               </>
             ) : (
@@ -76,7 +76,7 @@ export default function TextHighlightsSection({ section, onChange, mode }) {
                   </p>
                 )}
                 {item.detail && (
-                  <p className="mt-1 text-sm [overflow-wrap:anywhere] text-[#7A736C] dark:text-[#9E9893]">
+                  <p className="mt-1 text-sm font-[450] [overflow-wrap:anywhere] text-[#7A736C] dark:text-[#9E9893]">
                     {item.detail}
                   </p>
                 )}

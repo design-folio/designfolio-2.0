@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 import FreeformSection from "./sections/FreeformSection";
 import ImageGridSection from "./sections/ImageGridSection";
@@ -597,9 +598,9 @@ const MODAL_CATEGORIES = [
 function AddSectionModal({ onAdd, onClose }) {
   const [activeCategory, setActiveCategory] = useState("text");
   const [mounted, setMounted] = useState(false);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
-    // Client-only mount guard for SSR hydration safety
     const t = setTimeout(() => setMounted(true), 0);
     return () => clearTimeout(t);
   }, []);
@@ -654,7 +655,92 @@ function AddSectionModal({ onAdd, onClose }) {
 
   if (!mounted) return null;
 
-  const content = (
+  // ── Mobile: bottom sheet ─────────────────────────────────────────────────────
+  if (isMobile) {
+    return createPortal(
+      <>
+        {/* Backdrop — separate fixed element so it's always viewport-relative */}
+        <motion.div
+          className="fixed inset-0 z-[499]"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
+          style={{ background: "rgba(0,0,0,0.55)" }}
+          onPointerDown={onClose}
+        />
+
+        {/* Sheet — fixed to viewport bottom, never absolute */}
+        <motion.div
+          initial={{ y: "100%" }}
+          animate={{ y: 0 }}
+          exit={{ y: "100%" }}
+          transition={{ type: "tween", duration: 0.42, ease: [0.32, 0.72, 0, 1] }}
+          className="fixed inset-x-0 bottom-0 z-[500] flex h-[88dvh] flex-col overflow-hidden rounded-t-2xl bg-white shadow-2xl dark:bg-[#18160F]"
+          onPointerDown={(e) => e.stopPropagation()}
+        >
+          {/* Drag handle */}
+          <div className="flex shrink-0 justify-center pt-3 pb-1">
+            <div className="h-1 w-9 rounded-full bg-black/15 dark:bg-white/15" />
+          </div>
+
+          {/* Header */}
+          <div className="flex shrink-0 items-center justify-between px-5 py-3">
+            <p className="text-[15px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
+              Add section
+            </p>
+            <button
+              onClick={onClose}
+              className="flex h-7 w-7 items-center justify-center rounded-lg text-[#9E9893] transition-colors hover:bg-black/5 dark:hover:bg-white/5"
+            >
+              <X size={15} />
+            </button>
+          </div>
+
+          {/* Category tabs — horizontal scroll */}
+          <div className="shrink-0 px-5 pb-3">
+            <div className="scrollbar-hide flex items-center gap-1.5 overflow-x-auto">
+              {/* Freeform shortcut */}
+              <button
+                onClick={() => {
+                  onAdd("freeform");
+                  onClose();
+                }}
+                className="flex shrink-0 items-center gap-1.5 rounded-full bg-[#F0EDE7] px-3 py-1.5 text-[12px] font-medium whitespace-nowrap text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:bg-[#2A2520] dark:text-[#9E9893] dark:hover:text-[#F0EDE7]"
+              >
+                <AlignLeft size={12} strokeWidth={2} />
+                Freeform
+              </button>
+              <div className="h-4 w-px shrink-0 bg-black/10 dark:bg-white/10" />
+              {MODAL_CATEGORIES.map(({ key, label, icon: Icon }) => (
+                <button
+                  key={key}
+                  onClick={() => setActiveCategory(key)}
+                  className={`flex shrink-0 items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium whitespace-nowrap transition-colors ${
+                    activeCategory === key
+                      ? "bg-[#1A1A1A] text-white dark:bg-[#F0EDE7] dark:text-[#1A1A1A]"
+                      : "bg-[#F0EDE7] text-[#7A736C] hover:text-[#1A1A1A] dark:bg-[#2A2520] dark:text-[#9E9893] dark:hover:text-[#F0EDE7]"
+                  }`}
+                >
+                  <Icon size={12} strokeWidth={2} />
+                  {label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="h-px shrink-0 bg-black/[0.06] dark:bg-white/[0.06]" />
+
+          {/* Layout cards */}
+          <div className="flex-1 overflow-y-auto p-4">{layoutCards}</div>
+        </motion.div>
+      </>,
+      document.body
+    );
+  }
+
+  // ── Desktop: centered modal ───────────────────────────────────────────────────
+  return createPortal(
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
@@ -684,7 +770,7 @@ function AddSectionModal({ onAdd, onClose }) {
               onAdd("freeform");
               onClose();
             }}
-            className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl bg-white px-3 py-2 text-[13px] font-medium text-[#1A1A1A] shadow-sm ring-1 ring-black/[0.07] transition-[box-shadow,transform] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] hover:shadow-md hover:ring-black/[0.13] active:scale-[0.97] dark:bg-[#2A2720] dark:text-[#F0EDE7] dark:ring-white/[0.08] dark:hover:ring-white/[0.15]"
+            className="flex w-full cursor-pointer items-center gap-2.5 rounded-xl border border-black/[0.12] bg-transparent px-3 py-2 text-[13px] font-medium text-[#1A1A1A] transition-[transform,border-color,background-color] duration-150 ease-[cubic-bezier(0.23,1,0.32,1)] hover:border-black/25 hover:bg-black/[0.03] active:scale-[0.97] dark:border-white/[0.12] dark:text-[#F0EDE7] dark:hover:border-white/25 dark:hover:bg-white/[0.04]"
           >
             <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-[#1A1A1A] text-white dark:bg-[#F0EDE7] dark:text-[#1A1A1A]">
               <Plus size={11} strokeWidth={2.5} />
@@ -730,10 +816,9 @@ function AddSectionModal({ onAdd, onClose }) {
           <div className="flex-1 overflow-y-auto p-5">{layoutCards}</div>
         </div>
       </motion.div>
-    </motion.div>
+    </motion.div>,
+    document.body
   );
-
-  return createPortal(content, document.body);
 }
 
 // ─── Empty state ──────────────────────────────────────────────────────────────

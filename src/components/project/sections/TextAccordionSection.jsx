@@ -28,7 +28,7 @@ function AccordionItem({ item, index, editable, onUpdate, onDelete }) {
           onChange={(v) => onUpdate({ ...item, answer: v })}
           placeholder="Answer…"
           tag="div"
-          className="mt-2 text-sm leading-relaxed text-[#7A736C] dark:text-[#9E9893]"
+          className="mt-2 text-sm leading-relaxed font-[450] text-[#7A736C] dark:text-[#9E9893]"
         />
       </div>
     );
@@ -49,7 +49,7 @@ function AccordionItem({ item, index, editable, onUpdate, onDelete }) {
         />
       </button>
       {open && (
-        <p className="pb-4 text-sm leading-relaxed [overflow-wrap:anywhere] text-[#7A736C] dark:text-[#9E9893]">
+        <p className="pb-4 text-sm leading-relaxed font-[450] [overflow-wrap:anywhere] text-[#7A736C] dark:text-[#9E9893]">
           {item.answer}
         </p>
       )}

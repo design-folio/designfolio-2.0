@@ -175,19 +175,17 @@ function CanvasCareerLadder({ isEditing, preview = false }) {
     let rafId;
 
     // In the builder, html.sidebar-layout locks window scroll and the
-    // FloatingPageContainer (a fixed, overflow-y-auto div) is the real scroll
-    // container. Walk up the DOM to find it so scroll events are captured
-    // correctly in both the builder and the public/preview views.
+    // FloatingPageContainer's inner div (data-scroll-root) is the real scroll
+    // container. Use closest() to find it directly — reliable across all
+    // breakpoints and render timings. Falls back to window for public/preview
+    // routes where FloatingPageContainer renders no wrapper.
     const getScrollContainer = (el) => {
-      let node = el?.parentElement;
-      while (node && node !== document.documentElement) {
-        if (node === document.body) {
-          node = node.parentElement;
-          continue;
-        }
-        const { overflow, overflowY } = window.getComputedStyle(node);
-        if (/(auto|scroll)/.test(overflow + overflowY)) return node;
-        node = node.parentElement;
+      const root = el?.closest("[data-scroll-root]");
+      if (root) {
+        // On mobile the md: overflow classes don't apply; the element doesn't
+        // scroll, so fall back to window.
+        const { overflowY } = window.getComputedStyle(root);
+        if (/(auto|scroll)/.test(overflowY)) return root;
       }
       return window;
     };

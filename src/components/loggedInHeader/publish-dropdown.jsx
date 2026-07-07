@@ -63,47 +63,51 @@ export function PublishDropdown({ onClose }) {
     }
   };
 
-  const handlePublish = () => {
+  const handlePublish = (isFirstPublish = false) => {
     if (!userDetails?.pro && TEMPLATES_BY_ID[template]?.isPro) {
       setUpgradeModalSource("pro-template");
       setShowUpgradeModal(true);
       return;
     }
     setIsPublishing(true);
-    const isFirstPublished = !latestPublishDate;
     _publish({ status: 1 })
       .then((res) => {
         setUserDetails((prev) => ({ ...prev, ...res?.data?.user }));
         updateCache("userDetails", res?.data?.user);
         toast.success("Published successfully.");
-        if (isFirstPublished) {
+        if (isFirstPublish) {
           phEvent(POSTHOG_EVENT_NAMES.PORTFOLIO_PUBLISHED, {
             email,
             username,
             publish_type: "first_publish",
           });
+          setIsOpen(true);
         } else {
           phEvent(POSTHOG_EVENT_NAMES.EDIT_AFTER_PUBLISH, {
             email,
             username,
             publish_type: "updated",
           });
+          setIsOpen(false);
+          onClose?.();
         }
-        setIsOpen(false);
-        onClose?.();
       })
       .finally(() => setIsPublishing(false));
   };
 
-  const handleFirstPublish = () => {
-    setIsOpen((v) => !v);
+  const handleButtonClick = () => {
+    if (!latestPublishDate) {
+      handlePublish(true);
+    } else {
+      setIsOpen((v) => !v);
+    }
   };
 
   return (
     <MotionConfig reducedMotion="user">
       <div className="relative" ref={dropdownRef}>
         <Button
-          onClick={handleFirstPublish}
+          onClick={handleButtonClick}
           disabled={isPublishing}
           onMouseEnter={() => !isPublishing && zapRef.current?.startAnimation()}
           onMouseLeave={() => zapRef.current?.stopAnimation()}

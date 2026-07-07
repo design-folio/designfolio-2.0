@@ -52,7 +52,7 @@ export default function Professional({ isEditing, preview = false, publicView = 
   } = userDetails || {};
 
   const avatarSrc = useMemo(() => getUserAvatarImage(userDetails), [userDetails]);
-  const email = userDetails?.contact_email || userDetails?.email;
+  const email = userDetails?.contact_email || "";
   const phone = userDetails?.phone;
   const fullName = (
     [userDetails?.firstName, userDetails?.lastName].filter(Boolean).join(" ") ||
@@ -193,11 +193,21 @@ export default function Professional({ isEditing, preview = false, publicView = 
       })
       .map((id) => PROFESSIONAL_TAB_MAP[id]);
     // Contact is not in sectionOrder (backend restriction) — always appended last, non-sortable
-    if (isEditing || !hiddenSections.includes("contact")) {
+    const showContact =
+      isEditing || (!hiddenSections.includes("contact") && socialLinks.length > 0);
+    if (showContact) {
       sorted.push(PROFESSIONAL_TAB_MAP["contact"]);
     }
     return sorted;
-  }, [orderedSectionIds, hiddenSections, isEditing, visibleProjects, experiences, reviews]);
+  }, [
+    orderedSectionIds,
+    hiddenSections,
+    isEditing,
+    visibleProjects,
+    experiences,
+    reviews,
+    socialLinks,
+  ]);
 
   // null = user hasn't explicitly picked a tab yet → always follow visibleTabs[0]
   const [userSelectedTab, setUserSelectedTab] = useState(null);

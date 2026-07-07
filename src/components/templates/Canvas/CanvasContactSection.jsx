@@ -36,7 +36,7 @@ function LinkButton({ label, icon: Icon, iconRotate = 0, onClick }) {
 function CanvasContactSection({ isEditing }) {
   const { userDetails, openSidebar } = useGlobalContext();
 
-  const email = userDetails?.contact_email || userDetails?.email || "";
+  const email = userDetails?.contact_email || "";
   const phone = userDetails?.phone || "";
   const socials = userDetails?.socials || {};
   const portfolios = userDetails?.portfolios || {};

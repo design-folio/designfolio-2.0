@@ -25,7 +25,7 @@ export default function useChatReveal({ preview = false }) {
     phone,
   } = userDetails || {};
 
-  const email = userDetails?.contact_email || userDetails?.email;
+  const email = userDetails?.contact_email || "";
   const visibleProjects = (projects || []).filter((p) => !p.hidden);
   const aboutDescription = about?.description;
   const hasAboutDescription = aboutDescription && getPlainTextLength(aboutDescription || "") > 0;

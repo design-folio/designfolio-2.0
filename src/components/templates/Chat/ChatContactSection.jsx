@@ -16,7 +16,7 @@ import { TypingIndicator, ChatAvatar, YouPrompt } from "./chatUtils";
 export default function ChatContactSection({ chatRevealStep, s, sectionSteps, canEdit, preview }) {
   const { userDetails, openSidebar } = useGlobalContext();
   const { socials = {}, portfolios = {}, resume, phone } = userDetails || {};
-  const email = userDetails?.contact_email || userDetails?.email;
+  const email = userDetails?.contact_email || "";
   const avatarSrc = useMemo(() => getUserAvatarImage(userDetails), [userDetails]);
 
   const [copiedField, setCopiedField] = useState(null);

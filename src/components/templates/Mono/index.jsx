@@ -146,7 +146,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
     "";
   const introduction = userDetails?.introduction || "Hey there";
   const bio = userDetails?.bio || "";
-  const email = userDetails?.contact_email || userDetails?.email || "";
+  const email = userDetails?.contact_email || "";
   const socials = userDetails?.socials || {};
   const portfolios = userDetails?.portfolios || {};
   const resumeUrl = userDetails?.resume?.url || "";

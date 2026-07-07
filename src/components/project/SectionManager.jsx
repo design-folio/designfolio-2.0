@@ -777,7 +777,7 @@ function EmptyState({ onAdd }) {
           Choose a section type to begin
         </p>
 
-        <div className="flex w-full max-w-[780px] flex-col items-stretch gap-3 px-6 sm:flex-row">
+        <div className="grid w-full max-w-[780px] grid-cols-2 items-stretch gap-3 px-6 sm:flex sm:flex-row">
           {cards.map(({ label, sub, Preview, action }, i) => (
             <motion.button
               key={label}
@@ -795,7 +795,7 @@ function EmptyState({ onAdd }) {
                 rotate: 0,
                 transition: { type: "spring", stiffness: 400, damping: 20 },
               }}
-              className="group flex flex-1 cursor-pointer flex-col overflow-hidden rounded-2xl border border-black/[0.07] bg-[#F7F5F2] text-left hover:border-black/[0.18] hover:shadow-lg dark:border-white/[0.07] dark:bg-[#222222] dark:hover:border-white/[0.18]"
+              className={`group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-black/[0.07] bg-[#F7F5F2] text-left hover:border-black/[0.18] hover:shadow-lg dark:border-white/[0.07] dark:bg-[#222222] dark:hover:border-white/[0.18] sm:flex-1${i === cards.length - 1 && cards.length % 2 !== 0 ? " col-span-2 mx-auto w-[calc(50%-6px)] sm:col-span-1 sm:mx-0 sm:w-auto" : ""}`}
             >
               <div className="flex-1 p-5 pb-3 text-[#1A1A1A] dark:text-[#F0EDE7]">
                 <div className="aspect-[3/2] w-full">

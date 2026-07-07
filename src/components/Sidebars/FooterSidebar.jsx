@@ -109,8 +109,7 @@ const FooterSettingsPanel = () => {
     const contactEmail = typeof rawContactEmail === "string" ? rawContactEmail.trim() : "";
 
     return {
-      // If contact_email is empty/missing/null, show account email by default
-      contact_email: contactEmail ? rawContactEmail : userDetails?.email || "",
+      contact_email: contactEmail,
       phone: userDetails?.phone || "",
       blogs: userDetails?.portfolios?.medium || "",
       linkedin: userDetails?.socials?.linkedin || "",

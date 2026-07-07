@@ -32,7 +32,9 @@ export function FloatingPageContainer({ isSidebarRoute, children }) {
       className="md:bg-background md:fixed md:top-2 md:right-2 md:bottom-2 md:left-[72px] md:overflow-hidden md:rounded-[32px] md:border md:border-black/[0.11] md:dark:border-white/[0.07]"
       style={{ transform: "translateZ(0)" }}
     >
-      <div className="custom-thin-scrollbar md:h-full md:overflow-y-auto">{children}</div>
+      <div className="custom-thin-scrollbar md:h-full md:overflow-y-auto" data-scroll-root>
+        {children}
+      </div>
     </div>
   );
 }

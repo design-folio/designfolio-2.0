@@ -79,7 +79,7 @@ function ExternalLink({ href, children }) {
 export default function MonoContactSection({ isEditing }) {
   const { userDetails, openSidebar } = useGlobalContext();
 
-  const email = userDetails?.contact_email || userDetails?.email || "";
+  const email = userDetails?.contact_email || "";
   const phone = userDetails?.phone || "";
   const socials = userDetails?.socials || {};
   const portfolios = userDetails?.portfolios || {};

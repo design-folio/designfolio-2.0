@@ -12,7 +12,7 @@ import PlusIcon from "../../../../public/assets/svgs/plus.svg";
 import DeleteIcon from "../../../../public/assets/svgs/deleteIcon.svg";
 
 import AddItem from "@/components/addItem";
-import { modals } from "@/lib/constant";
+import { sidebars } from "@/lib/constant";
 import { Button } from "@/components/ui/button";
 import Button2 from "@/components/button";
 import { useGlobalContext } from "@/context/globalContext";
@@ -23,7 +23,7 @@ import MemoOtherlinks from "@/components/icons/Otherlinks";
 
 export const SpotlightFooter = ({ userDetails, edit }) => {
   const { portfolios, socials } = userDetails || {};
-  const { openModal, userDetailsRefecth } = useGlobalContext();
+  const { openSidebar, userDetailsRefecth } = useGlobalContext();
 
   const handleDelete = () => {
     _deleteResume().then((res) => userDetailsRefecth());
@@ -85,7 +85,7 @@ export const SpotlightFooter = ({ userDetails, edit }) => {
             <AddItem
               title="Add your resume"
               iconLeft={<MemoResume />}
-              onClick={() => openModal(modals.resume)}
+              onClick={() => openSidebar(sidebars.footer)}
               iconRight={
                 <Button2
                   size="small"
@@ -171,7 +171,7 @@ export const SpotlightFooter = ({ userDetails, edit }) => {
             <div className="flex flex-col gap-4 lg:flex-row">
               <AddItem
                 title="Add your social media"
-                onClick={() => openModal(modals.socialMedia)}
+                onClick={() => openSidebar(sidebars.footer)}
                 iconLeft={<MemoSocial />}
                 iconRight={
                   <Button2
@@ -187,7 +187,7 @@ export const SpotlightFooter = ({ userDetails, edit }) => {
               />
               <AddItem
                 title="Add your portfolio links"
-                onClick={() => openModal(modals.portfolioLinks)}
+                onClick={() => openSidebar(sidebars.footer)}
                 iconLeft={<MemoOtherlinks />}
                 iconRight={
                   <Button2

@@ -582,7 +582,8 @@ export default function ResumeSignup() {
     try {
       const raw = sessionStorage.getItem("df_parsed_resume");
       if (!raw) return;
-      await _postResumeApply(JSON.parse(raw));
+      // Create resume case studies in immersive mode, matching manual/AI creation.
+      await _postResumeApply({ ...JSON.parse(raw), heroView: "immersive" });
       sessionStorage.removeItem("df_parsed_resume");
     } catch {
       /* silent */

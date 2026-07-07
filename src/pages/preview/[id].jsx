@@ -30,6 +30,7 @@ export default function Index({ initialUserDetails }) {
     wallpaperEffects,
     setUserDetails: setCtxUserDetails,
     setTemplateContext,
+    viewerThemeOverride,
   } = useGlobalContext();
 
   const { data: userDetails } = useQuery({
@@ -61,7 +62,7 @@ export default function Index({ initialUserDetails }) {
       setTemplateContext(finalUserDetails.template);
     }
 
-    if (finalUserDetails?.theme !== undefined) {
+    if (finalUserDetails?.theme !== undefined && !viewerThemeOverride) {
       setTheme(finalUserDetails.theme == 1 ? "dark" : "light");
     }
 

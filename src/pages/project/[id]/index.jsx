@@ -44,7 +44,8 @@ const ChatProjectView = dynamic(() => import("@/components/templates/Chat/ChatPr
 export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }) {
   const router = useRouter();
   const { setTheme, theme, resolvedTheme } = useTheme();
-  const { setCursor, setWallpaper, userDetails, wallpaperEffects } = useGlobalContext();
+  const { setCursor, setWallpaper, userDetails, wallpaperEffects, viewerThemeOverride } =
+    useGlobalContext();
   const [unlockedProjectData, setUnlockedProjectData] = useState(null);
 
   // Try to get project from context first (fastest)
@@ -105,11 +106,15 @@ export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }
 
     const project = projectData.project;
 
-    // Set theme: project theme > userDetails theme
-    if (project?.theme !== undefined) {
-      setTheme(project.theme == 1 ? "dark" : "light");
-    } else if (userDetails?.theme !== undefined) {
-      setTheme(userDetails.theme == 1 ? "dark" : "light");
+    // Set theme: project theme > userDetails theme.
+    // Skip if the viewer explicitly toggled the theme this session (e.g. on the
+    // preview page) so their choice is retained instead of being reset here.
+    if (!viewerThemeOverride) {
+      if (project?.theme !== undefined) {
+        setTheme(project.theme == 1 ? "dark" : "light");
+      } else if (userDetails?.theme !== undefined) {
+        setTheme(userDetails.theme == 1 ? "dark" : "light");
+      }
     }
 
     // Set wallpaper: project wallpaper > userDetails wallpaper
@@ -131,7 +136,7 @@ export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }
           ? project.theme
           : userDetails?.cursor || 0;
     setCursor(cursor);
-  }, [projectData?.project, userDetails, setTheme, setWallpaper, setCursor]);
+  }, [projectData?.project, userDetails, setTheme, setWallpaper, setCursor, viewerThemeOverride]);
   const project = projectData?.project;
   const isProtected = projectData?.isProtected || false;
   // Always use the owner's portfolio template for layout — never the viewer's own template
@@ -218,8 +223,8 @@ export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }
           key={project._id}
           project={project}
           mode="public"
-          onBack={() => typeof window !== "undefined" && window.history.back()}
-          onWorkClick={() => typeof window !== "undefined" && window.history.back()}
+          onBack={() => router.back()}
+          onWorkClick={() => router.back()}
           resumeUrl={ownerUser?.resume?.url ?? null}
           owner={ownerUser}
         />

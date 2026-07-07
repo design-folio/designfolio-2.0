@@ -26,7 +26,6 @@ const STEPS = [
 const TOOLTIP_W = 288;
 const TOOLTIP_H = 230; // estimate — only used to choose placement, never for pixel math
 const PAD = 10;
-const MOBILE_BP = 520;
 
 function measureEl(target) {
   const el = document.querySelector(`[data-joyride="${target}"]`);
@@ -43,14 +42,11 @@ function measureEl(target) {
   };
 }
 
-function tooltipPosition(rect, prefer, isMobile) {
+function tooltipPosition(rect, prefer) {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
-
-  if (isMobile) {
-    const w = Math.min(TOOLTIP_W, vw - 32);
-    return { bottom: 20, left: (vw - w) / 2, width: w, arrowDir: "none", arrowLeft: 0 };
-  }
+  // Clamp the card to the viewport so it never overflows a narrow (mobile) screen.
+  const w = Math.min(TOOLTIP_W, vw - 24);
 
   const spaceAbove = rect.top;
   const spaceBelow = vh - (rect.top + rect.height);
@@ -71,18 +67,20 @@ function tooltipPosition(rect, prefer, isMobile) {
           : "pinned";
 
   const cx = rect.left + rect.width / 2;
-  const left = Math.max(16, Math.min(cx - TOOLTIP_W / 2, vw - TOOLTIP_W - 16));
-  const arrowLeft = Math.max(16, Math.min(cx - left - 8, TOOLTIP_W - 32));
+  const left = Math.max(12, Math.min(cx - w / 2, vw - w - 12));
+  const arrowLeft = Math.max(16, Math.min(cx - left - 8, w - 32));
 
   // "above" and "pinned" anchor the tooltip's BOTTOM edge, so the real rendered
   // height never matters and the tooltip can't be clipped by the viewport.
   // "pinned" handles large targets (e.g. the empty-state picker) where neither
-  // side has room — the tooltip floats over the bottom of the spotlight.
+  // side has room — the tooltip floats over the bottom of the spotlight. On
+  // mobile the same anchored logic keeps the card tied to its target instead of
+  // stranding it at the bottom of the screen.
   if (side === "below")
-    return { top: rect.top + rect.height + 12, left, width: TOOLTIP_W, arrowDir: "top", arrowLeft };
+    return { top: rect.top + rect.height + 12, left, width: w, arrowDir: "top", arrowLeft };
   if (side === "above")
-    return { bottom: vh - rect.top + 12, left, width: TOOLTIP_W, arrowDir: "bottom", arrowLeft };
-  return { bottom: 20, left, width: TOOLTIP_W, arrowDir: "none", arrowLeft: 0 };
+    return { bottom: vh - rect.top + 12, left, width: w, arrowDir: "bottom", arrowLeft };
+  return { bottom: 20, left: (vw - w) / 2, width: w, arrowDir: "none", arrowLeft: 0 };
 }
 
 export function CaseStudyJoyride({ autoStart = false, onDone }) {
@@ -101,7 +99,7 @@ export function CaseStudyJoyride({ autoStart = false, onDone }) {
     if (!result) return;
     shownRef.current = true;
     setRect(result.rect);
-    setTipPos(tooltipPosition(result.rect, STEPS[stepIdx].prefer, window.innerWidth < MOBILE_BP));
+    setTipPos(tooltipPosition(result.rect, STEPS[stepIdx].prefer));
   }, []);
 
   const scrollAndFocus = useCallback(

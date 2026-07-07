@@ -153,6 +153,7 @@ export default function AddProject() {
                   ],
                   password: values.password,
                   protected: isPassword,
+                  heroView: "immersive",
                   contentVersion: 2,
                   tiptapContent: {
                     type: "doc",

@@ -144,6 +144,7 @@ export default function CreateAiProject({ openModal }) {
               password: "",
               description: response.data.description,
               title: response.data.title,
+              heroView: "immersive",
               contentVersion: 2,
               tiptapContent,
             },

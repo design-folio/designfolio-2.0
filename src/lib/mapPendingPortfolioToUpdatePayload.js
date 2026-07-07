@@ -194,6 +194,7 @@ export function mapPendingPortfolioToUpdatePayload(content, personas, tools) {
           { label: "Role", value: proj.role ?? "" },
           { label: "Platform", value: proj.platform ?? "" },
         ],
+        heroView: "immersive",
         contentVersion: 2,
         tiptapContent: toTiptapDoc(desc),
       };

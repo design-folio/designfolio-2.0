@@ -1,10 +1,13 @@
 import { _uploadImage } from "@/network/post-request";
+import { compressImageForUpload } from "@/lib/compressImage";
 
 /**
  * Upload a File to S3 via the existing /user/editorjs endpoint.
+
  * Returns { key: s3Key, url: signedUrl }.
  */
 export async function uploadSectionImage(file) {
+  const { blob, name, type } = await compressImageForUpload(file);
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onerror = () => reject(new Error("Failed to read file"));
@@ -13,8 +16,8 @@ export async function uploadSectionImage(file) {
         const res = await _uploadImage({
           file: {
             key: e.target.result, // base64 dataURL — backend detects and uploads to S3
-            originalName: file.name,
-            extension: file.type,
+            originalName: name,
+            extension: type,
           },
         });
         resolve(res.data.file); // { key: s3Key, url: signedUrl }
@@ -22,6 +25,6 @@ export async function uploadSectionImage(file) {
         reject(err);
       }
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(blob);
   });
 }

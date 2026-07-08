@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { motion } from "motion/react";
 import { ImageUp } from "lucide-react";
 import { _updateProject } from "@/network/post-request";
+import { compressImageForUpload } from "@/lib/compressImage";
 import { toast } from "react-toastify";
 import queryClient from "@/network/queryClient";
 import { useGlobalContext } from "@/context/globalContext";
@@ -41,7 +42,7 @@ export const ImageWithOverlayAndPicker = ({
     });
   }
 
-  const handleFileChange = (event) => {
+  const handleFileChange = async (event) => {
     const file = event.target.files[0];
     const FILE_SIZE = 5 * 1024 * 1024;
     const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png", "image/gif"];
@@ -58,13 +59,15 @@ export const ImageWithOverlayAndPicker = ({
       return;
     }
 
+    const { blob, name, type } = await compressImageForUpload(file);
+
     const reader = new FileReader();
     reader.onloadend = () => {
       const payload = {
         thumbnail: {
           key: reader.result,
-          originalName: file.name,
-          extension: file.type,
+          originalName: name,
+          extension: type,
         },
       };
       toast.promise(updateProjectImage(project._id, payload), {
@@ -88,7 +91,7 @@ export const ImageWithOverlayAndPicker = ({
         },
       });
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(blob);
   };
 
   const aspectClass =

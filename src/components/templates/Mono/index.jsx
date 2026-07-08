@@ -1,6 +1,5 @@
 "use client";
 import { SmoothCursor } from "@/components/ui/smooth-cursor";
-import OptimizedImage from "@/components/OptimizedImage";
 import { SectionVisibilityButton, ProjectVisibilityButton } from "@/components/section";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -710,12 +709,10 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                         </div>
                       )}
                       <div className="relative mb-4 aspect-[3/2] overflow-hidden rounded-xl border border-black/5 bg-white drop-shadow-sm transition-colors group-hover:border-black/10 dark:border-white/10 dark:bg-[#2A2520] dark:group-hover:border-white/20">
-                        <OptimizedImage
+                        <img
                           src={project.image}
                           alt={project.title}
-                          fill
-                          sizes="(max-width: 640px) 90vw, 400px"
-                          className="object-cover transition-transform duration-500 group-hover:scale-110"
+                          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
                         {project.hidden && (
                           <div className="absolute top-2 left-2 z-10 flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-950/30 dark:text-amber-400">
@@ -810,13 +807,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               onClick={() => storyImages[0] && setSelectedStoryImage(storyImages[0])}
               className="absolute z-0 h-40 w-32 cursor-pointer overflow-hidden rounded-xl border-4 border-white shadow-lg dark:border-[#2A2520]"
             >
-              <OptimizedImage
-                src={storyImages[0]}
-                alt="My workspace"
-                fill
-                sizes="160px"
-                className="object-cover"
-              />
+              <img src={storyImages[0]} alt="My workspace" className="h-full w-full object-cover" />
             </motion.div>
             <motion.div
               initial={{ rotate: 12, x: -40, y: 15 }}
@@ -824,13 +815,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               onClick={() => storyImages[1] && setSelectedStoryImage(storyImages[1])}
               className="absolute z-10 h-36 w-36 cursor-pointer overflow-hidden rounded-xl border-4 border-white shadow-lg dark:border-[#2A2520]"
             >
-              <OptimizedImage
-                src={storyImages[1]}
-                alt="Designing"
-                fill
-                sizes="160px"
-                className="object-cover"
-              />
+              <img src={storyImages[1]} alt="Designing" className="h-full w-full object-cover" />
             </motion.div>
             <motion.div
               initial={{ rotate: -5, x: 40, y: -10 }}
@@ -838,12 +823,10 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               onClick={() => storyImages[2] && setSelectedStoryImage(storyImages[2])}
               className="absolute z-20 h-40 w-32 cursor-pointer overflow-hidden rounded-xl border-4 border-white shadow-lg dark:border-[#2A2520]"
             >
-              <OptimizedImage
+              <img
                 src={storyImages[2]}
                 alt="Coffee and notes"
-                fill
-                sizes="160px"
-                className="object-cover"
+                className="h-full w-full object-cover"
               />
             </motion.div>
             <motion.div
@@ -852,12 +835,10 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               onClick={() => storyImages[3] && setSelectedStoryImage(storyImages[3])}
               className="absolute z-30 h-36 w-36 cursor-pointer overflow-hidden rounded-xl border-4 border-white shadow-lg dark:border-[#2A2520]"
             >
-              <OptimizedImage
+              <img
                 src={storyImages[3]}
                 alt="Creative studio"
-                fill
-                sizes="160px"
-                className="object-cover"
+                className="h-full w-full object-cover"
               />
             </motion.div>
           </div>

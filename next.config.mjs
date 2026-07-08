@@ -3,6 +3,9 @@ const nextConfig = {
   sassOptions: {
     silenceDeprecations: ["import"],
   },
+  images: {
+    remotePatterns: [{ protocol: "https", hostname: "**.amazonaws.com" }],
+  },
   turbopack: {
     rules: {
       "*.svg?url": {

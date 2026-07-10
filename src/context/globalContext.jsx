@@ -5,6 +5,7 @@ import {
   extractWallpaperMode,
   extractWallpaperColor,
   resolveBackgroundColor,
+  hasNoWallpaper,
   BACKGROUND_MODE,
 } from "@/lib/wallpaper";
 import { useRouter } from "next/router";
@@ -346,6 +347,8 @@ export const GlobalProvider = ({ children }) => {
     const currentTheme = resolvedTheme || theme;
     return resolveBackgroundColor(wallpaperColor, currentTheme);
   }, [wallpaperColor, resolvedTheme, theme]);
+
+  const hasWallpaper = !hasNoWallpaper(wallpaper, template) || !!wallpaperColorResolved;
 
   const updateCache = useCallback((key, data) => {
     queryClient.setQueriesData({ queryKey: [key] }, (oldData) => {
@@ -1010,6 +1013,7 @@ export const GlobalProvider = ({ children }) => {
         setBackgroundMode,
         changeBackgroundMode,
         isHeaderMode,
+        hasWallpaper,
         containerWidth,
         setContainerWidth,
         containerMaxWidth,

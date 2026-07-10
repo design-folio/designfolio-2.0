@@ -26,7 +26,7 @@ export function FloatingPageContainer({ isSidebarRoute, children }) {
 
   return (
     <div className="md:bg-background md:fixed md:top-2 md:right-2 md:bottom-2 md:left-[72px] md:[transform:translateZ(0)] md:overflow-hidden md:rounded-[32px] md:border md:border-black/[0.11] md:dark:border-white/[0.07]">
-      <div className="custom-thin-scrollbar md:h-full md:overflow-y-auto" data-scroll-root>
+      <div className="hide-scrollbar md:h-full md:overflow-y-auto" data-scroll-root>
         {children}
       </div>
     </div>

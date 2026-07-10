@@ -13,6 +13,8 @@ import { TEMPLATE_IDS } from "@/lib/templates";
 import Chat from "@/components/templates/Chat";
 import Professional from "@/components/templates/Professional";
 import MemoMadewithdesignfolio from "@/components/icons/Madewithdesignfolio";
+import { BACKGROUND_MODE, hasNoWallpaper } from "@/lib/wallpaper";
+import { cn } from "@/lib/utils";
 
 export default function Index() {
   const {
@@ -24,7 +26,10 @@ export default function Index() {
     setWallpaper,
     setWallpaperEffects,
     wallpaperUrl,
+    wallpaperColorResolved,
     wallpaperEffects,
+    wallpaper,
+    backgroundMode,
   } = useGlobalContext();
   const router = useRouter();
 
@@ -185,15 +190,38 @@ export default function Index() {
     template === TEMPLATE_IDS.PROFESSIONAL ||
     template === TEMPLATE_IDS.CHATFOLIO;
 
+  const isHeaderMode = backgroundMode === BACKGROUND_MODE.HEADER;
+  const hasBackground = !hasNoWallpaper(wallpaper, template) || !!wallpaperColorResolved;
+  const transparentForWallpaper = hasBackground && !isHeaderMode;
+
   return (
-    <>
-      <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
-      <main className="min-h-screen">
-        <div className={`mx-auto px-2 md:px-4 lg:px-0 ${fullWidth ? "" : "max-w-[848px]"}`}>
+    <div className="relative">
+      <WallpaperBackground
+        wallpaperUrl={wallpaperUrl}
+        backgroundColor={wallpaperColorResolved}
+        mode={backgroundMode}
+        effects={wallpaperEffects}
+      />
+      <main
+        className={cn(
+          "min-h-screen transition-colors duration-700",
+          !transparentForWallpaper && template !== TEMPLATE_IDS.CHATFOLIO && "bg-background",
+          !transparentForWallpaper &&
+            template === TEMPLATE_IDS.CHATFOLIO &&
+            "bg-[#F0EDE7] dark:bg-[#1A1A1A]"
+        )}
+      >
+        <div
+          className={cn(
+            "mx-auto px-2 md:px-4 lg:px-0",
+            !fullWidth && "max-w-[848px]",
+            isHeaderMode && template !== TEMPLATE_IDS.RETRO_OS && "relative z-10"
+          )}
+        >
           {userDetails && renderTemplate()}
         </div>
       </main>
-    </>
+    </div>
   );
 }
 

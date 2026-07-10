@@ -15,6 +15,7 @@ import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle } from "@/comp
 import { Switch } from "@/components/ui/switch";
 import { useGlobalContext } from "@/context/globalContext";
 import { _updateProject } from "@/network/post-request";
+import { cn } from "@/lib/utils";
 import { DEFAULT_PEGBOARD_IMAGES } from "@/lib/aboutConstants";
 import {
   ABOUT_STORY_CHAR_THRESHOLD,
@@ -93,6 +94,8 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
     updateCache,
     setShowUpgradeModal,
     setUpgradeModalUnhideProject,
+    containerMaxWidth,
+    isHeaderMode,
   } = useGlobalContext();
   const avatarSrc = useMemo(() => getUserAvatarImage(userDetails), [userDetails]);
   const atSignRef = useRef(null);
@@ -1016,11 +1019,16 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-[848px] flex-1 flex-col gap-3 px-4 pt-0 pb-0 md:px-0">
+    <div
+      className="mx-auto flex w-full flex-1 flex-col gap-3 px-4 pt-0 pb-0 md:px-0"
+      style={{ maxWidth: containerMaxWidth ?? 848 }}
+    >
       <motion.div
-        className={
-          "font-inter custom-dashed-x relative flex min-h-screen w-full max-w-[848px] flex-col bg-[#F0EDE7] transition-colors duration-700 dark:bg-[#1A1A1A]"
-        }
+        className={cn(
+          "font-inter custom-dashed-x relative flex min-h-screen w-full flex-col transition-colors duration-700",
+          // Transparent in header mode so the wallpaper band shows behind the top.
+          !isHeaderMode && "bg-[#F0EDE7] dark:bg-[#1A1A1A]"
+        )}
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -1062,7 +1070,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
 
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-0">
             <div>
-              <h1 className="mb-0.5 text-[30px] font-semibold tracking-[-0.01em] text-[#1A1A1A] dark:text-[#F0EDE7]">
+              <h1 className="text-scaled-30 mb-0.5 font-semibold tracking-[-0.01em] text-[#1A1A1A] dark:text-[#F0EDE7]">
                 {introduction}
               </h1>
               {isEditing ? (

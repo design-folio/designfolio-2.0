@@ -83,7 +83,7 @@ export const SpotlightHero = ({ userDetails, edit }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          <h1 className="text-4xl font-bold">{introduction} </h1>
+          <h1 className="text-scaled-36 font-bold">{introduction} </h1>
           {edit && (
             <div className="lg:absolute lg:right-[-54px]">
               <Button

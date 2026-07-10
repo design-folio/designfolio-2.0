@@ -8,6 +8,7 @@ import {
 } from "react-icons/fa6";
 import { _updateProject } from "@/network/post-request";
 import { useGlobalContext } from "@/context/globalContext";
+import { cn } from "@/lib/utils";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import { useRouter } from "next/router";
 import { modals, sidebars, normalizeSectionOrder } from "@/lib/constant";
@@ -34,6 +35,8 @@ export default function Professional({ isEditing, preview = false, publicView = 
     updateCache,
     setShowUpgradeModal,
     setUpgradeModalUnhideProject,
+    containerMaxWidth,
+    isHeaderMode,
   } = useGlobalContext();
   const router = useRouter();
 
@@ -304,7 +307,14 @@ export default function Professional({ isEditing, preview = false, publicView = 
   };
 
   return (
-    <div className="font-inter custom-solid-x relative mx-auto flex min-h-screen w-full max-w-[700px] flex-1 flex-col gap-3 bg-[#EFECE6] transition-colors duration-700 dark:bg-[#1A1A1A]">
+    <div
+      className={cn(
+        "font-inter custom-solid-x relative mx-auto flex min-h-screen w-full flex-1 flex-col gap-3 transition-colors duration-700",
+        // Transparent in header mode so the wallpaper band shows behind the top.
+        !isHeaderMode && "bg-[#EFECE6] dark:bg-[#1A1A1A]"
+      )}
+      style={{ maxWidth: containerMaxWidth ?? 700 }}
+    >
       {!isEditing && <SmoothCursor type="professional" />}
       <div className="flex w-full flex-1 flex-col overflow-hidden pt-12">
         <ProfessionalProfileHeader

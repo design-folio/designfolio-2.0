@@ -1,0 +1,16 @@
+:root {
+  --tpg-scale: 1; /* 0 = compact (default) */
+}
+:root[data-typography="1"] {
+  --tpg-scale: 1.08; /* expressive — bolder type hierarchy */
+}
+
+/*
+  Scalable text utility — a drop-in replacement for Tailwind's arbitrary text size that
+  responds to the typography setting. Use `text-scaled-<px>` anywhere a font size should
+  scale with user.typography, e.g. text-scaled-24 → font-size: calc(24px * var(--tpg-scale)).
+  Prefer this over inline calc() styles so it stays consistent across portfolio/builder/preview.
+*/
+@utility text-scaled-* {
+  font-size: calc(--value(integer) * 1px * var(--tpg-scale, 1));
+}

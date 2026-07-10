@@ -73,7 +73,7 @@ function ProfessionalProfileHeader({
           </motion.div>
         </div>
 
-        <div className="font-jetbrains mb-12 px-4 text-center text-[16px] leading-[1.8] text-[#1A1A1A] dark:text-[#F0EDE7]">
+        <div className="text-scaled-16 font-jetbrains mb-12 px-4 text-center leading-[1.8] text-[#1A1A1A] dark:text-[#F0EDE7]">
           {bio ? bio.split("\n").map((line, i) => <p key={i}>{line}</p>) : null}
         </div>
       </motion.div>

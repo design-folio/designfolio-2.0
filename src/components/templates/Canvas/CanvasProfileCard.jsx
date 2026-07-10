@@ -49,10 +49,10 @@ function CanvasProfileCard({ isEditing, skills = [], persistTheme = false }) {
           <img src={avatarSrc} alt="Profile" className="h-full w-full object-cover" />
         </div>
         <div className="flex w-full flex-col gap-2">
-          <h1 className="pr-12 text-[24px] leading-tight font-semibold tracking-tight text-pretty text-[#1A1A1A] dark:text-[#F0EDE7]">
+          <h1 className="text-scaled-24 pr-12 leading-tight font-semibold tracking-tight text-pretty text-[#1A1A1A] dark:text-[#F0EDE7]">
             {introduction}
           </h1>
-          <p className="text-[16px] leading-relaxed text-pretty text-[#7A736C] dark:text-[#B5AFA5]">
+          <p className="text-scaled-16 leading-relaxed text-pretty text-[#7A736C] dark:text-[#B5AFA5]">
             {bio}
           </p>
         </div>

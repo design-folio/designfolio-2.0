@@ -138,6 +138,33 @@ export const chatBubbleItems = {
 
 export const DEFAULT_SECTION_ORDER = ["projects", "reviews", "tools", "about", "works"];
 
+// ─── Container width (user-adjustable content max-width) ───────────────────────
+// Stored on user.containerWidth as a px number; null = use the template default.
+// Presets shown in the editor toolbar + Background tab; free drag clamps to [min, max].
+export const CONTAINER_WIDTH_PRESETS = [640, 880, 1024, 1200, 1440];
+export const CONTAINER_WIDTH_MIN = 400;
+export const CONTAINER_WIDTH_MAX = 1440;
+
+// Per-template width config. `default` mirrors each template's current hard-coded
+// max-w-[…]; `max` is the largest the user can drag to (the toolbar's "max"). RetroOS is
+// intentionally absent — its layout is a full-screen desktop, so width is not adjustable.
+export const TEMPLATE_CONTAINER_WIDTHS = {
+  0: { default: 848, min: CONTAINER_WIDTH_MIN, max: CONTAINER_WIDTH_MAX }, // Canvas
+  1: { default: 700, min: CONTAINER_WIDTH_MIN, max: CONTAINER_WIDTH_MAX }, // Chatfolio
+  2: { default: 848, min: CONTAINER_WIDTH_MIN, max: CONTAINER_WIDTH_MAX }, // Spotlight
+  3: { default: 848, min: CONTAINER_WIDTH_MIN, max: CONTAINER_WIDTH_MAX }, // Mono
+  5: { default: 700, min: CONTAINER_WIDTH_MIN, max: CONTAINER_WIDTH_MAX }, // Professional
+};
+
+// Resolve the effective content max-width (px) for a template given the stored value.
+// Falls back to the template default when unset, then clamps to the template range.
+export function resolveContainerWidth(templateId, storedWidth) {
+  const cfg = TEMPLATE_CONTAINER_WIDTHS[templateId];
+  if (!cfg) return null; // template has no width setting (e.g. RetroOS)
+  if (storedWidth == null) return cfg.default;
+  return Math.min(cfg.max, Math.max(cfg.min, storedWidth));
+}
+
 /**
  * Floating nav sections (Minimal/Portfolio template).
  * sectionId is the DOM id used in Minimal.jsx / Portfolio.jsx (section-* matches DEFAULT_SECTION_ORDER keys).

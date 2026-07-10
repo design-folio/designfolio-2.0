@@ -73,7 +73,7 @@ export default function ChatHeader({ chatRevealStep, s, canEdit }) {
               </Button>
             </div>
           )}
-          <h1 className="text-2xl font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
+          <h1 className="text-scaled-24 font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
             {introduction || "Hey, I'm here."}
           </h1>
           <p className="max-w-md text-[15px] leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]">

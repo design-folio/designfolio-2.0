@@ -39,7 +39,7 @@ export const CanvasSectionButton = forwardRef(function CanvasSectionButton(
       >
         <span className="pointer-events-none flex items-center gap-0 md:gap-1.5">
           <span className="flex items-center text-[#1A1A1A] dark:text-[#F0EDE7]">{icon}</span>
-          <span className="hidden text-xs font-medium text-[#1A1A1A] md:inline dark:text-[#F0EDE7]">
+          <span className="text-scaled-12 hidden font-medium text-[#1A1A1A] md:inline dark:text-[#F0EDE7]">
             {label}
           </span>
         </span>
@@ -76,7 +76,7 @@ export const CanvasSectionButton = forwardRef(function CanvasSectionButton(
           sideOffset={8}
           className="bg-tooltip-bg-color text-tooltip-text-color rounded-xl border-0 px-4 py-2 shadow-xl"
         >
-          <span className="text-sm font-medium">{tooltipText}</span>
+          <span className="text-scaled-14 font-medium">{tooltipText}</span>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

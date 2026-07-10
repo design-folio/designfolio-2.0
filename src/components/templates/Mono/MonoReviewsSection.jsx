@@ -78,10 +78,10 @@ function ReviewCard({ rec, isEditing, onEdit, onDelete }) {
                 className="w-[90vw] max-w-md gap-6 rounded-2xl border-black/10 bg-[#F0EDE7] p-6 dark:border-white/10 dark:bg-[#1A1A1A]"
               >
                 <AlertDialogHeader>
-                  <AlertDialogTitle className="text-xl font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
+                  <AlertDialogTitle className="text-scaled-20 font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
                     Delete Recommendation
                   </AlertDialogTitle>
-                  <AlertDialogDescription className="text-[15px] text-[#7A736C] dark:text-[#B5AFA5]">
+                  <AlertDialogDescription className="text-scaled-15 text-[#7A736C] dark:text-[#B5AFA5]">
                     Are you sure you want to delete this recommendation from {rec.name}? This action
                     cannot be undone.
                   </AlertDialogDescription>
@@ -108,7 +108,7 @@ function ReviewCard({ rec, isEditing, onEdit, onDelete }) {
 
       <div className="flex items-center justify-between px-6 py-4">
         <div className="flex flex-col">
-          <h3 className="mb-1 text-base font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+          <h3 className="text-scaled-16 mb-1 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
             {rec.name}
           </h3>
           <div className="flex items-center gap-2">
@@ -119,7 +119,7 @@ function ReviewCard({ rec, isEditing, onEdit, onDelete }) {
             >
               <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
             </svg>
-            <span className="text-[13px] text-[#7A736C] dark:text-[#9E9893]">{rec.role}</span>
+            <span className="text-scaled-13 text-[#7A736C] dark:text-[#9E9893]">{rec.role}</span>
           </div>
         </div>
         <Avatar className="-my-4 -mr-6 h-[80px] w-[80px] rounded-none transition-all duration-700">
@@ -137,7 +137,7 @@ function ReviewCard({ rec, isEditing, onEdit, onDelete }) {
               content={rec.description || ""}
               mode="review"
               enableBulletList={false}
-              className="text-[15px] leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]"
+              className="text-scaled-15 leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]"
               noCardStyle
             />
           </div>
@@ -147,7 +147,7 @@ function ReviewCard({ rec, isEditing, onEdit, onDelete }) {
                 e.stopPropagation();
                 setExpanded((v) => !v);
               }}
-              className="mt-3 flex items-center gap-1.5 text-[13px] font-medium text-[#1A1A1A] opacity-70 transition-opacity hover:opacity-100 dark:text-[#F0EDE7]"
+              className="text-scaled-13 mt-3 flex items-center gap-1.5 font-medium text-[#1A1A1A] opacity-70 transition-opacity hover:opacity-100 dark:text-[#F0EDE7]"
             >
               {expanded ? "View less" : "View more"}
               <motion.svg
@@ -239,7 +239,7 @@ export default function MonoReviewsSection({ isEditing }) {
         </div>
       )}
 
-      <h2 className="font-dm-mono mb-5 text-[14px] font-bold tracking-wider text-[#463B34] uppercase dark:text-[#D4C9BC]">
+      <h2 className="font-dm-mono text-scaled-14 mb-5 font-bold tracking-wider text-[#463B34] uppercase dark:text-[#D4C9BC]">
         Recommendations
       </h2>
 
@@ -260,16 +260,16 @@ export default function MonoReviewsSection({ isEditing }) {
               />
             </svg>
           </div>
-          <h3 className="mb-1 text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+          <h3 className="text-scaled-15 mb-1 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
             No recommendations yet
           </h3>
-          <p className="mb-5 max-w-[250px] text-[13px] text-[#7A736C] dark:text-[#9E9893]">
+          <p className="text-scaled-13 mb-5 max-w-[250px] text-[#7A736C] dark:text-[#9E9893]">
             Add recommendations to build trust and credibility.
           </p>
           {isEditing && (
             <Button
               onClick={() => handleOpenReviewSidebar(null)}
-              className="h-9 rounded-full bg-[#1A1A1A] px-4 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
+              className="text-scaled-13 h-9 rounded-full bg-[#1A1A1A] px-4 font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
             >
               Add Testimonial
             </Button>

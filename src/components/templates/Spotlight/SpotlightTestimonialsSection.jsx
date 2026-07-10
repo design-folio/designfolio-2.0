@@ -91,7 +91,7 @@ export const SpotlightTestimonialsSection = ({ userDetails, edit, headerActions 
   return (
     <section className="py-12">
       <div className="mb-12 flex items-center justify-between gap-4">
-        <h2 className="flex-1 text-3xl font-bold">What People Say</h2>
+        <h2 className="text-scaled-30 flex-1 font-bold">What People Say</h2>
         {headerActions && <div className="shrink-0">{headerActions}</div>}
       </div>
 
@@ -171,16 +171,16 @@ export const SpotlightTestimonialsSection = ({ userDetails, edit, headerActions 
                             className="flex cursor-pointer items-center gap-1 text-blue-500 transition-colors hover:text-blue-600"
                           >
                             <MemoLinkedin className="text-df-icon-color h-4 w-4 cursor-pointer" />
-                            <span className="cursor-pointer text-base font-semibold">
+                            <span className="text-scaled-16 cursor-pointer font-semibold">
                               {visibleTestimonials[currentIndex]?.name}
                             </span>
                           </a>
                         ) : (
-                          <h3 className="mb-0 text-base font-semibold">
+                          <h3 className="text-scaled-16 mb-0 font-semibold">
                             {visibleTestimonials[currentIndex]?.name}
                           </h3>
                         )}
-                        <p className="text-df-description-color text-sm">
+                        <p className="text-df-description-color text-scaled-14">
                           {visibleTestimonials[currentIndex]?.role
                             ? `${visibleTestimonials[currentIndex]?.role}, `
                             : ""}
@@ -288,14 +288,14 @@ export const SpotlightTestimonialsSection = ({ userDetails, edit, headerActions 
                         className="flex cursor-pointer items-center gap-1 text-blue-500 transition-colors hover:text-blue-600"
                       >
                         <MemoLinkedin className="text-df-icon-color h-4 w-4 cursor-pointer" />
-                        <span className="cursor-pointer text-base font-semibold">
+                        <span className="text-scaled-16 cursor-pointer font-semibold">
                           {testimonial?.name}
                         </span>
                       </a>
                     ) : (
-                      <h3 className="mb-0 text-base font-semibold">{testimonial?.name}</h3>
+                      <h3 className="text-scaled-16 mb-0 font-semibold">{testimonial?.name}</h3>
                     )}
-                    <p className="text-df-description-color text-sm">
+                    <p className="text-df-description-color text-scaled-14">
                       {testimonial?.role ? `${testimonial.role}, ` : ""}
                       {testimonial?.company}
                     </p>

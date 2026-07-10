@@ -15,7 +15,7 @@ import { SectionVisibilityButton } from "@/components/section";
 import { PencilIcon } from "lucide-react";
 
 const Spotlight = ({ userDetails, edit }) => {
-  const { setCursor, openSidebar } = useGlobalContext();
+  const { setCursor, openSidebar, containerMaxWidth, isHeaderMode } = useGlobalContext();
   useEffect(() => {
     setCursor(userDetails?.cursor ? userDetails?.cursor : 0);
   }, [setCursor, userDetails?.cursor]);
@@ -34,7 +34,7 @@ const Spotlight = ({ userDetails, edit }) => {
     about: isSectionVisible("about") && (edit || hasAbout) && (
       <section id="section-about" className="py-12">
         <div className="mb-8 flex items-center justify-between">
-          <h2 className="flex-1 text-2xl font-bold">About</h2>
+          <h2 className="text-scaled-24 flex-1 font-bold">About</h2>
           {edit && (
             <div className="flex items-center justify-end gap-2">
               <SectionVisibilityButton sectionId="about" />
@@ -99,9 +99,11 @@ const Spotlight = ({ userDetails, edit }) => {
     <>
       <div
         className={cn(
-          "bg-background text-foreground mx-auto min-h-screen max-w-[848px] rounded-2xl",
-          userDetails?.wallpaper && userDetails?.wallpaper?.value != 0 && ""
+          "text-foreground mx-auto min-h-screen rounded-2xl",
+          // Keep the card transparent in header mode so the wallpaper band shows behind the top.
+          !isHeaderMode && "bg-background"
         )}
+        style={{ maxWidth: containerMaxWidth ?? 848 }}
       >
         <div className="fixed top-8 left-8 z-50">{/* <ThemeToggle /> */}</div>
         <div

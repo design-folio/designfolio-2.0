@@ -62,6 +62,8 @@ export function getWallpapers(isDark, templateId) {
     { id: 5, value: 5, item: wallpaperImage(`${wpPath}/wall5.png`) },
     { id: 6, value: 6, item: wallpaperImage(`${wpPath}/wall6.png`) },
     { id: 7, value: 7, item: wallpaperImage(`${wpPath}/wall7.png`) },
+    { id: 9, value: 9, item: wallpaperImage(`${wpPath}/wall9.png`) },
+    { id: 10, value: 10, item: wallpaperImage(`${wpPath}/wall10.png`) },
   ];
 
   if (templateId === TEMPLATE_IDS.RETRO_OS) {

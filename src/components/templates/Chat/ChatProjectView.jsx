@@ -292,7 +292,7 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
           >
             <button
               onClick={onBack}
-              className="group flex items-center gap-1.5 text-[13px] font-medium text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#9E9893] dark:hover:text-[#F0EDE7]"
+              className="group text-scaled-13 flex items-center gap-1.5 font-medium text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#9E9893] dark:hover:text-[#F0EDE7]"
             >
               <ChevronLeft size={18} className="transition-transform group-hover:-translate-x-1" />
               Back to Projects
@@ -330,10 +330,10 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
                     <div className="flex flex-col gap-4">
                       <div className="flex items-start justify-between gap-3">
                         <div className="space-y-1">
-                          <Label className="cursor-pointer text-[14px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+                          <Label className="text-scaled-14 cursor-pointer font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                             Protect Project
                           </Label>
-                          <p className="text-[12px] leading-snug text-[#7A736C] dark:text-[#9E9893]">
+                          <p className="text-scaled-12 leading-snug text-[#7A736C] dark:text-[#9E9893]">
                             Require a password to view this project.
                           </p>
                         </div>
@@ -350,12 +350,12 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
                             placeholder="Enter password"
                             value={passwordInput}
                             onChange={(e) => setPasswordInput(e.target.value)}
-                            className="h-10 rounded-xl border-transparent bg-black/[0.03] text-[14px] text-[#1A1A1A] shadow-none placeholder:text-black/30 focus-visible:ring-2 focus-visible:ring-black/10 dark:bg-white/[0.03] dark:text-[#F0EDE7] dark:placeholder:text-white/30 dark:focus-visible:ring-white/10"
+                            className="text-scaled-14 h-10 rounded-xl border-transparent bg-black/[0.03] text-[#1A1A1A] shadow-none placeholder:text-black/30 focus-visible:ring-2 focus-visible:ring-black/10 dark:bg-white/[0.03] dark:text-[#F0EDE7] dark:placeholder:text-white/30 dark:focus-visible:ring-white/10"
                           />
                           <Button
                             size="sm"
                             onClick={handlePasswordSave}
-                            className="h-9 rounded-xl bg-[#1A1A1A] text-[13px] text-white hover:bg-black/80 dark:bg-white dark:text-[#1A1A1A] dark:hover:bg-white/90"
+                            className="text-scaled-13 h-9 rounded-xl bg-[#1A1A1A] text-white hover:bg-black/80 dark:bg-white dark:text-[#1A1A1A] dark:hover:bg-white/90"
                           >
                             Save Password
                           </Button>
@@ -381,7 +381,7 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
                             onClick={handleAnalyzeClick}
                             disabled={isAnalyzeDisabled}
                             className={cn(
-                              "h-7 rounded-full border border-black/10 text-[12px] dark:border-white/10",
+                              "text-scaled-12 h-7 rounded-full border border-black/10 dark:border-white/10",
                               "bg-white/50 text-[#1A1A1A] dark:bg-[#2A2520]/50 dark:text-[#F0EDE7]",
                               "flex items-center gap-1.5 px-3 transition-all focus-visible:ring-0 focus-visible:ring-offset-0",
                               "cursor-pointer disabled:cursor-not-allowed disabled:opacity-60",
@@ -400,7 +400,7 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
                       {tooltipMessage && (
                         <TooltipContent
                           side="bottom"
-                          className="bg-foreground text-background rounded px-2 py-1 text-xs"
+                          className="bg-foreground text-background text-scaled-12 rounded px-2 py-1"
                         >
                           {tooltipMessage}
                         </TooltipContent>
@@ -425,14 +425,14 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
               />
             </div>
             <div className="flex w-full flex-col gap-1">
-              <span className="ml-1 text-[11px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
+              <span className="text-scaled-11 ml-1 font-medium text-[#7A736C] dark:text-[#B5AFA5]">
                 {firstName}
               </span>
               <div className="flex w-full flex-col gap-4 rounded-2xl rounded-bl-sm border border-black/5 bg-[#E5E2DB] p-4 transition-colors duration-700 dark:border-white/5 dark:bg-[#2A2520]">
                 <div className="flex flex-col px-1 text-left">
                   <h1
                     className={cn(
-                      "mb-2 text-2xl leading-tight font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]",
+                      "text-scaled-24 mb-2 leading-tight font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]",
                       edit && !project?.title && "text-[#C5BFB8] italic dark:text-[#4A4238]"
                     )}
                     contentEditable={edit}
@@ -447,7 +447,7 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
                   {(edit || !!project?.description) && (
                     <p
                       className={cn(
-                        "text-[15px] leading-relaxed",
+                        "text-scaled-15 leading-relaxed",
                         edit && !project?.description
                           ? "text-[#C5BFB8] italic dark:text-[#4A4238]"
                           : "text-[#7A736C] dark:text-[#B5AFA5]"
@@ -489,10 +489,10 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
           {/* You: "Can you share more details?" */}
           <motion.div variants={itemVariants} className="flex justify-end">
             <div className="flex max-w-[85%] flex-col items-end gap-1">
-              <span className="mr-1 text-[11px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
+              <span className="text-scaled-11 mr-1 font-medium text-[#7A736C] dark:text-[#B5AFA5]">
                 You
               </span>
-              <div className="rounded-2xl rounded-br-sm bg-[#1A8CFF] px-4 py-3 text-[15px] leading-relaxed text-white shadow-sm dark:bg-[#0073E6]">
+              <div className="text-scaled-15 rounded-2xl rounded-br-sm bg-[#1A8CFF] px-4 py-3 leading-relaxed text-white shadow-sm dark:bg-[#0073E6]">
                 Can you share more details about this project?
               </div>
             </div>
@@ -510,22 +510,22 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
                 />
               </div>
               <div className="flex w-full flex-col gap-1">
-                <span className="ml-1 text-[11px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
+                <span className="text-scaled-11 ml-1 font-medium text-[#7A736C] dark:text-[#B5AFA5]">
                   {firstName}
                 </span>
                 <div className="w-full rounded-2xl rounded-bl-sm border border-black/5 bg-[#E5E2DB] px-5 py-4 transition-colors duration-700 dark:border-white/5 dark:bg-[#2A2520]">
-                  <p className="mb-4 text-[15px] text-[#1A1A1A] dark:text-[#F0EDE7]">
+                  <p className="text-scaled-15 mb-4 text-[#1A1A1A] dark:text-[#F0EDE7]">
                     Sure! Here are the core details:
                   </p>
                   <div className="grid grid-cols-2 gap-x-6 gap-y-4">
                     {detailFields.map(({ index, label, value }) => (
                       <div key={index} className="flex flex-col gap-1">
-                        <span className="text-[12px] font-medium tracking-wide text-[#7A736C] uppercase dark:text-[#9E9893]">
+                        <span className="text-scaled-12 font-medium tracking-wide text-[#7A736C] uppercase dark:text-[#9E9893]">
                           {label}
                         </span>
                         <p
                           className={cn(
-                            "text-[14px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]",
+                            "text-scaled-14 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]",
                             edit && !value && "text-[#C5BFB8] italic dark:text-[#4A4238]"
                           )}
                           contentEditable={edit}
@@ -554,10 +554,10 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
           {showProcessPrompt && (
             <motion.div variants={itemVariants} className="flex justify-end">
               <div className="flex max-w-[85%] flex-col items-end gap-1">
-                <span className="mr-1 text-[11px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
+                <span className="text-scaled-11 mr-1 font-medium text-[#7A736C] dark:text-[#B5AFA5]">
                   You
                 </span>
-                <div className="rounded-2xl rounded-br-sm bg-[#1A8CFF] px-4 py-3 text-[15px] leading-relaxed text-white shadow-sm dark:bg-[#0073E6]">
+                <div className="text-scaled-15 rounded-2xl rounded-br-sm bg-[#1A8CFF] px-4 py-3 leading-relaxed text-white shadow-sm dark:bg-[#0073E6]">
                   What was the process like?
                 </div>
               </div>
@@ -576,7 +576,7 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
                 />
               </div>
               <div className="flex w-full flex-col gap-1">
-                <span className="ml-1 text-[11px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
+                <span className="text-scaled-11 ml-1 font-medium text-[#7A736C] dark:text-[#B5AFA5]">
                   {firstName}
                 </span>
                 <div className="">
@@ -602,7 +602,7 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
             <motion.div variants={itemVariants} className="mt-12 mb-8 flex justify-center">
               <button
                 onClick={onBack}
-                className="h-12 rounded-full bg-[#1A1A1A] px-8 text-[15px] font-medium text-white shadow-sm transition-colors hover:bg-[#333] dark:bg-white dark:text-[#1A1A1A] dark:hover:bg-gray-200"
+                className="text-scaled-15 h-12 rounded-full bg-[#1A1A1A] px-8 font-medium text-white shadow-sm transition-colors hover:bg-[#333] dark:bg-white dark:text-[#1A1A1A] dark:hover:bg-gray-200"
               >
                 Back to Projects
               </button>

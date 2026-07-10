@@ -1,5 +1,12 @@
 import { setCursorvalue } from "@/lib/cursor";
-import { getWallpaperUrl, extractWallpaperValue } from "@/lib/wallpaper";
+import {
+  getWallpaperUrl,
+  extractWallpaperValue,
+  extractWallpaperMode,
+  extractWallpaperColor,
+  resolveBackgroundColor,
+  BACKGROUND_MODE,
+} from "@/lib/wallpaper";
 import { useRouter } from "next/router";
 import { mapPendingPortfolioToUpdatePayload } from "@/lib/mapPendingPortfolioToUpdatePayload";
 import {
@@ -14,8 +21,15 @@ import queryClient from "@/network/queryClient";
 import { useQuery } from "@tanstack/react-query";
 import Cookies from "js-cookie";
 import { useTheme } from "next-themes";
-import { popovers, sidebars, DEFAULT_SECTION_ORDER, modals } from "@/lib/constant";
+import {
+  popovers,
+  sidebars,
+  DEFAULT_SECTION_ORDER,
+  modals,
+  resolveContainerWidth,
+} from "@/lib/constant";
 import { TEMPLATES_BY_ID } from "@/lib/templates";
+import { DEFAULT_TYPOGRAPHY, normalizeTypography } from "@/lib/typography";
 import { useDebouncedCallback } from "use-debounce";
 import React, {
   createContext,
@@ -100,6 +114,29 @@ export const GlobalProvider = ({ children }) => {
     grainIntensity: 25,
     motion: true,
   });
+  // Solid background colour (light hex, e.g. "#FFD6E0") stored inside wallpaper.color.
+  // null = no colour (an image wallpaper or nothing). Mutually exclusive with an image.
+  const [wallpaperColor, setWallpaperColor] = useState(null);
+  // Background display mode for the wallpaper: 0 = full-page, 1 = header-only.
+  const [backgroundMode, setBackgroundMode] = useState(BACKGROUND_MODE.FULL_PAGE);
+  // Content max-width (px). null = fall back to the active template's default.
+  const [containerWidth, setContainerWidth] = useState(null);
+  // Typography scale: 0 = compact, 1 = expressive.
+  const [typography, setTypography] = useState(DEFAULT_TYPOGRAPHY);
+  const containerWidthSaveTimer = useRef(null);
+
+  // Sync data-typography on <html> so typography.css can scale --tpg-scale (mirrors data-template).
+  useEffect(() => {
+    document.documentElement.dataset.typography = String(typography);
+  }, [typography]);
+
+  // Resolved content max-width (px) for the active template, or null when the template
+  // has no width setting (RetroOS). Consumers apply this as maxWidth on the centered wrapper.
+  const containerMaxWidth = useMemo(
+    () => resolveContainerWidth(template, containerWidth),
+    [template, containerWidth]
+  );
+  const isHeaderMode = backgroundMode === BACKGROUND_MODE.HEADER;
 
   const [viewerThemeOverride, setViewerThemeOverride] = useState(false);
   const [isLoadingTemplate, setIsLoadingTemplate] = useState(false);
@@ -187,6 +224,8 @@ export const GlobalProvider = ({ children }) => {
       const wp = userData?.wallpaper;
       const wpValue = wp && typeof wp === "object" ? wp.url || wp.value : wp;
       const wpEffects = userData?.wallpaper?.effects;
+      const wpMode = extractWallpaperMode(wp);
+      const wpColor = extractWallpaperColor(wp);
 
       // Helper to check if effects object has valid values (not all null/undefined)
       const hasValidEffects =
@@ -247,6 +286,10 @@ export const GlobalProvider = ({ children }) => {
         setTemplate(userData?.template ? userData?.template : 0);
         setWallpaper(wpValue !== undefined ? wpValue : 0);
         if (newWallpaperEffects) setWallpaperEffects(newWallpaperEffects);
+        setBackgroundMode(wpMode);
+        setWallpaperColor(wpColor);
+        setContainerWidth(userData?.containerWidth ?? null);
+        setTypography(normalizeTypography(userData?.typography));
         setUserDetails(mergedUserData);
         setIsUserDetailsFromCache(true);
         setCheckList((prevList) => {
@@ -291,12 +334,18 @@ export const GlobalProvider = ({ children }) => {
 
   // Compute wallpaper URL centrally - handles object and primitive values
   const wallpaperUrl = useMemo(() => {
-    if (template === 1) return null; // Chat theme uses solid bg — no wallpaper. Remove this line to re-enable.
     const wp = wallpaper;
     const wpValue = wp && typeof wp === "object" ? wp.url || wp.value : wp;
     const currentTheme = resolvedTheme || theme;
     return getWallpaperUrl(wpValue ?? 0, currentTheme, template);
   }, [wallpaper, resolvedTheme, theme, template]);
+
+  // Solid background colour resolved for the active theme (pastels swap to their dark
+  // variant in dark mode; custom colours render as-is). null when no colour is set.
+  const wallpaperColorResolved = useMemo(() => {
+    const currentTheme = resolvedTheme || theme;
+    return resolveBackgroundColor(wallpaperColor, currentTheme);
+  }, [wallpaperColor, resolvedTheme, theme]);
 
   const updateCache = useCallback((key, data) => {
     queryClient.setQueriesData({ queryKey: [key] }, (oldData) => {
@@ -439,6 +488,12 @@ export const GlobalProvider = ({ children }) => {
       wallpaperPayload.effects = existingEffects || defaultEffects;
     }
 
+    // Preserve the current background mode (full-page/header) across wallpaper changes
+    wallpaperPayload.mode = backgroundMode;
+    // Selecting an image clears any solid background colour (they are mutually exclusive).
+    wallpaperPayload.color = null;
+    setWallpaperColor(null); // optimistic
+
     _updateUser({ wallpaper: wallpaperPayload }).then((res) => {
       const updatedUser = res?.data?.user;
 
@@ -448,6 +503,7 @@ export const GlobalProvider = ({ children }) => {
 
       // Update local state and context - only update wallpaper field to prevent signed URL changes
       setWallpaper(wpValue || wallpaper);
+      setWallpaperColor(extractWallpaperColor(wp));
       // Only update wallpaper in cache to prevent flickers from new signed URLs
       updateCache("userDetails", { wallpaper: wp });
       // Only update wallpaper field in userDetails, not the entire object
@@ -473,6 +529,21 @@ export const GlobalProvider = ({ children }) => {
     const payload = { template: newTemplate };
     if (newTemplate === 4) {
       payload.theme = 0;
+      // Retro OS is always full-page (like it's always light) — force + persist the mode.
+      setBackgroundMode(BACKGROUND_MODE.FULL_PAGE); // optimistic
+      const currentWp = userDetailsRef.current?.wallpaper ?? userDetails?.wallpaper;
+      const wpPayload = { mode: BACKGROUND_MODE.FULL_PAGE };
+      if (currentWp && typeof currentWp === "object") {
+        if (currentWp.value !== undefined) wpPayload.value = currentWp.value;
+        if (currentWp.key !== undefined) wpPayload.key = currentWp.key;
+        if (currentWp.originalName !== undefined) wpPayload.originalName = currentWp.originalName;
+        if (currentWp.__isNew__ !== undefined) wpPayload.__isNew__ = currentWp.__isNew__;
+        if (currentWp.effects !== undefined) wpPayload.effects = currentWp.effects;
+        if (currentWp.color !== undefined) wpPayload.color = currentWp.color;
+      } else if (currentWp != null) {
+        wpPayload.value = currentWp;
+      }
+      payload.wallpaper = wpPayload;
     }
     // Legacy cleanup: if user has 8 stored and is leaving Retro OS, reset to 0 in DB
     if (isSwitchingFromMacOS) {
@@ -545,8 +616,22 @@ export const GlobalProvider = ({ children }) => {
         wallpaperPayload.__isNew__ = currentWallpaper.__isNew__;
       }
 
-      // Only save if we have a valid wallpaper (value or key), otherwise just update local state
-      if (wallpaperPayload.value !== undefined || wallpaperPayload.key !== undefined) {
+      // Preserve the background mode (backend rebuilds the wallpaper object on write)
+      if (currentWallpaper.mode !== undefined && currentWallpaper.mode !== null) {
+        wallpaperPayload.mode = currentWallpaper.mode;
+      }
+
+      // Preserve the solid background colour (grain can apply on a colour background too)
+      if (currentWallpaper.color !== undefined) {
+        wallpaperPayload.color = currentWallpaper.color;
+      }
+
+      // Only save if we have a valid wallpaper (value, key, or a colour background)
+      if (
+        wallpaperPayload.value !== undefined ||
+        wallpaperPayload.key !== undefined ||
+        wallpaperPayload.color
+      ) {
         // Always include effects when we have a valid wallpaper
         wallpaperPayload.effects = effectsToSave;
 
@@ -612,6 +697,100 @@ export const GlobalProvider = ({ children }) => {
       // Immediate save for effectType and motion
       saveWallpaperEffectsToBackend(updatedEffects);
     }
+  };
+
+  // Change the wallpaper background mode (0 = full-page, 1 = header-only).
+  // Mode lives inside the wallpaper object, so we resend the full wallpaper payload
+  // (value/key + effects), mirroring saveWallpaperEffectsToBackend.
+  const changeBackgroundMode = (mode) => {
+    setBackgroundMode(mode); // optimistic
+
+    const currentWallpaper = userDetailsRef.current?.wallpaper;
+    const wallpaperPayload = { mode };
+
+    if (currentWallpaper && typeof currentWallpaper === "object") {
+      if (currentWallpaper.value !== undefined) wallpaperPayload.value = currentWallpaper.value;
+      if (currentWallpaper.key !== undefined) wallpaperPayload.key = currentWallpaper.key;
+      if (currentWallpaper.originalName !== undefined)
+        wallpaperPayload.originalName = currentWallpaper.originalName;
+      if (currentWallpaper.__isNew__ !== undefined)
+        wallpaperPayload.__isNew__ = currentWallpaper.__isNew__;
+      if (currentWallpaper.effects !== undefined)
+        wallpaperPayload.effects = currentWallpaper.effects;
+      if (currentWallpaper.color !== undefined) wallpaperPayload.color = currentWallpaper.color;
+    } else if (currentWallpaper !== undefined && currentWallpaper !== null) {
+      // Legacy bare-number wallpaper — normalize to an object so mode can be carried.
+      wallpaperPayload.value = currentWallpaper;
+    }
+
+    setUserDetails((prev) => ({ ...prev, wallpaper: wallpaperPayload }));
+    updateCache("userDetails", (prev) => ({ ...prev, wallpaper: wallpaperPayload }));
+
+    _updateUser({ wallpaper: wallpaperPayload }).catch((err) => {
+      console.error("Error updating background mode:", err);
+    });
+  };
+
+  // Set (or clear) the solid background colour. A colour is mutually exclusive with an image
+  // wallpaper, so this clears the image value; passing null clears the colour ("None").
+  // Colour lives inside the wallpaper object, so we resend the full payload (mirrors mode).
+  const changeWallpaperColor = (hex) => {
+    setWallpaperColor(hex); // optimistic
+    setWallpaper(0); // clear any image so the colour takes precedence
+
+    const currentWallpaper = userDetailsRef.current?.wallpaper;
+    const wallpaperPayload = { value: 0, color: hex ?? null, mode: backgroundMode };
+    if (
+      currentWallpaper &&
+      typeof currentWallpaper === "object" &&
+      currentWallpaper.effects !== undefined
+    ) {
+      wallpaperPayload.effects = currentWallpaper.effects;
+    }
+
+    setUserDetails((prev) => ({ ...prev, wallpaper: wallpaperPayload }));
+    updateCache("userDetails", (prev) => ({ ...prev, wallpaper: wallpaperPayload }));
+
+    _updateUser({ wallpaper: wallpaperPayload }).catch((err) => {
+      console.error("Error updating background colour:", err);
+    });
+  };
+
+  // Change the content container width (px). Debounced during drag; commits immediately
+  // when `immediate` is true (preset click / drag end).
+  const changeContainerWidth = (px, immediate = false) => {
+    // Lightweight during drag: only the width state (drives containerMaxWidth → live preview).
+    setContainerWidth(px);
+
+    if (containerWidthSaveTimer.current) clearTimeout(containerWidthSaveTimer.current);
+    if (immediate) {
+      // Commit: sync userDetails + cache and persist to backend.
+      setUserDetails((prev) => ({ ...prev, containerWidth: px }));
+      updateCache("userDetails", (prev) => ({ ...prev, containerWidth: px }));
+      _updateUser({ containerWidth: px }).catch((err) => {
+        console.error("Error updating container width:", err);
+      });
+    } else {
+      containerWidthSaveTimer.current = setTimeout(() => {
+        setUserDetails((prev) => ({ ...prev, containerWidth: px }));
+        updateCache("userDetails", (prev) => ({ ...prev, containerWidth: px }));
+        _updateUser({ containerWidth: px }).catch((err) => {
+          console.error("Error updating container width:", err);
+        });
+      }, 500);
+    }
+  };
+
+  // Change the typography scale (0 = compact, 1 = expressive).
+  const changeTypography = (level) => {
+    const value = normalizeTypography(level);
+    setTypography(value); // optimistic
+    setUserDetails((prev) => ({ ...prev, typography: value }));
+    updateCache("userDetails", (prev) => ({ ...prev, typography: value }));
+
+    _updateUser({ typography: value }).catch((err) => {
+      console.error("Error updating typography:", err);
+    });
   };
 
   const openModal = (type = null) => {
@@ -821,9 +1000,23 @@ export const GlobalProvider = ({ children }) => {
         setWallpaper,
         changeWallpaper,
         wallpaperUrl,
+        wallpaperColor,
+        wallpaperColorResolved,
+        changeWallpaperColor,
         wallpaperEffects,
         setWallpaperEffects,
         updateWallpaperEffect,
+        backgroundMode,
+        setBackgroundMode,
+        changeBackgroundMode,
+        isHeaderMode,
+        containerWidth,
+        setContainerWidth,
+        containerMaxWidth,
+        changeContainerWidth,
+        typography,
+        setTypography,
+        changeTypography,
         isLoadingTemplate,
         activeSidebar,
         openSidebar,

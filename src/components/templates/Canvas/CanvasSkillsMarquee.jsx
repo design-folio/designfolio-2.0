@@ -38,7 +38,7 @@ function CanvasSkillsMarquee({ skills = [], isEditing }) {
         >
           {repeatedSkills.map((skill, index) => (
             <div key={index} className="flex items-center gap-4">
-              <span className="text-[12px] font-medium tracking-wider text-[#7A736C] uppercase dark:text-[#B5AFA5]">
+              <span className="text-scaled-12 font-medium tracking-wider text-[#7A736C] uppercase dark:text-[#B5AFA5]">
                 {skill.label}
               </span>
               <div className="h-3 w-3 text-[#1A1A1A] dark:text-[#F0EDE7]">

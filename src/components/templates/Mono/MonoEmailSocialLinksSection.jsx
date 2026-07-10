@@ -53,7 +53,7 @@ export const MonoEmailSocialLinksSection = ({ email, socials, portfolios, isEdit
         )}
         <a
           href={email ? `mailto:${email}` : "#"}
-          className="group flex min-w-0 cursor-pointer items-center gap-2 text-base text-[#666666] transition-colors hover:text-[#1A1A1A] dark:text-[#9E9893] dark:hover:text-[#F0EDE7]"
+          className="group text-scaled-16 flex min-w-0 cursor-pointer items-center gap-2 text-[#666666] transition-colors hover:text-[#1A1A1A] dark:text-[#9E9893] dark:hover:text-[#F0EDE7]"
           onMouseEnter={() => atSignRef.current?.startAnimation()}
           onMouseLeave={() => atSignRef.current?.stopAnimation()}
           onClick={(e) => {

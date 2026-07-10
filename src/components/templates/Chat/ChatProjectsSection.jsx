@@ -102,7 +102,7 @@ export default function ChatProjectsSection({
             <div className="mt-auto flex h-8 w-8 shrink-0 items-end">
               <ChatAvatar avatarSrc={avatarSrc} show={chatRevealStep < s(9)} />
             </div>
-            <div className="flex min-h-[46px] items-center rounded-2xl rounded-tl-sm rounded-bl-sm border border-black/5 bg-[#E5E2DB] px-4 py-3 text-[15px] leading-relaxed text-[#1A1A1A] transition-colors duration-100 dark:border-white/5 dark:bg-[#2A2520] dark:text-[#F0EDE7]">
+            <div className="text-scaled-15 flex min-h-[46px] items-center rounded-2xl rounded-tl-sm rounded-bl-sm border border-black/5 bg-[#E5E2DB] px-4 py-3 leading-relaxed text-[#1A1A1A] transition-colors duration-100 dark:border-white/5 dark:bg-[#2A2520] dark:text-[#F0EDE7]">
               {chatRevealStep === s(8) ? <TypingIndicator /> : "And here's some recent work"}
             </div>
           </motion.div>
@@ -179,15 +179,15 @@ export default function ChatProjectsSection({
                       className="h-full w-full object-cover transition-transform duration-300 group-hover/proj:scale-110"
                     />
                     {project.hidden && (
-                      <div className="absolute top-2 left-2 flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-950/30 dark:text-amber-400">
+                      <div className="text-scaled-12 absolute top-2 left-2 flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 font-medium text-amber-700 dark:bg-amber-950/30 dark:text-amber-400">
                         <EyeOff className="h-3 w-3" /> Hidden from live site
                       </div>
                     )}
                   </div>
-                  <h3 className="mb-1 line-clamp-2 px-1 text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+                  <h3 className="text-scaled-15 mb-1 line-clamp-2 px-1 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                     {project?.title}
                   </h3>
-                  <p className="line-clamp-2 px-1 text-[14px] leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]">
+                  <p className="text-scaled-14 line-clamp-2 px-1 leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]">
                     {project?.description}
                   </p>
                 </div>
@@ -211,7 +211,7 @@ export default function ChatProjectsSection({
               <div className="flex aspect-[3/2] w-full flex-col items-center justify-center gap-3 rounded-xl bg-black/[0.02] dark:bg-white/[0.02]">
                 <Button
                   onClick={() => openSidebar(sidebars.project)}
-                  className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
+                  className="text-scaled-13 flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
                 >
                   <Pencil className="h-3.5 w-3.5" />
                   Add Project
@@ -219,7 +219,7 @@ export default function ChatProjectsSection({
                 <Button
                   variant="outline"
                   onClick={() => openModal(modals.aiProject)}
-                  className="flex h-9 items-center gap-2 rounded-full border-black/10 bg-white px-5 text-[13px] font-medium text-[#1A1A1A] shadow-sm transition-colors hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520] dark:text-[#F0EDE7] dark:hover:bg-[#35302A]"
+                  className="text-scaled-13 flex h-9 items-center gap-2 rounded-full border-black/10 bg-white px-5 font-medium text-[#1A1A1A] shadow-sm transition-colors hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520] dark:text-[#F0EDE7] dark:hover:bg-[#35302A]"
                 >
                   <Sparkles className="h-3.5 w-3.5" />
                   Write with AI
@@ -254,17 +254,17 @@ export default function ChatProjectsSection({
                 />
               </svg>
             </div>
-            <h3 className="mb-1 text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+            <h3 className="text-scaled-15 mb-1 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
               No projects yet
             </h3>
-            <p className="mb-5 max-w-[250px] text-[13px] text-[#7A736C] dark:text-[#9E9893]">
+            <p className="text-scaled-13 mb-5 max-w-[250px] text-[#7A736C] dark:text-[#9E9893]">
               Add some projects to showcase your work and experience.
             </p>
             {canEdit && (
               <div className="flex flex-col items-center gap-3">
                 <Button
                   onClick={() => openSidebar(sidebars.project)}
-                  className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
+                  className="text-scaled-13 flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
                 >
                   <Pencil className="h-3.5 w-3.5" />
                   Add Project
@@ -272,7 +272,7 @@ export default function ChatProjectsSection({
                 <Button
                   variant="outline"
                   onClick={() => openModal(modals.aiProject)}
-                  className="flex h-9 items-center gap-2 rounded-full border-black/10 bg-white px-5 text-[13px] font-medium text-[#1A1A1A] shadow-sm transition-colors hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520] dark:text-[#F0EDE7] dark:hover:bg-[#35302A]"
+                  className="text-scaled-13 flex h-9 items-center gap-2 rounded-full border-black/10 bg-white px-5 font-medium text-[#1A1A1A] shadow-sm transition-colors hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520] dark:text-[#F0EDE7] dark:hover:bg-[#35302A]"
                 >
                   <Sparkles className="h-3.5 w-3.5" />
                   Write with AI

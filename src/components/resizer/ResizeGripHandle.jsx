@@ -1,0 +1,39 @@
+import { cn } from "@/lib/utils";
+
+/**
+ * Presentational left/right resize grip (vertical 3-dot pill) used by ContainerResizer.
+ * Purely visual + event forwarding — all drag state lives in the parent.
+ */
+export default function ResizeGripHandle({ side, active, visible, onMouseDown, onHoverChange }) {
+  return (
+    <div
+      className={cn(
+        "absolute top-0 z-[60] hidden h-24 w-7 cursor-ew-resize items-center justify-center select-none lg:flex",
+        side === "left" ? "-left-7" : "-right-7",
+        visible ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
+      )}
+      style={{ transition: "opacity 0.2s ease" }}
+      onMouseEnter={() => onHoverChange?.(true)}
+      onMouseLeave={() => onHoverChange?.(false)}
+      onMouseDown={(e) => onMouseDown?.(e, side)}
+    >
+      <div
+        className={cn(
+          "flex h-full flex-col items-center justify-center gap-[5px] rounded-full border border-white/[0.15] transition-all duration-200",
+          active
+            ? "scale-105 bg-white/[0.22] shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_0_16px_rgba(255,255,255,0.18)]"
+            : "bg-[#0D0D0D]/50 backdrop-blur-sm hover:scale-105 hover:bg-white/[0.16] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_0_12px_rgba(255,255,255,0.14)]"
+        )}
+        style={{ width: 7 }}
+      >
+        {[0, 1, 2].map((i) => (
+          <div
+            key={i}
+            className={cn("rounded-full", active ? "bg-white/90" : "bg-white/50")}
+            style={{ width: 3, height: 3 }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}

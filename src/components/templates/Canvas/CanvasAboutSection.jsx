@@ -113,7 +113,7 @@ function CanvasAboutSection({ isEditing }) {
           />
         </CanvasSectionControls>
       )}
-      <h2 className="font-dm-mono mb-6 text-[14px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
+      <h2 className="font-dm-mono text-scaled-14 mb-6 font-medium text-[#7A736C] dark:text-[#B5AFA5]">
         MY STORY
       </h2>
 
@@ -281,7 +281,7 @@ function CanvasAboutSection({ isEditing }) {
           )}
         </div>
       </div>
-      <p className="pointer-events-none -mt-2 mb-8 text-center text-[10px] font-medium tracking-widest text-[#7A736C]/70 uppercase dark:text-[#B5AFA5]/60">
+      <p className="text-scaled-10 pointer-events-none -mt-2 mb-8 text-center font-medium tracking-widest text-[#7A736C]/70 uppercase dark:text-[#B5AFA5]/60">
         Try moving things around :)
       </p>
 
@@ -293,7 +293,7 @@ function CanvasAboutSection({ isEditing }) {
               <div
                 className={`relative min-w-0 overflow-hidden ${!aboutExpanded ? "max-h-[5em]" : ""}`}
               >
-                <p className="text-[16px] leading-relaxed break-words text-[#7A736C] dark:text-[#B5AFA5]">
+                <p className="text-scaled-16 leading-relaxed break-words text-[#7A736C] dark:text-[#B5AFA5]">
                   {renderDescriptionLines(storyDisplayText)}
                 </p>
                 {!aboutExpanded && (
@@ -307,7 +307,7 @@ function CanvasAboutSection({ isEditing }) {
                 type="button"
                 onClick={() => setAboutExpanded((v) => !v)}
                 aria-expanded={aboutExpanded}
-                className="mt-3 flex items-center gap-1.5 self-start rounded-md text-[13px] font-medium text-[#1A1A1A] opacity-70 transition-opacity hover:opacity-100 focus-visible:ring-2 focus-visible:ring-[#1A1A1A]/25 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:text-[#F0EDE7] dark:focus-visible:ring-white/35 dark:focus-visible:ring-offset-[#2A2520]"
+                className="text-scaled-13 mt-3 flex items-center gap-1.5 self-start rounded-md font-medium text-[#1A1A1A] opacity-70 transition-opacity hover:opacity-100 focus-visible:ring-2 focus-visible:ring-[#1A1A1A]/25 focus-visible:ring-offset-2 focus-visible:ring-offset-white focus-visible:outline-none dark:text-[#F0EDE7] dark:focus-visible:ring-white/35 dark:focus-visible:ring-offset-[#2A2520]"
               >
                 {aboutExpanded ? "View less" : "View more"}
                 <motion.svg
@@ -330,14 +330,14 @@ function CanvasAboutSection({ isEditing }) {
               </button>
             </div>
           ) : (
-            <p className="text-[16px] leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]">
+            <p className="text-scaled-16 leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]">
               {renderDescriptionLines(storyText)}
             </p>
           )
         ) : isEditing ? (
           <button
             onClick={() => openSidebar?.(sidebars.about)}
-            className="text-left text-[13px] text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:hover:text-white"
+            className="text-scaled-13 text-left text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:hover:text-white"
           >
             Click here to add your story...
           </button>

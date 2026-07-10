@@ -271,7 +271,7 @@ export const SpotlightProjectsSection = ({ userDetails: userDetailsProp, edit, h
           <div className="bg-secondary/50 relative aspect-[4/3] cursor-pointer overflow-hidden">
             <ImageWithPreload src={project?.thumbnail?.url} alt={project.title} />
             {project?.hidden && (
-              <div className="absolute top-3 right-3 z-10 flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-700 dark:bg-amber-950/30 dark:text-amber-400">
+              <div className="text-scaled-12 absolute top-3 right-3 z-10 flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1 font-medium text-amber-700 dark:bg-amber-950/30 dark:text-amber-400">
                 <EyeOff className="h-3 w-3" />
                 Hidden from live site
               </div>
@@ -279,7 +279,7 @@ export const SpotlightProjectsSection = ({ userDetails: userDetailsProp, edit, h
           </div>
           <div className="flex flex-1 cursor-pointer flex-col justify-between">
             <div className={cn("p-6", edit && "pb-0")}>
-              <h3 className="project-info-card-heading-color line-clamp-2 text-lg font-semibold">
+              <h3 className="project-info-card-heading-color text-scaled-18 line-clamp-2 font-semibold">
                 {project.title}
               </h3>
               {project.description && (
@@ -310,14 +310,14 @@ export const SpotlightProjectsSection = ({ userDetails: userDetailsProp, edit, h
                       e.stopPropagation();
                       handleNavigation(project?._id);
                     }}
-                    customClass="!py-2 text-sm max-h-[38px] "
+                    customClass="!py-2 text-scaled-14 max-h-[38px] "
                     icon={<Pencil className="h-4 w-4" />}
                     text={"Edit"}
                     type="secondary"
                   />
                   <Button
                     type="toggleVisibility"
-                    customClass="!py-2 text-sm max-h-[38px]"
+                    customClass="!py-2 text-scaled-14 max-h-[38px]"
                     isSelected={project?.hidden}
                     onClick={(e) => {
                       e.preventDefault();
@@ -353,7 +353,7 @@ export const SpotlightProjectsSection = ({ userDetails: userDetailsProp, edit, h
   return (
     <section className="pt-0 pb-16">
       <div className="mb-8 flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Featured Projects</h2>
+        <h2 className="text-scaled-24 font-bold">Featured Projects</h2>
         {headerActions && <div className="shrink-0">{headerActions}</div>}
       </div>
 
@@ -375,16 +375,16 @@ export const SpotlightProjectsSection = ({ userDetails: userDetailsProp, edit, h
                 />
               </svg>
             </div>
-            <h3 className="mb-1 text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+            <h3 className="text-scaled-15 mb-1 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
               No projects yet
             </h3>
-            <p className="mb-5 max-w-[250px] text-[13px] text-[#7A736C] dark:text-[#9E9893]">
+            <p className="text-scaled-13 mb-5 max-w-[250px] text-[#7A736C] dark:text-[#9E9893]">
               Add some projects to showcase your work and experience.
             </p>
             <div className="flex flex-col items-center gap-3">
               <UIButton
                 onClick={() => openSidebar(sidebars.project)}
-                className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
+                className="text-scaled-13 flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
               >
                 <Pencil className="h-3.5 w-3.5" />
                 Add Project
@@ -392,7 +392,7 @@ export const SpotlightProjectsSection = ({ userDetails: userDetailsProp, edit, h
               <UIButton
                 variant="secondary"
                 onClick={() => openModal(modals.aiProject)}
-                className="h-9 rounded-full px-5 text-[13px] font-medium"
+                className="text-scaled-13 h-9 rounded-full px-5 font-medium"
               >
                 <Sparkles className="h-3.5 w-3.5" />
                 Write with AI
@@ -426,7 +426,7 @@ export const SpotlightProjectsSection = ({ userDetails: userDetailsProp, edit, h
           <div className="flex aspect-[4/3] flex-col items-center justify-center gap-3 rounded-3xl border border-dashed border-black/15 bg-black/[0.015] transition-colors hover:bg-black/[0.03] dark:border-white/10 dark:bg-white/[0.015] dark:hover:bg-white/[0.03]">
             <UIButton
               onClick={() => openSidebar(sidebars.project)}
-              className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
+              className="text-scaled-13 flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
             >
               <Pencil className="h-3.5 w-3.5" />
               Add Project
@@ -434,7 +434,7 @@ export const SpotlightProjectsSection = ({ userDetails: userDetailsProp, edit, h
             <UIButton
               variant="secondary"
               onClick={() => openModal(modals.aiProject)}
-              className="h-9 rounded-full px-5 text-[13px] font-medium"
+              className="text-scaled-13 h-9 rounded-full px-5 font-medium"
             >
               <Sparkles className="h-3.5 w-3.5" />
               Write with AI

@@ -73,10 +73,10 @@ export default function ChatHeader({ chatRevealStep, s, canEdit }) {
               </Button>
             </div>
           )}
-          <h1 className="text-2xl font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
+          <h1 className="text-scaled-24 font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
             {introduction || "Hey, I'm here."}
           </h1>
-          <p className="max-w-md text-[15px] leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]">
+          <p className="text-scaled-15 max-w-md leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]">
             {bio || ""}
           </p>
         </div>
@@ -111,7 +111,7 @@ export default function ChatHeader({ chatRevealStep, s, canEdit }) {
         <div className="absolute inset-0 flex items-center">
           <div className="w-full border-t border-dashed border-black/10 dark:border-white/10"></div>
         </div>
-        <span className="relative bg-[#EFECE6] px-4 text-xs font-medium text-[#7A736C] transition-colors duration-700 dark:bg-[#1A1A1A] dark:text-[#B5AFA5]">
+        <span className="text-scaled-12 relative bg-[#EFECE6] px-4 font-medium text-[#7A736C] transition-colors duration-700 dark:bg-[#1A1A1A] dark:text-[#B5AFA5]">
           {format(currentTime, "d EEE, h:mm:ss a")}
         </span>
       </motion.div>
@@ -145,10 +145,10 @@ export default function ChatHeader({ chatRevealStep, s, canEdit }) {
                 <img src={avatarSrc} alt="Profile" className="h-full w-full object-cover" />
               </div>
               <div className="flex flex-col gap-1">
-                <span className="ml-1 text-[11px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
+                <span className="text-scaled-11 ml-1 font-medium text-[#7A736C] dark:text-[#B5AFA5]">
                   {userDetails?.firstName || "Me"}
                 </span>
-                <div className="flex min-h-[46px] items-center rounded-2xl rounded-bl-sm border border-black/5 bg-[#E5E2DB] px-4 py-3 text-[15px] leading-relaxed text-[#1A1A1A] transition-colors duration-100 dark:border-white/5 dark:bg-[#2A2520] dark:text-[#F0EDE7]">
+                <div className="text-scaled-15 flex min-h-[46px] items-center rounded-2xl rounded-bl-sm border border-black/5 bg-[#E5E2DB] px-4 py-3 leading-relaxed text-[#1A1A1A] transition-colors duration-100 dark:border-white/5 dark:bg-[#2A2520] dark:text-[#F0EDE7]">
                   {chatRevealStep === s(2) ? (
                     <TypingIndicator />
                   ) : (
@@ -188,7 +188,7 @@ export default function ChatHeader({ chatRevealStep, s, canEdit }) {
             <div className="mt-auto flex h-8 w-8 shrink-0 items-end">
               <ChatAvatar avatarSrc={avatarSrc} show={chatRevealStep <= s(3)} />
             </div>
-            <div className="flex min-h-[46px] items-center rounded-2xl rounded-tl-sm rounded-bl-sm border border-black/5 bg-[#E5E2DB] px-4 py-3 text-[15px] leading-relaxed text-[#1A1A1A] transition-colors duration-100 dark:border-white/5 dark:bg-[#2A2520] dark:text-[#F0EDE7]">
+            <div className="text-scaled-15 flex min-h-[46px] items-center rounded-2xl rounded-tl-sm rounded-bl-sm border border-black/5 bg-[#E5E2DB] px-4 py-3 leading-relaxed text-[#1A1A1A] transition-colors duration-100 dark:border-white/5 dark:bg-[#2A2520] dark:text-[#F0EDE7]">
               {chatRevealStep === s(3) ? (
                 <TypingIndicator />
               ) : skills.length > 0 ? (

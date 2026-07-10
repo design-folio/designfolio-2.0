@@ -67,7 +67,7 @@ export const SpotlightHero = ({ userDetails, edit }) => {
               avoidCollisions={true}
               className="bg-tooltip-bg-color text-tooltip-text-color flex items-center gap-2 rounded-xl border-0 px-4 py-2 shadow-xl"
             >
-              <span className="text-sm font-medium">Happy to have you here</span>
+              <span className="text-scaled-14 font-medium">Happy to have you here</span>
               <img
                 src="/assets/png/handshake.png"
                 alt="Handshake"
@@ -83,7 +83,7 @@ export const SpotlightHero = ({ userDetails, edit }) => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.3 }}
         >
-          <h1 className="text-4xl font-bold">{introduction} </h1>
+          <h1 className="text-scaled-36 font-bold">{introduction} </h1>
           {edit && (
             <div className="lg:absolute lg:right-[-54px]">
               <Button
@@ -125,7 +125,7 @@ export const SpotlightHero = ({ userDetails, edit }) => {
             }}
           >
             {scrollSkills.map((skill, index) => (
-              <motion.span key={index} className="bg-card rounded-full px-4 py-2 text-sm">
+              <motion.span key={index} className="bg-card text-scaled-14 rounded-full px-4 py-2">
                 {skill?.label}
               </motion.span>
             ))}

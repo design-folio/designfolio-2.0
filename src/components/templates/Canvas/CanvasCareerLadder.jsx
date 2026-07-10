@@ -71,10 +71,10 @@ function ExperienceCard({ experience, isEditing, expandedCards, onToggleExpand, 
         </div>
       )}
       <div className="mb-3 flex flex-col justify-between gap-2 sm:flex-row sm:items-center sm:gap-0">
-        <h3 className="text-base font-semibold text-[#1A1A1A] md:max-w-sm dark:text-[#F0EDE7]">
+        <h3 className="text-scaled-16 font-semibold text-[#1A1A1A] md:max-w-sm dark:text-[#F0EDE7]">
           {role} @ {company}
         </h3>
-        <div className="w-fit rounded-full bg-[#F0EDE7] px-3 py-1 text-[13px] whitespace-nowrap text-[#1A1A1A] dark:bg-[#3A352E] dark:text-[#F0EDE7]">
+        <div className="text-scaled-13 w-fit rounded-full bg-[#F0EDE7] px-3 py-1 whitespace-nowrap text-[#1A1A1A] dark:bg-[#3A352E] dark:text-[#F0EDE7]">
           {`${startMonth} ${startYear}  — ${currentlyWorking ? "Present" : `${endMonth} ${endYear}`}`}
         </div>
       </div>
@@ -91,7 +91,7 @@ function ExperienceCard({ experience, isEditing, expandedCards, onToggleExpand, 
                 content={description || ""}
                 mode="work"
                 enableBulletList={true}
-                className="text-[15px] leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]"
+                className="text-scaled-15 leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]"
                 noCardStyle
               />
             </motion.div>
@@ -100,7 +100,7 @@ function ExperienceCard({ experience, isEditing, expandedCards, onToggleExpand, 
                 e.stopPropagation();
                 onToggleExpand(_id);
               }}
-              className="mt-3 flex items-center gap-1.5 text-[13px] font-medium text-[#1A1A1A] opacity-70 transition-opacity hover:opacity-100 dark:text-[#F0EDE7]"
+              className="text-scaled-13 mt-3 flex items-center gap-1.5 font-medium text-[#1A1A1A] opacity-70 transition-opacity hover:opacity-100 dark:text-[#F0EDE7]"
             >
               {isExpanded ? "View less" : "View more"}
               <motion.svg
@@ -124,7 +124,7 @@ function ExperienceCard({ experience, isEditing, expandedCards, onToggleExpand, 
             content={description || ""}
             mode="work"
             enableBulletList={true}
-            className="text-[15px] leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]"
+            className="text-scaled-15 leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]"
             noCardStyle
           />
         ))}
@@ -272,7 +272,7 @@ function CanvasCareerLadder({ isEditing, preview = false }) {
           />
         </CanvasSectionControls>
       )}
-      <h2 className="font-dm-mono mb-6 text-[14px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
+      <h2 className="font-dm-mono text-scaled-14 mb-6 font-medium text-[#7A736C] dark:text-[#B5AFA5]">
         CAREER LADDER
       </h2>
 
@@ -293,16 +293,16 @@ function CanvasCareerLadder({ isEditing, preview = false }) {
               />
             </svg>
           </div>
-          <h3 className="mb-1 text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+          <h3 className="text-scaled-15 mb-1 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
             No experience yet
           </h3>
-          <p className="mb-5 max-w-[250px] text-[13px] text-[#7A736C] dark:text-[#9E9893]">
+          <p className="text-scaled-13 mb-5 max-w-[250px] text-[#7A736C] dark:text-[#9E9893]">
             Add your work experience to showcase your career journey.
           </p>
           {isEditing && (
             <Button
               onClick={() => openNewWork()}
-              className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
+              className="text-scaled-13 flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
             >
               <Plus className="h-3.5 w-3.5" />
               Add Experience

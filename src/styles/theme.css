@@ -19,3 +19,4 @@
 
 /* Landing + auth + legal pages */
 @import "./templates/landing.css";
+@import "./typography.css";

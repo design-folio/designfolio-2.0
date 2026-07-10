@@ -29,7 +29,7 @@ function ExperienceDescription({ desc }) {
 
   return (
     <p
-      className="font-jetbrains text-[15px] leading-relaxed wrap-break-word whitespace-normal"
+      className="font-jetbrains text-scaled-15 leading-relaxed wrap-break-word whitespace-normal"
       style={{ color: "var(--tiptap-work-paragraph, #7a736c)" }}
     >
       {words.slice(0, visibleCount).map((word, wordIndex) => {
@@ -123,7 +123,7 @@ export default function MonoExperienceSection({ isEditing }) {
         </div>
       )}
 
-      <h2 className="font-dm-mono mb-5 text-[14px] font-bold tracking-wider text-[#463B34] uppercase dark:text-[#D4C9BC]">
+      <h2 className="font-dm-mono text-scaled-14 mb-5 font-bold tracking-wider text-[#463B34] uppercase dark:text-[#D4C9BC]">
         Experience
       </h2>
 
@@ -144,16 +144,16 @@ export default function MonoExperienceSection({ isEditing }) {
               />
             </svg>
           </div>
-          <h3 className="mb-1 text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+          <h3 className="text-scaled-15 mb-1 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
             No experience yet
           </h3>
-          <p className="mb-5 max-w-[250px] text-[13px] text-[#7A736C] dark:text-[#9E9893]">
+          <p className="text-scaled-13 mb-5 max-w-[250px] text-[#7A736C] dark:text-[#9E9893]">
             Add your work experience to showcase your career journey.
           </p>
           {isEditing && (
             <Button
               onClick={() => handleOpenWorkSidebar(null)}
-              className="h-9 rounded-full bg-[#1A1A1A] px-4 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
+              className="text-scaled-13 h-9 rounded-full bg-[#1A1A1A] px-4 font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
             >
               Add Experience
             </Button>
@@ -188,18 +188,18 @@ export default function MonoExperienceSection({ isEditing }) {
                 <div className="flex items-center gap-3">
                   <motion.span
                     animate={{ rotate: expandedIndex === index ? 45 : 0 }}
-                    className="flex h-4 w-4 shrink-0 items-center justify-center text-lg leading-none font-light text-[#1A1A1A] dark:text-[#F0EDE7]"
+                    className="text-scaled-18 flex h-4 w-4 shrink-0 items-center justify-center leading-none font-light text-[#1A1A1A] dark:text-[#F0EDE7]"
                   >
                     +
                   </motion.span>
-                  <span className="font-jetbrains text-[14px] font-medium tracking-wide text-[#1A1A1A] uppercase dark:text-[#F0EDE7]">
+                  <span className="font-jetbrains text-scaled-14 font-medium tracking-wide text-[#1A1A1A] uppercase dark:text-[#F0EDE7]">
                     <span className="mr-2 text-[#7A736C] dark:text-[#9E9893]">
                       {exp.startYear} /
                     </span>
                     {exp.company}
                   </span>
                 </div>
-                <span className="font-jetbrains ml-7 text-[14px] tracking-wider text-[#7A736C] uppercase transition-colors group-hover:text-[#1A1A1A] sm:ml-0 dark:text-[#9E9893] dark:group-hover:text-[#F0EDE7]">
+                <span className="font-jetbrains text-scaled-14 ml-7 tracking-wider text-[#7A736C] uppercase transition-colors group-hover:text-[#1A1A1A] sm:ml-0 dark:text-[#9E9893] dark:group-hover:text-[#F0EDE7]">
                   {exp.role}
                 </span>
               </button>

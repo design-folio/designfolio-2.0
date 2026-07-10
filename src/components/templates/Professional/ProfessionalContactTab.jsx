@@ -16,7 +16,7 @@ function ProfessionalContactTab({ isEditing, socialLinks, onEditContact, allFiel
             onClick={onEditContact}
           >
             <Pencil className="h-3.5 w-3.5" />
-            <span className="text-xs font-medium">Edit</span>
+            <span className="text-scaled-12 font-medium">Edit</span>
           </Button>
         </div>
       )}
@@ -39,7 +39,7 @@ function ProfessionalContactTab({ isEditing, socialLinks, onEditContact, allFiel
                 className="flex h-32 w-full flex-col items-center justify-center gap-3 rounded-xl border border-[#D5D0C6] p-5 transition-colors hover:bg-[#DED9CE]/30 dark:border-[#3A352E] dark:hover:bg-white/[0.02]"
               >
                 <link.icon className="h-6 w-6 text-[#1A1A1A] opacity-80 transition-opacity group-hover:opacity-100 dark:text-[#F0EDE7]" />
-                <span className="font-jetbrains text-[15px] text-[#1A1A1A] dark:text-[#F0EDE7]">
+                <span className="font-jetbrains text-scaled-15 text-[#1A1A1A] dark:text-[#F0EDE7]">
                   {link.label}
                 </span>
               </a>

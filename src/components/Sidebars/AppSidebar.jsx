@@ -47,6 +47,12 @@ export default function AppSidebar() {
     changeTheme,
     wallpaperEffects,
     updateWallpaperEffect,
+    backgroundMode,
+    changeBackgroundMode,
+    wallpaperColor,
+    changeWallpaperColor,
+    typography,
+    changeTypography,
     selectedWork,
     selectedReview,
     selectedProject,
@@ -87,6 +93,12 @@ export default function AppSidebar() {
             wallpapers={wallpapers}
             effects={wallpaperEffects}
             updateWallpaperEffect={updateWallpaperEffect}
+            backgroundMode={backgroundMode}
+            changeBackgroundMode={changeBackgroundMode}
+            wallpaperColor={wallpaperColor}
+            changeWallpaperColor={changeWallpaperColor}
+            typography={typography}
+            changeTypography={changeTypography}
           />
         );
       case sidebars.work:

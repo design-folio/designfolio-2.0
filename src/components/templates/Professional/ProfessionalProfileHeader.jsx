@@ -65,7 +65,7 @@ function ProfessionalProfileHeader({
             {[...Array(4)].map((_, i) => (
               <h1
                 key={i}
-                className="font-pixelify mt-6 pr-12 text-[110px] leading-[0.8] tracking-tight text-[#1A1A1A] select-none md:text-[140px] dark:text-[#F0EDE7]"
+                className="font-pixelify text-scaled-110 md:text-scaled-140 mt-6 pr-12 leading-[0.8] tracking-tight text-[#1A1A1A] select-none dark:text-[#F0EDE7]"
               >
                 {displayName}
               </h1>
@@ -73,18 +73,18 @@ function ProfessionalProfileHeader({
           </motion.div>
         </div>
 
-        <div className="font-jetbrains mb-12 px-4 text-center text-[16px] leading-[1.8] text-[#1A1A1A] dark:text-[#F0EDE7]">
+        <div className="text-scaled-16 font-jetbrains mb-12 px-4 text-center leading-[1.8] text-[#1A1A1A] dark:text-[#F0EDE7]">
           {bio ? bio.split("\n").map((line, i) => <p key={i}>{line}</p>) : null}
         </div>
       </motion.div>
 
       {/* Time / Role row */}
-      <div className="font-jetbrains group/role relative flex items-center justify-between border-t border-[#D5D0C6] px-4 py-2.5 text-[13px] tracking-wide text-[#1A1A1A] uppercase dark:border-[#3A352E] dark:text-[#B5AFA5]">
+      <div className="font-jetbrains group/role text-scaled-13 relative flex items-center justify-between border-t border-[#D5D0C6] px-4 py-2.5 tracking-wide text-[#1A1A1A] uppercase dark:border-[#3A352E] dark:text-[#B5AFA5]">
         <div className="flex min-h-[1.25em] items-center gap-2">
           {currentTime ? (
             <>
               <span>{format(currentTime, "E, MMM d")}</span>
-              <span className="mt-[1px] text-[8px] text-[#E37941]">◆</span>
+              <span className="text-scaled-8 mt-[1px] text-[#E37941]">◆</span>
               <span className="tabular-nums">{format(currentTime, "h:mm:ss a")}</span>
             </>
           ) : null}

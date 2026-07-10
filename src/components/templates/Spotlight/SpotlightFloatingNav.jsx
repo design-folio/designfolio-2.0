@@ -116,7 +116,7 @@ export const SpotlightFloatingNav = () => {
                     }`}
                   />
                 </div>
-                <span className="absolute left-full pl-4 text-sm whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100">
+                <span className="text-scaled-14 absolute left-full pl-4 whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100">
                   {label}
                 </span>
               </button>

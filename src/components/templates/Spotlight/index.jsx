@@ -34,7 +34,7 @@ const Spotlight = ({ userDetails, edit }) => {
     about: isSectionVisible("about") && (edit || hasAbout) && (
       <section id="section-about" className="py-12">
         <div className="mb-8 flex items-center justify-between">
-          <h2 className="flex-1 text-2xl font-bold">About</h2>
+          <h2 className="text-scaled-24 flex-1 font-bold">About</h2>
           {edit && (
             <div className="flex items-center justify-end gap-2">
               <SectionVisibilityButton sectionId="about" />

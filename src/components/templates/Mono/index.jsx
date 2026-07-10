@@ -460,14 +460,14 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                   >
                     <DropdownMenuItem
                       onClick={() => openSidebar?.(sidebars.project)}
-                      className="flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-[13px] text-[#1A1A1A] hover:bg-black/5 focus:bg-black/5 dark:text-[#F0EDE7] dark:hover:bg-white/5 dark:focus:bg-white/5"
+                      className="text-scaled-13 flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-[#1A1A1A] hover:bg-black/5 focus:bg-black/5 dark:text-[#F0EDE7] dark:hover:bg-white/5 dark:focus:bg-white/5"
                     >
                       <Pencil className="h-3.5 w-3.5" />
                       <span>Write from Scratch</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => openModal?.(modals.aiProject)}
-                      className="flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-[13px] text-[#1A1A1A] hover:bg-black/5 focus:bg-black/5 dark:text-[#F0EDE7] dark:hover:bg-white/5 dark:focus:bg-white/5"
+                      className="text-scaled-13 flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-[#1A1A1A] hover:bg-black/5 focus:bg-black/5 dark:text-[#F0EDE7] dark:hover:bg-white/5 dark:focus:bg-white/5"
                     >
                       <Sparkles className="h-3.5 w-3.5" />
                       <span>Write using AI</span>
@@ -488,7 +488,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                     }}
                   >
                     <SheetHeader className="m-0 flex h-[65px] shrink-0 flex-row items-center space-y-0 border-b border-black/10 px-5 py-4 dark:border-white/10">
-                      <SheetTitle className="m-0 text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+                      <SheetTitle className="text-scaled-15 m-0 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                         Add Project
                       </SheetTitle>
                     </SheetHeader>
@@ -498,20 +498,20 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                         <div className="space-y-1.5">
                           <Label
                             htmlFor="proj-title"
-                            className="ml-1 text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]"
+                            className="text-scaled-13 ml-1 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]"
                           >
                             Project Title
                           </Label>
                           <Input
                             id="proj-title"
                             placeholder="e.g. Slate"
-                            className="h-10 rounded-xl border-transparent bg-black/[0.03] px-3.5 text-[14px] text-[#1A1A1A] shadow-none transition-all placeholder:text-black/30 focus-visible:border-black/20 focus-visible:bg-transparent focus-visible:ring-2 focus-visible:ring-black/10 dark:bg-white/[0.03] dark:text-[#F0EDE7] dark:placeholder:text-white/30 dark:focus-visible:border-white/20 dark:focus-visible:ring-white/10"
+                            className="text-scaled-14 h-10 rounded-xl border-transparent bg-black/[0.03] px-3.5 text-[#1A1A1A] shadow-none transition-all placeholder:text-black/30 focus-visible:border-black/20 focus-visible:bg-transparent focus-visible:ring-2 focus-visible:ring-black/10 dark:bg-white/[0.03] dark:text-[#F0EDE7] dark:placeholder:text-white/30 dark:focus-visible:border-white/20 dark:focus-visible:ring-white/10"
                           />
                         </div>
                         <div className="space-y-1.5">
                           <Label
                             htmlFor="proj-desc"
-                            className="ml-1 text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]"
+                            className="text-scaled-13 ml-1 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]"
                           >
                             Description
                           </Label>
@@ -519,11 +519,11 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                             id="proj-desc"
                             rows={3}
                             placeholder="Short description of the project"
-                            className="w-full resize-none rounded-xl border-transparent bg-black/[0.03] p-3.5 text-[14px] text-[#1A1A1A] shadow-none transition-all placeholder:text-black/30 focus-visible:border-black/20 focus-visible:bg-transparent focus-visible:ring-2 focus-visible:ring-black/10 focus-visible:outline-none dark:bg-white/[0.03] dark:text-[#F0EDE7] dark:placeholder:text-white/30 dark:focus-visible:border-white/20 dark:focus-visible:ring-white/10"
+                            className="text-scaled-14 w-full resize-none rounded-xl border-transparent bg-black/[0.03] p-3.5 text-[#1A1A1A] shadow-none transition-all placeholder:text-black/30 focus-visible:border-black/20 focus-visible:bg-transparent focus-visible:ring-2 focus-visible:ring-black/10 focus-visible:outline-none dark:bg-white/[0.03] dark:text-[#F0EDE7] dark:placeholder:text-white/30 dark:focus-visible:border-white/20 dark:focus-visible:ring-white/10"
                           />
                         </div>
                         <div className="space-y-1.5">
-                          <Label className="ml-1 text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+                          <Label className="text-scaled-13 ml-1 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                             Cover Image
                           </Label>
                           <div className="flex items-center gap-4">
@@ -533,7 +533,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                             <Button
                               variant="outline"
                               size="sm"
-                              className="h-8 rounded-full border-black/10 text-[12px] hover:bg-black/5 dark:border-white/10 dark:hover:bg-white/5"
+                              className="text-scaled-12 h-8 rounded-full border-black/10 hover:bg-black/5 dark:border-white/10 dark:hover:bg-white/5"
                             >
                               Upload Image
                             </Button>
@@ -543,10 +543,10 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                         <div className="pt-2">
                           <div className="flex items-center justify-between">
                             <div className="space-y-0.5">
-                              <Label className="ml-1 text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+                              <Label className="text-scaled-13 ml-1 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                                 Protect Project
                               </Label>
-                              <p className="ml-1 text-[12px] text-[#7A736C] dark:text-[#9E9893]">
+                              <p className="text-scaled-12 ml-1 text-[#7A736C] dark:text-[#9E9893]">
                                 Require a password to view this project (e.g., for NDAs).
                               </p>
                             </div>
@@ -577,7 +577,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                                     id="proj-password"
                                     type="password"
                                     placeholder="Enter password"
-                                    className="h-10 rounded-xl border-transparent bg-black/[0.03] px-3.5 text-[14px] text-[#1A1A1A] shadow-none transition-all placeholder:text-black/30 focus-visible:border-black/20 focus-visible:bg-transparent focus-visible:ring-2 focus-visible:ring-black/10 dark:bg-white/[0.03] dark:text-[#F0EDE7] dark:placeholder:text-white/30 dark:focus-visible:border-white/20 dark:focus-visible:ring-white/10"
+                                    className="text-scaled-14 h-10 rounded-xl border-transparent bg-black/[0.03] px-3.5 text-[#1A1A1A] shadow-none transition-all placeholder:text-black/30 focus-visible:border-black/20 focus-visible:bg-transparent focus-visible:ring-2 focus-visible:ring-black/10 dark:bg-white/[0.03] dark:text-[#F0EDE7] dark:placeholder:text-white/30 dark:focus-visible:border-white/20 dark:focus-visible:ring-white/10"
                                   />
                                 </div>
                               </motion.div>
@@ -591,13 +591,13 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                       <SheetClose asChild>
                         <Button
                           variant="outline"
-                          className="h-9 rounded-full border-black/10 px-4 text-[13px] font-medium text-[#1A1A1A] transition-colors hover:bg-black/5 dark:border-white/10 dark:text-[#F0EDE7] dark:hover:bg-white/5"
+                          className="text-scaled-13 h-9 rounded-full border-black/10 px-4 font-medium text-[#1A1A1A] transition-colors hover:bg-black/5 dark:border-white/10 dark:text-[#F0EDE7] dark:hover:bg-white/5"
                         >
                           Cancel
                         </Button>
                       </SheetClose>
                       <SheetClose asChild>
-                        <Button className="h-9 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90">
+                        <Button className="text-scaled-13 h-9 rounded-full bg-[#1A1A1A] px-5 font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90">
                           Add Project
                         </Button>
                       </SheetClose>
@@ -618,7 +618,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                 />
               </div>
             )}
-            <h2 className="font-dm-mono mb-5 text-[14px] font-bold tracking-wider text-[#463B34] uppercase dark:text-[#D4C9BC]">
+            <h2 className="font-dm-mono text-scaled-14 mb-5 font-bold tracking-wider text-[#463B34] uppercase dark:text-[#D4C9BC]">
               Projects
             </h2>
 
@@ -639,17 +639,17 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                     />
                   </svg>
                 </div>
-                <h3 className="mb-1 text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+                <h3 className="text-scaled-15 mb-1 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                   No projects yet
                 </h3>
-                <p className="mb-5 max-w-[250px] text-[13px] text-[#7A736C] dark:text-[#9E9893]">
+                <p className="text-scaled-13 mb-5 max-w-[250px] text-[#7A736C] dark:text-[#9E9893]">
                   Add some projects to showcase your work and experience.
                 </p>
                 {isEditing && (
                   <div className="flex flex-col items-center gap-3">
                     <Button
                       onClick={() => openSidebar?.(sidebars.project)}
-                      className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
+                      className="text-scaled-13 flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
                     >
                       <Pencil className="h-3.5 w-3.5" />
                       Add Project
@@ -657,7 +657,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                     <Button
                       variant="secondary"
                       onClick={() => openModal?.(modals.aiProject)}
-                      className="border-button-outline hover:border-button-outline-hover h-9 rounded-full px-5 text-[13px] font-medium"
+                      className="border-button-outline hover:border-button-outline-hover text-scaled-13 h-9 rounded-full px-5 font-medium"
                     >
                       <Sparkles className="h-3.5 w-3.5" />
                       Write with AI
@@ -718,16 +718,16 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
                         {project.hidden && (
-                          <div className="absolute top-2 left-2 z-10 flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-950/30 dark:text-amber-400">
+                          <div className="text-scaled-12 absolute top-2 left-2 z-10 flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 font-medium text-amber-700 dark:bg-amber-950/30 dark:text-amber-400">
                             <EyeOff className="h-3 w-3" /> Hidden from live site
                           </div>
                         )}
                       </div>
-                      <h3 className="mb-1.5 text-base font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+                      <h3 className="text-scaled-16 mb-1.5 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                         {project.title}
                       </h3>
                       <p
-                        className="text-base leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]"
+                        className="text-scaled-16 leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]"
                         style={{ fontWeight: 450 }}
                       >
                         {project.description}
@@ -739,7 +739,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                       <div className="flex aspect-[3/2] flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-black/15 bg-black/[0.015] transition-colors hover:bg-black/[0.03] dark:border-white/10 dark:bg-white/[0.015] dark:hover:bg-white/[0.03]">
                         <Button
                           onClick={() => openSidebar?.(sidebars.project)}
-                          className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
+                          className="text-scaled-13 flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
                         >
                           <Pencil className="h-3.5 w-3.5" />
                           Add Project
@@ -747,7 +747,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                         <Button
                           variant="secondary"
                           onClick={() => openModal(modals.aiProject)}
-                          className="flex h-9 items-center gap-2 rounded-full px-5 text-[13px] font-medium"
+                          className="text-scaled-13 flex h-9 items-center gap-2 rounded-full px-5 font-medium"
                         >
                           <Sparkles className="h-3.5 w-3.5" />
                           Write with AI
@@ -757,7 +757,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                   )}
                 </div>
 
-                {/* <div className="bg-[#1A1A1A] dark:bg-[#F0EDE7] text-[#F0EDE7] dark:text-[#1A1A1A] px-3 py-1.5 rounded-full text-[13px] font-medium shadow-2xl flex items-center gap-1.5">
+                {/* <div className="bg-[#1A1A1A] dark:bg-[#F0EDE7] text-[#F0EDE7] dark:text-[#1A1A1A] px-3 py-1.5 rounded-full text-scaled-13 font-medium shadow-2xl flex items-center gap-1.5">
                                 View Project <ArrowUpRight size={14} />
                             </div> */}
               </>
@@ -799,7 +799,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               />
             </div>
           )}
-          <h2 className="font-dm-mono mb-5 text-[14px] font-bold tracking-wider text-[#463B34] uppercase dark:text-[#D4C9BC]">
+          <h2 className="font-dm-mono text-scaled-14 mb-5 font-bold tracking-wider text-[#463B34] uppercase dark:text-[#D4C9BC]">
             My Story
           </h2>
 
@@ -845,11 +845,11 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               />
             </motion.div>
           </div>
-          <p className="pointer-events-none -mt-2 mb-8 text-center text-[10px] font-medium tracking-widest text-[#7A736C]/70 uppercase dark:text-[#B5AFA5]/60">
+          <p className="text-scaled-10 pointer-events-none -mt-2 mb-8 text-center font-medium tracking-widest text-[#7A736C]/70 uppercase dark:text-[#B5AFA5]/60">
             Try moving things around :)
           </p>
 
-          <div className="flex flex-col gap-6 text-base leading-[1.7] text-[#7A736C] dark:text-[#B5AFA5]">
+          <div className="text-scaled-16 flex flex-col gap-6 leading-[1.7] text-[#7A736C] dark:text-[#B5AFA5]">
             {aboutStoryPlain ? (
               aboutStoryNeedsExpand ? (
                 <div className="flex flex-col gap-0">
@@ -884,7 +884,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                     variant="ghost"
                     aria-expanded={aboutStoryExpanded}
                     onClick={() => setAboutStoryExpanded((v) => !v)}
-                    className="mt-3 h-auto justify-start gap-1.5 self-start px-2 py-1.5 text-[13px] font-medium text-[#1A1A1A] hover:bg-black/[0.04] focus-visible:ring-2 focus-visible:ring-[#1A1A1A]/20 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F0EDE7] dark:text-[#F0EDE7] dark:hover:bg-white/[0.06] dark:focus-visible:ring-white/25 dark:focus-visible:ring-offset-[#1A1A1A]"
+                    className="text-scaled-13 mt-3 h-auto justify-start gap-1.5 self-start px-2 py-1.5 font-medium text-[#1A1A1A] hover:bg-black/[0.04] focus-visible:ring-2 focus-visible:ring-[#1A1A1A]/20 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F0EDE7] dark:text-[#F0EDE7] dark:hover:bg-white/[0.06] dark:focus-visible:ring-white/25 dark:focus-visible:ring-offset-[#1A1A1A]"
                   >
                     {aboutStoryExpanded ? "View less" : "View more"}
                     <motion.span
@@ -911,7 +911,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               <button
                 type="button"
                 onClick={() => openSidebar?.(sidebars.about)}
-                className="text-left text-[13px] text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:hover:text-white"
+                className="text-scaled-13 text-left text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:hover:text-white"
               >
                 Click here to add your story...
               </button>
@@ -951,7 +951,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                 />
               </div>
             )}
-            <h2 className="font-dm-mono mb-5 text-[14px] font-bold tracking-wider text-[#463B34] uppercase dark:text-[#D4C9BC]">
+            <h2 className="font-dm-mono text-scaled-14 mb-5 font-bold tracking-wider text-[#463B34] uppercase dark:text-[#D4C9BC]">
               Stack
             </h2>
             {activeTools.length === 0 ? (
@@ -977,16 +977,16 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                     />
                   </svg>
                 </div>
-                <h3 className="mb-1 text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+                <h3 className="text-scaled-15 mb-1 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                   No tools yet
                 </h3>
-                <p className="mb-5 max-w-[250px] text-[13px] text-[#7A736C] dark:text-[#9E9893]">
+                <p className="text-scaled-13 mb-5 max-w-[250px] text-[#7A736C] dark:text-[#9E9893]">
                   Add tools to showcase your stack and workflow.
                 </p>
                 {isEditing && (
                   <Button
                     onClick={() => openSidebar?.(sidebars.tools)}
-                    className="h-9 rounded-full bg-[#1A1A1A] px-4 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
+                    className="text-scaled-13 h-9 rounded-full bg-[#1A1A1A] px-4 font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
                   >
                     Add Tools
                   </Button>
@@ -1006,7 +1006,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                       alt={tool.name}
                       className="h-10 w-10 cursor-pointer object-contain transition-[filter] duration-300 group-hover/tool:[filter:drop-shadow(0_4px_8px_rgba(0,0,0,0.18))]"
                     />
-                    <span className="text-[10px] leading-none font-medium whitespace-nowrap text-[#7A736C] opacity-0 transition-opacity duration-200 group-hover/tool:opacity-100 dark:text-[#9E9893]">
+                    <span className="text-scaled-10 leading-none font-medium whitespace-nowrap text-[#7A736C] opacity-0 transition-opacity duration-200 group-hover/tool:opacity-100 dark:text-[#9E9893]">
                       {tool.name}
                     </span>
                   </motion.div>
@@ -1076,7 +1076,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               {isEditing ? (
                 <div className="group/role flex items-center gap-2">
                   <p
-                    className="text-[17px] text-[#4A4440] dark:text-[#C8C0B5]"
+                    className="text-scaled-17 text-[#4A4440] dark:text-[#C8C0B5]"
                     style={{ fontWeight: 450 }}
                   >
                     {userRole}
@@ -1093,7 +1093,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                 </div>
               ) : (
                 <p
-                  className="text-[17px] text-[#4A4440] dark:text-[#C8C0B5]"
+                  className="text-scaled-17 text-[#4A4440] dark:text-[#C8C0B5]"
                   style={{ fontWeight: 450 }}
                 >
                   {userRole}
@@ -1104,7 +1104,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               href={resumeUrl || "#"}
               target={resumeUrl ? "_blank" : undefined}
               rel={resumeUrl ? "noopener noreferrer" : undefined}
-              className="group/download flex w-fit items-center gap-1.5 border-b border-[#1A1A1A] pb-0.5 text-[13px] font-medium text-[#1A1A1A] transition-opacity hover:opacity-70 dark:border-[#F0EDE7] dark:text-[#F0EDE7]"
+              className="group/download text-scaled-13 flex w-fit items-center gap-1.5 border-b border-[#1A1A1A] pb-0.5 font-medium text-[#1A1A1A] transition-opacity hover:opacity-70 dark:border-[#F0EDE7] dark:text-[#F0EDE7]"
               onMouseEnter={() => downloadRef.current?.startAnimation()}
               onMouseLeave={() => downloadRef.current?.stopAnimation()}
               onClick={(e) => {
@@ -1136,11 +1136,11 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               </Button>
             </div>
           )}
-          <h2 className="font-dm-mono mb-5 text-[14px] font-bold tracking-wider text-[#463B34] uppercase dark:text-[#D4C9BC]">
+          <h2 className="font-dm-mono text-scaled-14 mb-5 font-bold tracking-wider text-[#463B34] uppercase dark:text-[#D4C9BC]">
             Intro
           </h2>
           <p
-            className="text-[17px] leading-[1.7] text-[#7A736C] dark:text-[#B5AFA5]"
+            className="text-scaled-17 leading-[1.7] text-[#7A736C] dark:text-[#B5AFA5]"
             style={{ fontWeight: 450 }}
           >
             {bio}
@@ -1161,7 +1161,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           variants={itemVariants}
           className="relative flex flex-col items-center justify-center overflow-hidden border-b border-[#E5D7C4]/50"
         >
-          <div className="font-dm-mono pointer-events-none absolute top-6 right-8 left-8 z-10 flex justify-between text-[10px] tracking-widest text-[#463B34] uppercase dark:text-[#C4B5A0]">
+          <div className="font-dm-mono text-scaled-10 pointer-events-none absolute top-6 right-8 left-8 z-10 flex justify-between tracking-widest text-[#463B34] uppercase dark:text-[#C4B5A0]">
             <span>{isGameOver ? "Game Over" : isPlaying ? "Playing" : "Tap to play"}</span>
             <div className="flex gap-4">
               <span>HI {String(highScore).padStart(5, "0")}</span>
@@ -1237,7 +1237,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                   animate={{ scale: 1, opacity: 1 }}
                   className="flex flex-col items-center gap-2 rounded-2xl border border-black/5 bg-white/80 px-8 py-4 shadow-xl backdrop-blur-md dark:border-white/10 dark:bg-[#2A2520]/90"
                 >
-                  <span className="font-dm-mono text-[11px] font-bold tracking-[0.2em] text-[#463B34] uppercase dark:text-[#D4C9BC]">
+                  <span className="font-dm-mono text-scaled-11 font-bold tracking-[0.2em] text-[#463B34] uppercase dark:text-[#D4C9BC]">
                     Game Over
                   </span>
                   <div className="group flex flex-col items-center">
@@ -1255,7 +1255,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                       <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
                       <path d="M3 3v5h5" />
                     </svg>
-                    <span className="text-[9px] font-medium tracking-widest text-[#7A736C] uppercase dark:text-[#9E9893]">
+                    <span className="text-scaled-9 font-medium tracking-widest text-[#7A736C] uppercase dark:text-[#9E9893]">
                       Tap to Restart
                     </span>
                   </div>

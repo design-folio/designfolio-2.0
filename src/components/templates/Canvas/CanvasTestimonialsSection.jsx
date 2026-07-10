@@ -155,7 +155,7 @@ function CanvasTestimonialsSection({ isEditing, preview = false }) {
 
       {/* Header row: title left, indicators right */}
       <div className="mb-6 flex items-center justify-between">
-        <h2 className="font-dm-mono text-[14px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
+        <h2 className="font-dm-mono text-scaled-14 font-medium text-[#7A736C] dark:text-[#B5AFA5]">
           TESTIMONIALS
         </h2>
         {reviews.length > 1 && (
@@ -199,16 +199,16 @@ function CanvasTestimonialsSection({ isEditing, preview = false }) {
                 />
               </svg>
             </div>
-            <h3 className="mb-1 text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+            <h3 className="text-scaled-15 mb-1 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
               No recommendations yet
             </h3>
-            <p className="mb-5 max-w-[250px] text-[13px] text-[#7A736C] dark:text-[#9E9893]">
+            <p className="text-scaled-13 mb-5 max-w-[250px] text-[#7A736C] dark:text-[#9E9893]">
               Add recommendations to build trust and credibility.
             </p>
             {isEditing && (
               <Button
                 onClick={() => openNewReview()}
-                className="h-9 rounded-full bg-[#1A1A1A] px-4 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
+                className="text-scaled-13 h-9 rounded-full bg-[#1A1A1A] px-4 font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
               >
                 Add Testimonial
               </Button>
@@ -260,7 +260,7 @@ function CanvasTestimonialsSection({ isEditing, preview = false }) {
                   {needsExpand ? (
                     <>
                       <div className={`relative overflow-hidden ${!isExpanded ? "h-[5em]" : ""}`}>
-                        <p className="text-[15px] leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]">
+                        <p className="text-scaled-15 leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]">
                           {isExpanded
                             ? renderTiptapWords(review?.description)
                             : renderTiptapWords(review?.description, THRESHOLD)}
@@ -274,7 +274,7 @@ function CanvasTestimonialsSection({ isEditing, preview = false }) {
                           e.stopPropagation();
                           toggleExpandReview(reviewId);
                         }}
-                        className="mt-3 flex items-center gap-1.5 text-[13px] font-medium text-[#1A1A1A] opacity-70 transition-opacity hover:opacity-100 dark:text-[#F0EDE7]"
+                        className="text-scaled-13 mt-3 flex items-center gap-1.5 font-medium text-[#1A1A1A] opacity-70 transition-opacity hover:opacity-100 dark:text-[#F0EDE7]"
                       >
                         {isExpanded ? "View less" : "View more"}
                         <motion.svg
@@ -298,7 +298,7 @@ function CanvasTestimonialsSection({ isEditing, preview = false }) {
                       content={review?.description || ""}
                       mode="review"
                       enableBulletList={false}
-                      className="text-[15px] leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]"
+                      className="text-scaled-15 leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]"
                       noCardStyle
                     />
                   )}
@@ -323,7 +323,7 @@ function CanvasTestimonialsSection({ isEditing, preview = false }) {
                     </Avatar>
 
                     <div>
-                      <h4 className="text-[14px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+                      <h4 className="text-scaled-14 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                         {review.name}
                       </h4>
                       <div className="mt-0.5 flex items-center gap-1.5">
@@ -345,7 +345,7 @@ function CanvasTestimonialsSection({ isEditing, preview = false }) {
                             </svg>
                           </a>
                         )}
-                        <p className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5]">
+                        <p className="text-scaled-13 text-[#7A736C] dark:text-[#B5AFA5]">
                           {review.company}
                         </p>
                       </div>
@@ -377,7 +377,9 @@ function CanvasTestimonialsSection({ isEditing, preview = false }) {
                     ) : (
                       <>
                         <Play size={14} className="fill-current" />
-                        <span className="w-[30px] text-center text-[12px] font-medium">Play</span>
+                        <span className="text-scaled-12 w-[30px] text-center font-medium">
+                          Play
+                        </span>
                       </>
                     )}
                   </button>

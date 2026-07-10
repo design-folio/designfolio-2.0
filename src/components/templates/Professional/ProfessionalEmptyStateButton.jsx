@@ -5,7 +5,7 @@ export default function ProfessionalEmptyStateButton({ label, onClick, className
   return (
     <button onClick={onClick} className={cn(buttonClass, className)} type="button">
       <Plus className="h-4 w-4" />
-      <span className="font-jetbrains text-[13px] font-medium tracking-wider uppercase">
+      <span className="font-jetbrains text-scaled-13 font-medium tracking-wider uppercase">
         {label}
       </span>
     </button>

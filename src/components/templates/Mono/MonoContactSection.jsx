@@ -21,8 +21,8 @@ const itemVariants = {
 function FieldLabel({ children }) {
   return (
     <div className="flex items-center gap-1.5">
-      <span className="text-[13px] text-[#463B34] dark:text-[#C4B5A0]">&gt;</span>
-      <span className="text-[11px] tracking-widest text-[#7A736C] uppercase dark:text-[#9E9893]">
+      <span className="text-scaled-13 text-[#463B34] dark:text-[#C4B5A0]">&gt;</span>
+      <span className="text-scaled-11 tracking-widest text-[#7A736C] uppercase dark:text-[#9E9893]">
         {children}
       </span>
     </div>
@@ -31,7 +31,7 @@ function FieldLabel({ children }) {
 
 /** Copyable field: dashed underline → solid on hover, reveals "copy"/"copied" */
 function CopyableField({ value, fieldKey, copiedField, onCopy, size = "lg" }) {
-  const textSize = size === "lg" ? "text-[17px]" : "text-[15px]";
+  const textSize = size === "lg" ? "text-scaled-17" : "text-scaled-15";
   return (
     <button
       onClick={() => onCopy(value, fieldKey)}
@@ -42,7 +42,7 @@ function CopyableField({ value, fieldKey, copiedField, onCopy, size = "lg" }) {
       >
         {value}
       </span>
-      <span className="text-[10px] tracking-widest uppercase opacity-0 transition-all duration-150 group-hover:opacity-100">
+      <span className="text-scaled-10 tracking-widest uppercase opacity-0 transition-all duration-150 group-hover:opacity-100">
         {copiedField === fieldKey ? (
           <span className="text-[#463B34] dark:text-[#C4B5A0]">copied</span>
         ) : (
@@ -64,10 +64,10 @@ function ExternalLink({ href, children }) {
       transition={{ type: "spring", stiffness: 400, damping: 25 }}
       className="group flex w-fit cursor-pointer items-center gap-1.5"
     >
-      <span className="border-b border-dashed border-[#1A1A1A]/15 pb-px text-[15px] leading-snug text-[#1A1A1A]/80 transition-all duration-200 group-hover:border-solid group-hover:border-[#463B34]/50 group-hover:text-[#1A1A1A] dark:border-[#F0EDE7]/15 dark:text-[#F0EDE7]/80 dark:group-hover:border-[#C4B5A0]/50 dark:group-hover:text-[#F0EDE7]">
+      <span className="text-scaled-15 border-b border-dashed border-[#1A1A1A]/15 pb-px leading-snug text-[#1A1A1A]/80 transition-all duration-200 group-hover:border-solid group-hover:border-[#463B34]/50 group-hover:text-[#1A1A1A] dark:border-[#F0EDE7]/15 dark:text-[#F0EDE7]/80 dark:group-hover:border-[#C4B5A0]/50 dark:group-hover:text-[#F0EDE7]">
         {children}
       </span>
-      <span className="text-[12px] text-[#7A736C]/60 transition-all duration-200 group-hover:text-[#7A736C] dark:text-[#9E9893]/60 dark:group-hover:text-[#9E9893]">
+      <span className="text-scaled-12 text-[#7A736C]/60 transition-all duration-200 group-hover:text-[#7A736C] dark:text-[#9E9893]/60 dark:group-hover:text-[#9E9893]">
         ↗
       </span>
     </motion.a>
@@ -140,7 +140,7 @@ export default function MonoContactSection({ isEditing }) {
         </div>
       )}
 
-      <h2 className="font-dm-mono mb-8 text-[14px] font-bold tracking-wider text-[#463B34] uppercase dark:text-[#D4C9BC]">
+      <h2 className="font-dm-mono text-scaled-14 mb-8 font-bold tracking-wider text-[#463B34] uppercase dark:text-[#D4C9BC]">
         Contact
       </h2>
 
@@ -195,7 +195,7 @@ export default function MonoContactSection({ isEditing }) {
       {showAddButton && (
         <button
           onClick={openFooter}
-          className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#E5D7C4] py-3.5 text-sm text-[#B5AFA5] transition-colors hover:border-[#1A1A1A]/20 hover:text-[#7A736C] dark:border-white/10 dark:text-[#7A736C] dark:hover:border-white/20 dark:hover:text-[#B5AFA5]"
+          className="text-scaled-14 mt-6 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#E5D7C4] py-3.5 text-[#B5AFA5] transition-colors hover:border-[#1A1A1A]/20 hover:text-[#7A736C] dark:border-white/10 dark:text-[#7A736C] dark:hover:border-white/20 dark:hover:text-[#B5AFA5]"
         >
           <Plus className="h-3.5 w-3.5" />
           Add

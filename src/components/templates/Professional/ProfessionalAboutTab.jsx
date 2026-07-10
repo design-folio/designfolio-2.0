@@ -104,20 +104,20 @@ function ProfessionalAboutTab({
             </motion.div>
           ) : null}
         </div>
-        <p className="pointer-events-none -mt-2 mb-8 text-center text-[10px] font-medium tracking-widest text-[#7A736C]/70 uppercase dark:text-[#B5AFA5]/60">
+        <p className="text-scaled-10 pointer-events-none -mt-2 mb-8 text-center font-medium tracking-widest text-[#7A736C]/70 uppercase dark:text-[#B5AFA5]/60">
           Try moving things around :)
         </p>
 
         {about?.description ? (
           <TextGradientScroll
             text={about.description}
-            className="font-jetbrains mb-8 text-[15px] leading-relaxed text-[#1A1A1A] dark:text-[#F0EDE7]"
+            className="font-jetbrains text-scaled-15 mb-8 leading-relaxed text-[#1A1A1A] dark:text-[#F0EDE7]"
             textOpacity="medium"
           />
         ) : isEditing ? (
           <button
             onClick={onEditAbout}
-            className="font-jetbrains mb-8 text-left text-[13px] text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:hover:text-white"
+            className="font-jetbrains text-scaled-13 mb-8 text-left text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:hover:text-white"
           >
             Click here to add your story...
           </button>
@@ -138,14 +138,14 @@ function ProfessionalAboutTab({
                   </Button>
                 </div>
               )}
-              <h4 className="font-jetbrains mb-3 text-[18px] font-semibold tracking-wider text-[#1A1A1A] uppercase dark:text-[#F0EDE7]">
+              <h4 className="font-jetbrains text-scaled-18 mb-3 font-semibold tracking-wider text-[#1A1A1A] uppercase dark:text-[#F0EDE7]">
                 Capabilities
               </h4>
               <div className="flex flex-wrap gap-2">
                 {skills.map((skill, index) => (
                   <span
                     key={index}
-                    className="font-jetbrains rounded-full border border-[#D5D0C6] px-3 py-1.5 text-[14px] text-[#7A736C] dark:border-[#3A352E] dark:text-[#B5AFA5]"
+                    className="font-jetbrains text-scaled-14 rounded-full border border-[#D5D0C6] px-3 py-1.5 text-[#7A736C] dark:border-[#3A352E] dark:text-[#B5AFA5]"
                   >
                     {typeof skill === "string" ? skill : skill.label || skill.name || ""}
                   </span>
@@ -168,14 +168,14 @@ function ProfessionalAboutTab({
                   </Button>
                 </div>
               )}
-              <h4 className="font-jetbrains mb-3 text-[18px] font-semibold tracking-wider text-[#1A1A1A] uppercase dark:text-[#F0EDE7]">
+              <h4 className="font-jetbrains text-scaled-18 mb-3 font-semibold tracking-wider text-[#1A1A1A] uppercase dark:text-[#F0EDE7]">
                 Stack
               </h4>
               <div className="flex flex-wrap gap-2">
                 {tools.map((tool, index) => (
                   <span
                     key={index}
-                    className="font-jetbrains rounded-full border border-[#D5D0C6] bg-[#EFECE6] px-3 py-1.5 text-[14px] text-[#1A1A1A] dark:border-[#3A352E] dark:bg-[#1A1A1A] dark:text-[#F0EDE7]"
+                    className="font-jetbrains text-scaled-14 rounded-full border border-[#D5D0C6] bg-[#EFECE6] px-3 py-1.5 text-[#1A1A1A] dark:border-[#3A352E] dark:bg-[#1A1A1A] dark:text-[#F0EDE7]"
                   >
                     {tool.label || tool.name || tool}
                   </span>

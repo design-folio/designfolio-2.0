@@ -74,7 +74,7 @@ export default function ChatContactSection({ chatRevealStep, s, sectionSteps, ca
                 <TypingIndicator />
               ) : email || phone ? (
                 <div className="space-y-3">
-                  <p className="text-[15px] text-[#1A1A1A] dark:text-[#F0EDE7]">
+                  <p className="text-scaled-15 text-[#1A1A1A] dark:text-[#F0EDE7]">
                     You can primarily reach me on{email ? " mail" : ""}
                     {email && phone ? " or" : ""}
                     {phone ? " phone" : ""}
@@ -83,7 +83,7 @@ export default function ChatContactSection({ chatRevealStep, s, sectionSteps, ca
                     {email && (
                       <button
                         onClick={() => handleCopy(email, "email")}
-                        className="group flex w-full items-center justify-center gap-2 rounded-xl border border-black/5 bg-[#F5F3EF] px-4 py-2.5 text-[14px] font-medium text-[#1A1A1A] shadow-sm transition-all hover:bg-white dark:border-white/5 dark:bg-[#35302A] dark:text-[#F0EDE7] dark:hover:bg-[#403B35]"
+                        className="group text-scaled-14 flex w-full items-center justify-center gap-2 rounded-xl border border-black/5 bg-[#F5F3EF] px-4 py-2.5 font-medium text-[#1A1A1A] shadow-sm transition-all hover:bg-white dark:border-white/5 dark:bg-[#35302A] dark:text-[#F0EDE7] dark:hover:bg-[#403B35]"
                       >
                         {copiedField === "email" ? (
                           <Check className="h-4 w-4 text-green-500" />
@@ -96,7 +96,7 @@ export default function ChatContactSection({ chatRevealStep, s, sectionSteps, ca
                     {phone && (
                       <button
                         onClick={() => handleCopy(phone, "phone")}
-                        className="group flex w-full items-center justify-center gap-2 rounded-xl border border-black/5 bg-[#F5F3EF] px-4 py-2.5 text-[14px] font-medium text-[#1A1A1A] shadow-sm transition-all hover:bg-white dark:border-white/5 dark:bg-[#35302A] dark:text-[#F0EDE7] dark:hover:bg-[#403B35]"
+                        className="group text-scaled-14 flex w-full items-center justify-center gap-2 rounded-xl border border-black/5 bg-[#F5F3EF] px-4 py-2.5 font-medium text-[#1A1A1A] shadow-sm transition-all hover:bg-white dark:border-white/5 dark:bg-[#35302A] dark:text-[#F0EDE7] dark:hover:bg-[#403B35]"
                       >
                         {copiedField === "phone" ? (
                           <Check className="h-4 w-4 text-green-500" />
@@ -111,13 +111,13 @@ export default function ChatContactSection({ chatRevealStep, s, sectionSteps, ca
               ) : canEdit ? (
                 <button
                   onClick={() => openSidebar?.(sidebars.footer)}
-                  className="flex items-center gap-2 text-[13px] text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:hover:text-white"
+                  className="text-scaled-13 flex items-center gap-2 text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:hover:text-white"
                 >
                   <Plus className="h-3.5 w-3.5" />
                   Add contact info
                 </button>
               ) : (
-                <p className="text-[15px] text-[#1A1A1A] dark:text-[#F0EDE7]">
+                <p className="text-scaled-15 text-[#1A1A1A] dark:text-[#F0EDE7]">
                   Feel free to reach out!
                 </p>
               )}
@@ -195,12 +195,14 @@ export default function ChatContactSection({ chatRevealStep, s, sectionSteps, ca
                 <div className="w-full rounded-2xl rounded-tl-sm rounded-bl-sm border border-black/5 bg-[#E5E2DB] p-4 transition-colors duration-100 dark:border-white/5 dark:bg-[#2A2520]">
                   {hasLinks ? (
                     <div className="space-y-3">
-                      <p className="text-[15px] text-[#1A1A1A] dark:text-[#F0EDE7]">You can also</p>
+                      <p className="text-scaled-15 text-[#1A1A1A] dark:text-[#F0EDE7]">
+                        You can also
+                      </p>
                       <div className="space-y-2">
                         {hasResume && (
                           <button
                             onClick={() => window.open(resume.url, "_blank", "noopener,noreferrer")}
-                            className="group flex w-full items-center justify-between rounded-xl border border-black/5 bg-[#F5F3EF] px-4 py-2.5 text-[14px] font-medium text-[#1A1A1A] shadow-sm transition-all hover:bg-white dark:border-white/5 dark:bg-[#35302A] dark:text-[#F0EDE7] dark:hover:bg-[#403B35]"
+                            className="group text-scaled-14 flex w-full items-center justify-between rounded-xl border border-black/5 bg-[#F5F3EF] px-4 py-2.5 font-medium text-[#1A1A1A] shadow-sm transition-all hover:bg-white dark:border-white/5 dark:bg-[#35302A] dark:text-[#F0EDE7] dark:hover:bg-[#403B35]"
                           >
                             <span>View my Resume</span>
                             <FileText className="h-4 w-4 text-[#7A736C] transition-colors group-hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:group-hover:text-white" />
@@ -214,7 +216,7 @@ export default function ChatContactSection({ chatRevealStep, s, sectionSteps, ca
                               onClick={() =>
                                 window.open(link.href, "_blank", "noopener,noreferrer")
                               }
-                              className="group flex w-full items-center justify-between rounded-xl border border-black/5 bg-[#F5F3EF] px-4 py-2.5 text-[14px] font-medium text-[#1A1A1A] shadow-sm transition-all hover:bg-white dark:border-white/5 dark:bg-[#35302A] dark:text-[#F0EDE7] dark:hover:bg-[#403B35]"
+                              className="group text-scaled-14 flex w-full items-center justify-between rounded-xl border border-black/5 bg-[#F5F3EF] px-4 py-2.5 font-medium text-[#1A1A1A] shadow-sm transition-all hover:bg-white dark:border-white/5 dark:bg-[#35302A] dark:text-[#F0EDE7] dark:hover:bg-[#403B35]"
                             >
                               <span>{link.label}</span>
                               <Icon className="h-4 w-4 text-[#7A736C] transition-colors group-hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:group-hover:text-white" />
@@ -226,7 +228,7 @@ export default function ChatContactSection({ chatRevealStep, s, sectionSteps, ca
                   ) : canEdit ? (
                     <button
                       onClick={() => openSidebar?.(sidebars.footer)}
-                      className="flex items-center gap-2 text-[13px] text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:hover:text-white"
+                      className="text-scaled-13 flex items-center gap-2 text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:hover:text-white"
                     >
                       <Plus className="h-3.5 w-3.5" />
                       Add social links
@@ -264,7 +266,7 @@ export default function ChatContactSection({ chatRevealStep, s, sectionSteps, ca
           transition={{ duration: 0.5, delay: 0.8 }}
           className="flex w-full justify-center pb-12"
         >
-          <p className="text-[13px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
+          <p className="text-scaled-13 font-medium text-[#7A736C] dark:text-[#B5AFA5]">
             © ALL RIGHTS RESERVED.
           </p>
         </motion.div>

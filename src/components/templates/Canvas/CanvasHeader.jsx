@@ -29,11 +29,11 @@ function CanvasHeader({ persistTheme = false }) {
       className="flex w-full items-center justify-between rounded-[26px] border border-[#E5D7C4] bg-white px-4 py-2 dark:border-white/10 dark:bg-[#2A2520]"
     >
       <div className="flex items-center gap-2">
-        <span className="text-sm font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+        <span className="text-scaled-14 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
           {currentDate}
         </span>
         <div className="h-2 w-2 rotate-45 bg-[#E37941]"></div>
-        <span className="text-sm font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+        <span className="text-scaled-14 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
           {currentTime?.toLocaleTimeString("en-US", {
             hour: "2-digit",
             minute: "2-digit",

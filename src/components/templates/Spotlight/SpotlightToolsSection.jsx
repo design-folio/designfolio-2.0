@@ -80,7 +80,7 @@ export const SpotlightToolsSection = ({ userDetails, edit, titleClasses, headerA
   return (
     <section className="overflow-hidden py-12">
       <div className="mb-8 flex items-center justify-between">
-        <h2 className={cn("text-2xl font-bold", titleClasses)}>Tool Stack</h2>
+        <h2 className={cn("text-scaled-24 font-bold", titleClasses)}>Tool Stack</h2>
         {headerActions && <div className="shrink-0">{headerActions}</div>}
       </div>
       {isMobile ? (
@@ -98,7 +98,7 @@ export const SpotlightToolsSection = ({ userDetails, edit, titleClasses, headerA
                 <div className="bg-card hover:bg-card/80 flex items-center justify-center rounded-2xl p-4 transition-colors">
                   <img src={tool.image} className="w-8" alt={tool.name} />
                 </div>
-                <span className="text-sm whitespace-nowrap">{tool.name}</span>
+                <span className="text-scaled-14 whitespace-nowrap">{tool.name}</span>
               </div>
             ))}
           </motion.div>
@@ -125,7 +125,7 @@ export const SpotlightToolsSection = ({ userDetails, edit, titleClasses, headerA
                   alt={tool.label || tool.name || ""}
                 />
               </div>
-              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-sm whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100">
+              <div className="text-scaled-14 absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100">
                 {tool.label}
               </div>
             </motion.div>
@@ -144,7 +144,7 @@ export const SpotlightToolsSection = ({ userDetails, edit, titleClasses, headerA
                 }
                 onClick={() => openSidebar(sidebars.tools)}
               />
-              <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-sm whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100">
+              <div className="text-scaled-14 absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100">
                 Edit
               </div>
             </motion.div>

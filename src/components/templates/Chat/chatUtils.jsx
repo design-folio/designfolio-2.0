@@ -93,8 +93,10 @@ export function EditButtons({ canEdit, onEdit, onDelete, className = "" }) {
 export function YouPrompt({ children }) {
   return (
     <div className="flex max-w-[85%] flex-col items-end gap-1">
-      <span className="mr-1 text-[11px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">You</span>
-      <div className="rounded-2xl rounded-br-sm bg-[#1A8CFF] px-4 py-3 text-[15px] leading-relaxed text-white shadow-sm dark:bg-[#0073E6]">
+      <span className="text-scaled-11 mr-1 font-medium text-[#7A736C] dark:text-[#B5AFA5]">
+        You
+      </span>
+      <div className="text-scaled-15 rounded-2xl rounded-br-sm bg-[#1A8CFF] px-4 py-3 leading-relaxed text-white shadow-sm dark:bg-[#0073E6]">
         {children}
       </div>
     </div>

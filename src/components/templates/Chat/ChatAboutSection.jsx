@@ -87,7 +87,7 @@ export default function ChatAboutSection({
               <ChatAvatar avatarSrc={avatarSrc} show={chatRevealStep < s(18)} />
             </div>
             <div className="flex flex-col gap-1">
-              <span className="ml-1 text-[11px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
+              <span className="text-scaled-11 ml-1 font-medium text-[#7A736C] dark:text-[#B5AFA5]">
                 {userDetails?.firstName || "Me"}
               </span>
               <div className="w-fit rounded-2xl rounded-tl-sm rounded-bl-sm border border-black/5 bg-[#E5E2DB] p-3 transition-colors duration-700 sm:p-4 dark:border-white/5 dark:bg-[#2A2520]">
@@ -120,7 +120,7 @@ export default function ChatAboutSection({
                 ) : canEdit ? (
                   <button
                     onClick={() => openSidebar?.(sidebars.about)}
-                    className="flex items-center gap-2 px-2 py-1 text-[13px] text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:hover:text-white"
+                    className="text-scaled-13 flex items-center gap-2 px-2 py-1 text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:hover:text-white"
                   >
                     <Plus className="h-3.5 w-3.5" />
                     Add Story Images
@@ -161,7 +161,7 @@ export default function ChatAboutSection({
             </div>
             {hasAboutDescription ? (
               storyNeedsExpand ? (
-                <div className="flex flex-col gap-0 rounded-2xl rounded-tl-sm rounded-bl-sm border border-black/5 bg-[#E5E2DB] px-4 py-3 text-[15px] leading-relaxed text-[#1A1A1A] transition-colors duration-300 dark:border-white/5 dark:bg-[#2A2520] dark:text-[#F0EDE7]">
+                <div className="text-scaled-15 flex flex-col gap-0 rounded-2xl rounded-tl-sm rounded-bl-sm border border-black/5 bg-[#E5E2DB] px-4 py-3 leading-relaxed text-[#1A1A1A] transition-colors duration-300 dark:border-white/5 dark:bg-[#2A2520] dark:text-[#F0EDE7]">
                   <div
                     className={`relative min-w-0 overflow-hidden ${!aboutStoryExpanded ? "max-h-[5em]" : ""}`}
                   >
@@ -184,7 +184,7 @@ export default function ChatAboutSection({
                     variant="ghost"
                     aria-expanded={aboutStoryExpanded}
                     onClick={() => setAboutStoryExpanded((v) => !v)}
-                    className="mt-2 h-auto justify-start gap-1.5 self-start px-2 py-1 text-[13px] font-medium text-[#1A1A1A] hover:bg-black/[0.06] focus-visible:ring-2 focus-visible:ring-[#1A1A1A]/20 focus-visible:ring-offset-2 focus-visible:ring-offset-[#E5E2DB] dark:text-[#F0EDE7] dark:hover:bg-white/[0.08] dark:focus-visible:ring-white/30 dark:focus-visible:ring-offset-[#2A2520]"
+                    className="text-scaled-13 mt-2 h-auto justify-start gap-1.5 self-start px-2 py-1 font-medium text-[#1A1A1A] hover:bg-black/[0.06] focus-visible:ring-2 focus-visible:ring-[#1A1A1A]/20 focus-visible:ring-offset-2 focus-visible:ring-offset-[#E5E2DB] dark:text-[#F0EDE7] dark:hover:bg-white/[0.08] dark:focus-visible:ring-white/30 dark:focus-visible:ring-offset-[#2A2520]"
                   >
                     {aboutStoryExpanded ? "View less" : "View more"}
                     <motion.span
@@ -200,7 +200,7 @@ export default function ChatAboutSection({
                   </Button>
                 </div>
               ) : (
-                <div className="rounded-2xl rounded-tl-sm rounded-bl-sm border border-black/5 bg-[#E5E2DB] px-4 py-3 text-[15px] leading-relaxed text-[#1A1A1A] transition-colors duration-300 dark:border-white/5 dark:bg-[#2A2520] dark:text-[#F0EDE7]">
+                <div className="text-scaled-15 rounded-2xl rounded-tl-sm rounded-bl-sm border border-black/5 bg-[#E5E2DB] px-4 py-3 leading-relaxed text-[#1A1A1A] transition-colors duration-300 dark:border-white/5 dark:bg-[#2A2520] dark:text-[#F0EDE7]">
                   <p className="break-words">
                     {typeof aboutDescription === "string"
                       ? renderDescriptionLines(storyPlain)
@@ -212,7 +212,7 @@ export default function ChatAboutSection({
               <div className="rounded-2xl rounded-tl-sm rounded-bl-sm border border-black/5 bg-[#E5E2DB] px-4 py-3 transition-colors duration-700 dark:border-white/5 dark:bg-[#2A2520]">
                 <button
                   onClick={() => openSidebar?.(sidebars.about)}
-                  className="text-[13px] text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:hover:text-white"
+                  className="text-scaled-13 text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:hover:text-white"
                 >
                   Click here to add your story...
                 </button>

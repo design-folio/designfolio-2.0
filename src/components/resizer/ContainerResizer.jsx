@@ -15,7 +15,7 @@ import ContainerWidthToolbar from "./ContainerWidthToolbar";
  * Chrome (toolbar + handles) lives in a sticky, zero-height sentinel so it floats near the
  * top of the viewport and stays pinned as the page scrolls.
  */
-export default function ContainerResizer({ children, className }) {
+export default function ContainerResizer({ children, className, contentClassName }) {
   const { template, containerMaxWidth, changeContainerWidth } = useGlobalContext();
   const cfg = TEMPLATE_CONTAINER_WIDTHS[template];
 
@@ -102,7 +102,7 @@ export default function ContainerResizer({ children, className }) {
       }}
     >
       {/* Sticky sentinel — holds the floating toolbar + edge handles, pinned near the top */}
-      <div className="pointer-events-none sticky top-4 z-[60] h-0 overflow-visible">
+      <div className="pointer-events-none sticky top-[100px] z-[60] h-0 overflow-visible">
         <ContainerWidthToolbar
           width={width}
           presets={presets}
@@ -111,6 +111,8 @@ export default function ContainerResizer({ children, className }) {
           visible={chromeVisible}
           onSelect={(w) => changeContainerWidth(w, true)}
         />
+      </div>
+      <div className="pointer-events-none sticky top-[300px] z-[60] h-0 overflow-visible">
         <ResizeGripHandle
           side="left"
           active={isResizing}
@@ -126,10 +128,13 @@ export default function ContainerResizer({ children, className }) {
           onHoverChange={setHandleHovered}
         />
       </div>
-
-      {/* Glow hugs the actual content container tightly (no extra padding inside the outline) */}
+      {/* Glow hugs the actual content container tightly (no extra padding inside the outline).
+          contentClassName is for margin-based offsets only (e.g. Mono's wallpaper reveal
+          space) — margin sits outside this div's own border-box, so it shifts the content
+          down without the box-shadow outline growing to include it, and without moving the
+          toolbar/handle sentinels above (which are earlier siblings, unaffected either way). */}
       <div
-        className="relative"
+        className={cn("relative", contentClassName)}
         style={{ boxShadow: glowShadow, transition: "box-shadow 0.2s ease" }}
       >
         {children}

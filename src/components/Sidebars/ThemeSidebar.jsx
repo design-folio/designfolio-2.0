@@ -721,11 +721,11 @@ const ThemePanel = ({
                       >
                         {opt.value === BACKGROUND_MODE.HEADER ? (
                           <div className="flex h-full w-full flex-col">
-                            <div className="flex-[0_0_45%] bg-gradient-to-br from-amber-200/60 to-orange-200/60 dark:from-amber-900/40 dark:to-orange-900/40" />
+                            <div className="flex-[0_0_45%] bg-linear-to-br from-amber-200/60 to-orange-200/60 dark:from-amber-900/40 dark:to-orange-900/40" />
                             <div className="bg-muted flex-1" />
                           </div>
                         ) : (
-                          <div className="relative h-full w-full bg-gradient-to-br from-amber-200/60 to-orange-200/60 dark:from-amber-900/40 dark:to-orange-900/40">
+                          <div className="relative h-full w-full bg-linear-to-br from-amber-200/60 to-orange-200/60 dark:from-amber-900/40 dark:to-orange-900/40">
                             <div className="absolute inset-x-2 top-2 bottom-2 rounded bg-white/30 backdrop-blur-[1px] dark:bg-black/20" />
                           </div>
                         )}

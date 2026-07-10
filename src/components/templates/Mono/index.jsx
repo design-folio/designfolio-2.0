@@ -95,7 +95,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
     setShowUpgradeModal,
     setUpgradeModalUnhideProject,
     containerMaxWidth,
-    isHeaderMode,
+    hasWallpaper,
   } = useGlobalContext();
   const avatarSrc = useMemo(() => getUserAvatarImage(userDetails), [userDetails]);
   const atSignRef = useRef(null);
@@ -433,7 +433,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           <motion.div
             id="section-projects"
             variants={itemVariants}
-            className="group/section relative px-6 py-10 pb-16 md:px-10"
+            className="group/section relative bg-white px-6 py-10 pb-16 md:px-10 dark:bg-[#1A1A1A]"
           >
             {isEditing && (
               <div className="absolute top-4 right-4 z-10 flex gap-2 transition-opacity">
@@ -780,7 +780,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         {/* My Story Section */}
         <motion.div
           variants={itemVariants}
-          className="group/section relative px-6 py-10 pb-16 md:px-10"
+          className="group/section relative bg-white px-6 py-10 pb-16 md:px-10 dark:bg-[#1A1A1A]"
         >
           {isEditing && (
             <div className="absolute top-4 right-4 z-10 flex gap-2 transition-opacity">
@@ -928,7 +928,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           {/* Stack Section */}
           <motion.div
             variants={itemVariants}
-            className="group/section relative px-6 py-10 md:px-10"
+            className="group/section relative bg-white px-6 py-10 md:px-10 dark:bg-[#1A1A1A]"
           >
             {isEditing && (
               <div className="absolute top-4 right-4 z-10 flex gap-2 transition-opacity">
@@ -1020,14 +1020,14 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
 
   return (
     <div
-      className="mx-auto flex w-full flex-1 flex-col gap-3 px-4 pt-0 pb-0 md:px-0"
+      className="mx-auto flex w-full flex-1 flex-col gap-3 pt-0 pb-0"
       style={{ maxWidth: containerMaxWidth ?? 848 }}
     >
       <motion.div
         className={cn(
-          "font-inter custom-dashed-x relative flex min-h-screen w-full flex-col transition-colors duration-700",
-          // Transparent in header mode so the wallpaper band shows behind the top.
-          !isHeaderMode && "bg-[#F0EDE7] dark:bg-[#1A1A1A]"
+          "font-inter relative flex min-h-screen w-full flex-col transition-colors duration-700",
+          !hasWallpaper && "bg-white dark:bg-[#1A1A1A]",
+          "rounded-t-2xl dark:border dark:border-[rgba(58,53,46,0.7)]"
         )}
         variants={containerVariants}
         initial="hidden"
@@ -1037,7 +1037,10 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         {/* Header Section */}
         <motion.div
           variants={itemVariants}
-          className="group/section relative px-6 pt-12 pb-8 md:px-10 md:pt-16"
+          // Always on, matching the reference exactly (not gated on hasWallpaper) — 83% white
+          // + blur is visually identical to solid white when there's nothing behind to blur,
+          // so conditioning it on wallpaper presence was a distinction without a difference.
+          className="group/section relative rounded-t-2xl bg-white/83 px-6 pt-8 pb-8 backdrop-blur-md md:px-10 dark:bg-[#1A1A1A]/75"
         >
           {isEditing && (
             <div className="absolute top-4 right-4 z-10 flex gap-1.5 opacity-100 transition-opacity md:opacity-0 md:group-hover/section:opacity-100">
@@ -1052,8 +1055,8 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               </Button>
             </div>
           )}
-          <div className="mb-6 flex items-start justify-between gap-4">
-            <Avatar className="h-[96px] w-[96px] rounded-2xl">
+          <div className="absolute -top-[42px] left-10 z-20 rounded-2xl border-[3px] border-white shadow-lg dark:border-[#1A1A1A]">
+            <Avatar className="h-[120px] w-[120px] rounded-2xl">
               <AvatarImage
                 src={avatarSrc}
                 alt={displayName || "Profile image"}
@@ -1063,6 +1066,8 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                 {avatarFallbackText}
               </AvatarFallback>
             </Avatar>
+          </div>
+          <div className="mb-6 flex items-start justify-end gap-4">
             <div className="mt-1 flex items-center gap-2">
               <AnimatedThemeToggler persist={isEditing && !preview} />
             </div>
@@ -1071,7 +1076,34 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-0">
             <div>
               <h1 className="text-scaled-30 mb-0.5 font-semibold tracking-[-0.01em] text-[#1A1A1A] dark:text-[#F0EDE7]">
-                {introduction}
+                {/* Word-by-word blur/stagger reveal, matching the reference exactly — split on
+                    whitespace since introduction is free-form text, not a fixed word list. */}
+                <motion.span
+                  initial="hidden"
+                  animate="visible"
+                  variants={{
+                    visible: { transition: { staggerChildren: 0.18, delayChildren: 0.55 } },
+                  }}
+                  className="inline-flex flex-wrap gap-x-[0.28em]"
+                >
+                  {introduction.split(/\s+/).map((word, i) => (
+                    <motion.span
+                      key={i}
+                      className="inline-block"
+                      variants={{
+                        hidden: { opacity: 0, filter: "blur(10px)", x: 12 },
+                        visible: {
+                          opacity: 1,
+                          filter: "blur(0px)",
+                          x: 0,
+                          transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] },
+                        },
+                      }}
+                    >
+                      {word}
+                    </motion.span>
+                  ))}
+                </motion.span>
               </h1>
               {isEditing ? (
                 <div className="group/role flex items-center gap-2">
@@ -1116,154 +1148,159 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           </div>
         </motion.div>
 
-        <MonoEmailSocialLinksSection
-          email={email}
-          socials={socials}
-          portfolios={portfolios}
-          isEditing={isEditing}
-        />
-        {/* Intro Section */}
-        <motion.div variants={itemVariants} className="group/section relative px-6 py-10 md:px-10">
-          {isEditing && (
-            <div className="absolute top-4 right-4 z-10 opacity-100 transition-opacity md:opacity-0 md:group-hover/section:opacity-100">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => openSidebar?.(sidebars.profile)}
-                className="h-8 w-8 rounded-full border-black/10 bg-white p-0 shadow-sm transition-colors hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520] dark:hover:bg-[#35302A]"
-              >
-                <Pencil className="h-3.5 w-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-              </Button>
-            </div>
-          )}
-          <h2 className="font-dm-mono text-scaled-14 mb-5 font-bold tracking-wider text-[#463B34] uppercase dark:text-[#D4C9BC]">
-            Intro
-          </h2>
-          <p
-            className="text-scaled-17 leading-[1.7] text-[#7A736C] dark:text-[#B5AFA5]"
-            style={{ fontWeight: 450 }}
+        <div className="flex flex-1 flex-col bg-white dark:bg-[#1A1A1A]">
+          <MonoEmailSocialLinksSection
+            email={email}
+            socials={socials}
+            portfolios={portfolios}
+            isEditing={isEditing}
+          />
+          {/* Intro Section */}
+          <motion.div
+            variants={itemVariants}
+            className="group/section relative px-6 py-10 md:px-10"
           >
-            {bio}
-          </p>
-        </motion.div>
-
-        {sectionOrder.map((id) => (isSectionVisible(id) ? sectionComponents[id] : null))}
-
-        <motion.div variants={itemVariants} className="custom-dashed-t"></motion.div>
-
-        {/* Contact Section — using MonoContactSection */}
-        <MonoContactSection isEditing={isEditing} />
-
-        <motion.div variants={itemVariants} className="custom-dashed-t"></motion.div>
-
-        {/* Dino Game Section */}
-        <motion.div
-          variants={itemVariants}
-          className="relative flex flex-col items-center justify-center overflow-hidden border-b border-[#E5D7C4]/50"
-        >
-          <div className="font-dm-mono text-scaled-10 pointer-events-none absolute top-6 right-8 left-8 z-10 flex justify-between tracking-widest text-[#463B34] uppercase dark:text-[#C4B5A0]">
-            <span>{isGameOver ? "Game Over" : isPlaying ? "Playing" : "Tap to play"}</span>
-            <div className="flex gap-4">
-              <span>HI {String(highScore).padStart(5, "0")}</span>
-              <span>{String(Math.floor(score / 10)).padStart(5, "0")}</span>
-            </div>
-          </div>
-
-          <div
-            ref={gameRef}
-            onClick={jump}
-            className="relative flex h-48 w-full cursor-pointer items-end overflow-hidden bg-black/[0.015] transition-colors select-none hover:bg-black/[0.025] dark:bg-white/[0.03] dark:hover:bg-white/[0.05]"
-          >
-            {/* Ground Line */}
-            <div className="absolute bottom-12 left-0 h-px w-full bg-[#E5D7C4] dark:bg-[#3A352E]"></div>
-
-            {/* Dino */}
-            <motion.div
-              animate={{ y: -dinoY - 48 }}
-              transition={{ type: "just" }}
-              className="dino-game absolute bottom-0 left-12 z-20 mb-[-2px]"
-            >
-              <svg
-                width="40"
-                height="40"
-                viewBox="0 0 54 54"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="drop-shadow-sm"
-              >
-                <path
-                  d="M45.4502 6.75024V8.55005H47.25V18.7317H35.1006V20.2502H40.5V21.5999H35.1006V25.6497H39.1504V29.7004H37.3506V27.8997H35.1006V34.6497H33.2998V37.8H31.0498V40.05H29.25V48.1497H31.0498V49.9504H27.4502L27 43.6497H25.6504V41.8499H23.4004V43.6497H21.1504V45.8997H18.9004V48.1497H21.1504V49.9504H17.1006V41.8499H14.8506V40.05H13.0498V37.8H10.7998V35.55H9V33.3H7.2002V22.05H9V25.6497H10.7998V27.8997H13.0498V29.7004H17.1006V27.8997H19.3506V25.6497H22.0498V23.8499H25.2002V21.5999H27.1689L27.4502 8.55005H29.25V6.30005L45.4502 6.75024ZM31.0498 10.3499V14.8499H35.5498V10.3499H31.0498ZM34.6504 11.2502V13.9504H31.9502V11.2502H34.6504Z"
-                  className="dino-color"
-                />
-                {isPlaying && dinoY === 0 && (
-                  <motion.path
-                    animate={{ opacity: [1, 0, 1] }}
-                    transition={{ duration: 0.2, repeat: Infinity }}
-                    d="M18.9004 48.1497H21.1504V49.9504H17.1006V41.8499M29.25 48.1497H31.0498V49.9504H27.4502L27 43.6497"
-                    fill="#F0EDE7"
-                  />
-                )}
-              </svg>
-            </motion.div>
-
-            {/* Obstacles */}
-            {obstacles.map((obs) => (
-              <div
-                key={obs.id}
-                className="dino-game absolute bottom-12 z-10 mb-[-2px]"
-                style={{ left: `${obs.x}px` }}
-              >
-                <svg
-                  width="24"
-                  height="36"
-                  viewBox="0 0 20 30"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+            {isEditing && (
+              <div className="absolute top-4 right-4 z-10 opacity-100 transition-opacity md:opacity-0 md:group-hover/section:opacity-100">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => openSidebar?.(sidebars.profile)}
+                  className="h-8 w-8 rounded-full border-black/10 bg-white p-0 shadow-sm transition-colors hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520] dark:hover:bg-[#35302A]"
                 >
-                  <path d="M8 30H12V0H8V30Z" className="dino-color" />
-                  <path d="M4 10H8V14H4V10Z" className="dino-color" />
-                  <path d="M12 5H16V9H12V5Z" className="dino-color" />
-                </svg>
-              </div>
-            ))}
-
-            {/* Decorative Background Elements */}
-            <div className="absolute top-1/2 left-0 h-px w-full -translate-y-12 bg-linear-to-r from-transparent via-[#E5D7C4]/30 to-transparent dark:via-[#3A352E]/40"></div>
-
-            {isGameOver && (
-              <div className="absolute inset-0 z-30 flex items-center justify-center bg-[#F0EDE7]/40 backdrop-blur-[2px] dark:bg-[#1A1A1A]/60">
-                <motion.div
-                  initial={{ scale: 0.9, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  className="flex flex-col items-center gap-2 rounded-2xl border border-black/5 bg-white/80 px-8 py-4 shadow-xl backdrop-blur-md dark:border-white/10 dark:bg-[#2A2520]/90"
-                >
-                  <span className="font-dm-mono text-scaled-11 font-bold tracking-[0.2em] text-[#463B34] uppercase dark:text-[#D4C9BC]">
-                    Game Over
-                  </span>
-                  <div className="group flex flex-col items-center">
-                    <svg
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="mb-1 text-[#535353] transition-transform duration-500 group-hover:rotate-180 dark:text-[#9E9893]"
-                    >
-                      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                      <path d="M3 3v5h5" />
-                    </svg>
-                    <span className="text-scaled-9 font-medium tracking-widest text-[#7A736C] uppercase dark:text-[#9E9893]">
-                      Tap to Restart
-                    </span>
-                  </div>
-                </motion.div>
+                  <Pencil className="h-3.5 w-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                </Button>
               </div>
             )}
-          </div>
-        </motion.div>
+            <h2 className="font-dm-mono text-scaled-14 mb-5 font-bold tracking-wider text-[#463B34] uppercase dark:text-[#D4C9BC]">
+              Intro
+            </h2>
+            <p
+              className="text-scaled-17 leading-[1.7] text-[#7A736C] dark:text-[#B5AFA5]"
+              style={{ fontWeight: 450 }}
+            >
+              {bio}
+            </p>
+          </motion.div>
+
+          {sectionOrder.map((id) => (isSectionVisible(id) ? sectionComponents[id] : null))}
+
+          <motion.div variants={itemVariants} className="custom-dashed-t"></motion.div>
+
+          {/* Contact Section — using MonoContactSection */}
+          <MonoContactSection isEditing={isEditing} />
+
+          <motion.div variants={itemVariants} className="custom-dashed-t"></motion.div>
+
+          {/* Dino Game Section */}
+          <motion.div
+            variants={itemVariants}
+            className="relative flex flex-col items-center justify-center overflow-hidden border-b border-black/10 bg-white dark:border-[#3A352E] dark:bg-[#1A1A1A]"
+          >
+            <div className="font-dm-mono text-scaled-10 pointer-events-none absolute top-6 right-8 left-8 z-10 flex justify-between tracking-widest text-[#1A1A1A] uppercase dark:text-[#C4B5A0]">
+              <span>{isGameOver ? "Game Over" : isPlaying ? "Playing" : "Tap to play"}</span>
+              <div className="flex gap-4">
+                <span>HI {String(highScore).padStart(5, "0")}</span>
+                <span>{String(Math.floor(score / 10)).padStart(5, "0")}</span>
+              </div>
+            </div>
+
+            <div
+              ref={gameRef}
+              onClick={jump}
+              className="relative flex h-48 w-full cursor-pointer items-end overflow-hidden bg-black/[0.015] transition-colors select-none hover:bg-black/[0.025] dark:bg-white/[0.03] dark:hover:bg-white/[0.05]"
+            >
+              {/* Ground Line */}
+              <div className="absolute bottom-12 left-0 h-px w-full bg-[#E5D7C4] dark:bg-[#3A352E]"></div>
+
+              {/* Dino */}
+              <motion.div
+                animate={{ y: -dinoY - 48 }}
+                transition={{ type: "just" }}
+                className="dino-game absolute bottom-0 left-12 z-20 mb-[-2px]"
+              >
+                <svg
+                  width="40"
+                  height="40"
+                  viewBox="0 0 54 54"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="drop-shadow-sm"
+                >
+                  <path
+                    d="M45.4502 6.75024V8.55005H47.25V18.7317H35.1006V20.2502H40.5V21.5999H35.1006V25.6497H39.1504V29.7004H37.3506V27.8997H35.1006V34.6497H33.2998V37.8H31.0498V40.05H29.25V48.1497H31.0498V49.9504H27.4502L27 43.6497H25.6504V41.8499H23.4004V43.6497H21.1504V45.8997H18.9004V48.1497H21.1504V49.9504H17.1006V41.8499H14.8506V40.05H13.0498V37.8H10.7998V35.55H9V33.3H7.2002V22.05H9V25.6497H10.7998V27.8997H13.0498V29.7004H17.1006V27.8997H19.3506V25.6497H22.0498V23.8499H25.2002V21.5999H27.1689L27.4502 8.55005H29.25V6.30005L45.4502 6.75024ZM31.0498 10.3499V14.8499H35.5498V10.3499H31.0498ZM34.6504 11.2502V13.9504H31.9502V11.2502H34.6504Z"
+                    className="dino-color"
+                  />
+                  {isPlaying && dinoY === 0 && (
+                    <motion.path
+                      animate={{ opacity: [1, 0, 1] }}
+                      transition={{ duration: 0.2, repeat: Infinity }}
+                      d="M18.9004 48.1497H21.1504V49.9504H17.1006V41.8499M29.25 48.1497H31.0498V49.9504H27.4502L27 43.6497"
+                      fill="#F0EDE7"
+                    />
+                  )}
+                </svg>
+              </motion.div>
+
+              {/* Obstacles */}
+              {obstacles.map((obs) => (
+                <div
+                  key={obs.id}
+                  className="dino-game absolute bottom-12 z-10 mb-[-2px]"
+                  style={{ left: `${obs.x}px` }}
+                >
+                  <svg
+                    width="24"
+                    height="36"
+                    viewBox="0 0 20 30"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M8 30H12V0H8V30Z" className="dino-color" />
+                    <path d="M4 10H8V14H4V10Z" className="dino-color" />
+                    <path d="M12 5H16V9H12V5Z" className="dino-color" />
+                  </svg>
+                </div>
+              ))}
+
+              {/* Decorative Background Elements */}
+              <div className="absolute top-1/2 left-0 h-px w-full -translate-y-12 bg-linear-to-r from-transparent via-[#E5D7C4]/30 to-transparent dark:via-[#3A352E]/40"></div>
+
+              {isGameOver && (
+                <div className="absolute inset-0 z-30 flex items-center justify-center bg-[#F0EDE7]/40 backdrop-blur-[2px] dark:bg-[#1A1A1A]/60">
+                  <motion.div
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="flex flex-col items-center gap-2 rounded-2xl border border-black/5 bg-white/80 px-8 py-4 shadow-xl backdrop-blur-md dark:border-white/10 dark:bg-[#2A2520]/90"
+                  >
+                    <span className="font-dm-mono text-scaled-11 font-bold tracking-[0.2em] text-[#1A1A1A] uppercase dark:text-[#D4C9BC]">
+                      Game Over
+                    </span>
+                    <div className="group flex flex-col items-center">
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="mb-1 text-[#535353] transition-transform duration-500 group-hover:rotate-180 dark:text-[#9E9893]"
+                      >
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                        <path d="M3 3v5h5" />
+                      </svg>
+                      <span className="text-scaled-9 font-medium tracking-widest text-[#7A736C] uppercase dark:text-[#9E9893]">
+                        Tap to Restart
+                      </span>
+                    </div>
+                  </motion.div>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        </div>
       </motion.div>
 
       {/* Image Lightbox */}

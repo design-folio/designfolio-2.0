@@ -110,7 +110,7 @@ export const SpotlightHero = ({ userDetails, edit }) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.7 }}
-          className="before:from-background after:from-background relative w-full overflow-hidden py-4 before:absolute before:top-0 before:left-0 before:z-10 before:h-full before:w-20 before:bg-gradient-to-r before:to-transparent after:absolute after:top-0 after:right-0 after:z-10 after:h-full after:w-20 after:bg-gradient-to-l after:to-transparent"
+          className="before:from-background after:from-background relative w-full overflow-hidden py-4 before:absolute before:top-0 before:left-0 before:z-10 before:h-full before:w-20 before:bg-linear-to-r before:to-transparent after:absolute after:top-0 after:right-0 after:z-10 after:h-full after:w-20 after:bg-linear-to-l after:to-transparent"
         >
           <motion.div
             className="flex gap-4 whitespace-nowrap"

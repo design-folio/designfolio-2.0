@@ -126,7 +126,10 @@ export default function MonoContactSection({ isEditing }) {
     !!resumeUrl;
 
   return (
-    <motion.div variants={itemVariants} className="group/section relative px-6 py-10 md:px-10">
+    <motion.div
+      variants={itemVariants}
+      className="group/section relative bg-white px-6 py-10 md:px-10 dark:bg-[#1A1A1A]"
+    >
       {isEditing && (
         <div className="absolute top-4 right-4 z-10 opacity-100 transition-opacity md:opacity-0 md:group-hover/section:opacity-100">
           <Button
@@ -195,7 +198,7 @@ export default function MonoContactSection({ isEditing }) {
       {showAddButton && (
         <button
           onClick={openFooter}
-          className="text-scaled-14 mt-6 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#E5D7C4] py-3.5 text-[#B5AFA5] transition-colors hover:border-[#1A1A1A]/20 hover:text-[#7A736C] dark:border-white/10 dark:text-[#7A736C] dark:hover:border-white/20 dark:hover:text-[#B5AFA5]"
+          className="text-scaled-14 mt-6 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-black/10 bg-white py-3.5 text-[#B5AFA5] transition-colors hover:border-[#1A1A1A]/20 hover:text-[#7A736C] dark:border-white/10 dark:bg-[#1A1A1A] dark:text-[#7A736C] dark:hover:border-white/20 dark:hover:text-[#B5AFA5]"
         >
           <Plus className="h-3.5 w-3.5" />
           Add

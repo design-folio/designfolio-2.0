@@ -99,9 +99,10 @@ export default function Index({ initialUserDetails }) {
   const backgroundColor = resolveBackgroundColor(extractWallpaperColor(wp), currentTheme);
   const backgroundMode = extractWallpaperMode(wp);
   const isHeaderMode = backgroundMode === BACKGROUND_MODE.HEADER;
+  const hasBackground = !!wallpaperUrl || !!backgroundColor;
   // Show the full-page background (transparent page) only with a background AND full-page mode.
   // Width is applied by each template's own container via context (containerMaxWidth).
-  const transparentForWallpaper = (!!wallpaperUrl || !!backgroundColor) && !isHeaderMode;
+  const transparentForWallpaper = hasBackground && !isHeaderMode;
   const ProBadge = !finalUserDetails?.pro && (
     <div
       className="relative mb-[120px] flex cursor-pointer justify-center text-center lg:fixed lg:right-[36px] lg:bottom-[20px] lg:m-1 xl:block"
@@ -137,6 +138,7 @@ export default function Index({ initialUserDetails }) {
       case TEMPLATE_IDS.MONO:
         return (
           <>
+            <div aria-hidden="true" style={{ height: 200 }} />
             <Mono preview publicView />
             {ProBadge}
           </>

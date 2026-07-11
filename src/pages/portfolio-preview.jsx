@@ -74,7 +74,12 @@ export default function Index() {
         );
       case TEMPLATE_IDS.CHATFOLIO:
         return (
-          <div className="flex min-h-screen flex-col items-center bg-[#F0EDE7] transition-colors duration-700 dark:bg-[#1A1A1A]">
+          <div
+            className={cn(
+              "flex min-h-screen flex-col items-center transition-colors duration-700",
+              !transparentForWallpaper && "bg-[#F0EDE7] dark:bg-[#1A1A1A]"
+            )}
+          >
             <div className="w-full max-w-[700px] px-4 pt-6 pb-2">
               <Button
                 variant="outline"
@@ -86,6 +91,7 @@ export default function Index() {
                 Exit Preview
               </Button>
             </div>
+            <div aria-hidden="true" style={{ height: 200 }} />
             <Chat preview />
           </div>
         );
@@ -101,6 +107,7 @@ export default function Index() {
               <ArrowLeft className="h-4 w-4" />
               Go Back
             </Button>
+            <div aria-hidden="true" style={{ height: 200 }} />
             <Minimal userDetails={userDetails} edit={false} />
             {ProBadge}
           </>
@@ -138,6 +145,7 @@ export default function Index() {
                 </button>
               </div>
             </div>
+            <div aria-hidden="true" style={{ height: 200 }} />
             <Professional isEditing={false} preview />
             {ProBadge}
           </>

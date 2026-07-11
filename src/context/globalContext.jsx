@@ -280,7 +280,7 @@ export const GlobalProvider = ({ children }) => {
       startTransition(() => {
         if (isTemplate4) {
           setTheme("light");
-        } else if (userData?.theme != null) {
+        } else if (userData?.theme != null && !viewerThemeOverride) {
           setTheme(userData.theme == 1 ? "dark" : "light");
         }
         setCursor(userData?.cursor ? userData?.cursor : 0);
@@ -315,7 +315,7 @@ export const GlobalProvider = ({ children }) => {
         });
       });
     }
-  }, [data, userDetailsIsState, setTheme]);
+  }, [data, userDetailsIsState, setTheme, viewerThemeOverride]);
 
   useEffect(() => {
     setCursorvalue(cursor);

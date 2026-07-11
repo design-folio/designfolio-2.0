@@ -96,9 +96,7 @@ export const SpotlightTestimonialsSection = ({ userDetails, edit, headerActions 
       </div>
 
       <div
-        className={`relative ${
-          isMobile ? "px-4" : "mx-auto grid max-w-[848px] grid-cols-2 gap-6 px-4"
-        }`}
+        className={`relative ${isMobile ? "px-4" : "mx-auto grid w-full grid-cols-2 gap-6 px-4"}`}
       >
         {isMobile ? (
           <>

@@ -49,7 +49,7 @@ export const SpotlightFooter = ({ userDetails, edit }) => {
 
   return (
     <footer className="border-secondary-border border-t pt-16 pb-[140px] lg:pb-[80px]">
-      <div className="container mx-auto max-w-3xl px-4">
+      <div className="mx-auto w-full px-4">
         <motion.div
           ref={ref}
           variants={containerVariants}

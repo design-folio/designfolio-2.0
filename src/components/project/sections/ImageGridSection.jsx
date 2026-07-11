@@ -3,6 +3,7 @@ import { Upload, Plus, Trash2, Loader2 } from "lucide-react";
 import { uploadSectionImage } from "@/components/project/uploadSectionImage";
 import { normalizeEditableEmpty, handlePlainTextPaste } from "@/components/project/editableUtils";
 import ResizeHandle from "@/components/project/ResizeHandle";
+import ImageLightbox from "@/components/project/ImageLightbox";
 
 function ImageSlot({
   url,
@@ -13,6 +14,7 @@ function ImageSlot({
   onCaptionChange,
   onDelete,
   onResize,
+  onImageClick,
   editable,
 }) {
   const inputRef = useRef(null);
@@ -62,6 +64,7 @@ function ImageSlot({
               ? "border border-dashed border-black/20 bg-black/[0.03] dark:border-white/20 dark:bg-white/[0.03]"
               : "",
             editable ? "group/slot cursor-pointer" : "",
+            !editable && url ? "cursor-pointer" : "",
           ].join(" ")}
           style={{
             boxShadow:
@@ -72,7 +75,13 @@ function ImageSlot({
                 : undefined,
             transition: "box-shadow 0.2s ease",
           }}
-          onClick={() => editable && !uploading && inputRef.current?.click()}
+          onClick={() => {
+            if (editable) {
+              if (!uploading) inputRef.current?.click();
+            } else if (url) {
+              onImageClick?.(url);
+            }
+          }}
           onDrop={(e) => {
             if (!editable) return;
             e.preventDefault();
@@ -179,6 +188,7 @@ function ImageSlot({
 
 export default function ImageGridSection({ section, onChange, mode }) {
   const editable = mode === "editor";
+  const [lightboxSrc, setLightboxSrc] = useState(null);
   const content = section.content || {
     columns: 2,
     images: [
@@ -260,6 +270,7 @@ export default function ImageGridSection({ section, onChange, mode }) {
               onCaptionChange={(caption) => updateImage(i, { caption })}
               onResize={(patch) => updateImage(i, patch)}
               onDelete={() => removeImage(i)}
+              onImageClick={setLightboxSrc}
             />
           </div>
         ))}
@@ -272,6 +283,7 @@ export default function ImageGridSection({ section, onChange, mode }) {
           <Plus size={15} /> Add image
         </button>
       )}
+      <ImageLightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />
     </div>
   );
 }

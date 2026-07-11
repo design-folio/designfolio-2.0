@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState, startTransition } from "react";
+import React, { useCallback, useEffect, useState, startTransition } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { Move, Pencil, Trash2 } from "lucide-react";
 import { Button } from "../../ui/button";
@@ -61,10 +61,14 @@ function MoveOverlay({
   );
 }
 
+// Fixed pixel bounds (not ref-measured) so drag position stays correct through
+// mobile Safari's touch-scroll + address-bar-resize quirks that corrupt
+// getBoundingClientRect-based dragConstraints mid-gesture.
+const PEGBOARD_DRAG_BOUNDS = { top: -50, left: -50, right: 50, bottom: 50 };
+
 function CanvasAboutSection({ isEditing }) {
   const { userDetails, openSidebar } = useGlobalContext();
   const { about } = userDetails || {};
-  const pegboardRef = useRef(null);
   const [zIndexes, setZIndexes] = useState({ 0: 10, 1: 20, 2: 10 });
   const [aboutExpanded, setAboutExpanded] = useState(false);
   const reduceMotion = useReducedMotion();
@@ -119,9 +123,6 @@ function CanvasAboutSection({ isEditing }) {
 
       {/* Pegboard Grid Background */}
       <div className="relative mb-8 w-full rounded-[32px] border border-black/5 bg-[#F7F4EF] dark:border-white/10 dark:bg-[#1E1B18]">
-        {/* Invisible larger boundary for drag constraints allowing slight overflow */}
-        <div className="pointer-events-none absolute -inset-6 md:-inset-10" ref={pegboardRef}></div>
-
         {/* Light Mode Grid */}
         <div
           className="pointer-events-none absolute inset-0 overflow-hidden rounded-[32px] dark:hidden"
@@ -148,7 +149,7 @@ function CanvasAboutSection({ isEditing }) {
           {images[0] && (
             <motion.div
               drag
-              dragConstraints={pegboardRef}
+              dragConstraints={PEGBOARD_DRAG_BOUNDS}
               dragMomentum={false}
               dragElastic={0}
               onDragStart={() => {
@@ -195,7 +196,7 @@ function CanvasAboutSection({ isEditing }) {
           {images[1] && (
             <motion.div
               drag
-              dragConstraints={pegboardRef}
+              dragConstraints={PEGBOARD_DRAG_BOUNDS}
               dragMomentum={false}
               dragElastic={0}
               onDragStart={() => {
@@ -242,7 +243,7 @@ function CanvasAboutSection({ isEditing }) {
           {images[2] && (
             <motion.div
               drag
-              dragConstraints={pegboardRef}
+              dragConstraints={PEGBOARD_DRAG_BOUNDS}
               dragMomentum={false}
               dragElastic={0}
               onDragStart={() => {

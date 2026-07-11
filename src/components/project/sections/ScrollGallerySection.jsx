@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { Upload, Plus, Trash2, Loader2 } from "lucide-react";
 import { uploadSectionImage } from "@/components/project/uploadSectionImage";
+import ImageLightbox from "@/components/project/ImageLightbox";
 
 const SPEED = 0.25; // px per frame — slow, cinematic
 const GAP = 20; // must match gap-5 (20px)
@@ -98,6 +99,7 @@ function ScrollCard({ item, idx, editable, onUpload, onDelete }) {
 
 export default function ScrollGallerySection({ section, onChange, mode }) {
   const editable = mode === "editor";
+  const [lightboxSrc, setLightboxSrc] = useState(null);
   const content = section.content || {
     items: [
       { url: null, key: null },
@@ -206,7 +208,12 @@ export default function ScrollGallerySection({ section, onChange, mode }) {
               >
                 {viewItems.map((item, i) => (
                   <div key={i} className="w-[380px] shrink-0 overflow-hidden rounded-xl">
-                    <img src={item.url} alt="" className="block h-auto w-[380px]" />
+                    <img
+                      src={item.url}
+                      alt=""
+                      className="block h-auto w-[380px] cursor-pointer"
+                      onClick={() => setLightboxSrc(item.url)}
+                    />
                   </div>
                 ))}
               </div>
@@ -230,7 +237,12 @@ export default function ScrollGallerySection({ section, onChange, mode }) {
   );
 
   if (!editable) {
-    return <div className="mx-auto max-w-[880px] overflow-hidden">{inner}</div>;
+    return (
+      <div className="mx-auto max-w-[880px] overflow-hidden">
+        {inner}
+        <ImageLightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />
+      </div>
+    );
   }
   return inner;
 }

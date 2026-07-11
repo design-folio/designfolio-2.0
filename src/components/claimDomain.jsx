@@ -72,7 +72,7 @@ export default function ClaimDomain({ className = "", onClaimWebsite }) {
 
   return (
     <div className={`flex w-full flex-col items-center gap-2.5 ${className}`}>
-      <div className="flex w-full items-stretch gap-2">
+      <div className="flex w-full flex-col items-stretch gap-2 sm:flex-row">
         {/* Domain input pill */}
         <div className="border-lp-text/[0.12] focus-within:border-lp-text/30 dark:focus-within:border-lp-text/25 flex flex-1 items-center overflow-hidden rounded-full border bg-white transition-all duration-200 focus-within:shadow-[0_0_0_3px_rgba(29,27,26,0.07)] dark:border-(--lp-border) dark:bg-(--lp-card) dark:focus-within:shadow-[0_0_0_3px_rgba(255,255,255,0.05)]">
           <div className="relative min-w-0 flex-1">
@@ -115,7 +115,7 @@ export default function ClaimDomain({ className = "", onClaimWebsite }) {
           disabled={!canSubmit}
           whileTap={canSubmit ? { y: 2 } : {}}
           transition={{ type: "spring", stiffness: 600, damping: 30 }}
-          className="shrink-0 rounded-full px-6 py-3.5 text-[14px] font-semibold whitespace-nowrap text-white transition-opacity duration-200 select-none"
+          className="w-full shrink-0 rounded-full px-6 py-3.5 text-[14px] font-semibold whitespace-nowrap text-white transition-opacity duration-200 select-none sm:w-auto"
           style={{
             background: "linear-gradient(to bottom, #FF6E52 0%, #E8391E 100%)",
             boxShadow: canSubmit

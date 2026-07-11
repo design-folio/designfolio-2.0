@@ -1,7 +1,6 @@
 "use client";
 import { SmoothCursor } from "@/components/ui/smooth-cursor";
 import { SectionVisibilityButton, ProjectVisibilityButton } from "@/components/section";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -24,6 +23,7 @@ import {
 } from "@/lib/aboutStoryPreview";
 import { DEFAULT_SECTION_ORDER, modals, normalizeSectionOrder, sidebars } from "@/lib/constant";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
+import ProfileAvatar from "@/components/templates/ProfileAvatar";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { AtSignIcon, DownloadIcon, DribbbleIcon, TwitterIcon } from "lucide-animated";
 import {
@@ -1055,17 +1055,16 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               </Button>
             </div>
           )}
-          <div className="absolute -top-[42px] left-10 z-20 rounded-2xl border-[3px] border-white shadow-lg dark:border-[#1A1A1A]">
-            <Avatar className="h-[120px] w-[120px] rounded-2xl">
-              <AvatarImage
-                src={avatarSrc}
-                alt={displayName || "Profile image"}
-                className="object-cover"
-              />
-              <AvatarFallback className="rounded-2xl bg-[#E5D7C4] text-[#1A1A1A] dark:bg-[#3A352E] dark:text-[#F0EDE7]">
-                {avatarFallbackText}
-              </AvatarFallback>
-            </Avatar>
+          <div className="absolute -top-[42px] left-10 z-20">
+            <ProfileAvatar
+              src={avatarSrc}
+              alt={displayName || "Profile image"}
+              size={120}
+              innerClassName="border-[3px] border-white dark:border-[#1A1A1A]"
+              imgClassName="bg-[#E5D7C4] dark:bg-[#3A352E]"
+              fallback={avatarFallbackText}
+              fallbackClassName="bg-[#E5D7C4] text-[#1A1A1A] dark:bg-[#3A352E] dark:text-[#F0EDE7]"
+            />
           </div>
           <div className="mb-6 flex items-start justify-end gap-4">
             <div className="mt-1 flex items-center gap-2">

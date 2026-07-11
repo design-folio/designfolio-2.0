@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import { Moon, Pencil, Sun } from "lucide-react";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
+import ProfileAvatar from "@/components/templates/ProfileAvatar";
 import { sidebars } from "@/lib/constant";
 import { CanvasSectionControls, CanvasSectionButton } from "./CanvasSectionControls";
 import { Switch } from "./switch-button";
@@ -45,9 +46,12 @@ function CanvasProfileCard({ isEditing, skills = [], persistTheme = false }) {
 
       {/* Profile content */}
       <div className="flex flex-col items-start gap-8 p-5 md:flex-row md:items-center md:p-6">
-        <div className="h-28 w-28 shrink-0 overflow-hidden rounded-2xl border border-black/5 shadow-sm dark:border-white/10">
-          <img src={avatarSrc} alt="Profile" className="h-full w-full object-cover" />
-        </div>
+        <ProfileAvatar
+          src={avatarSrc}
+          size={112}
+          innerClassName="border border-black/5 shadow-sm dark:border-white/10"
+          shadow={false}
+        />
         <div className="flex w-full flex-col gap-2">
           <h1 className="text-scaled-24 pr-12 leading-tight font-semibold tracking-tight text-pretty text-[#1A1A1A] dark:text-[#F0EDE7]">
             {introduction}

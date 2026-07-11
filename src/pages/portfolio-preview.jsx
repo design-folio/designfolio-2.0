@@ -91,7 +91,7 @@ export default function Index() {
                 Exit Preview
               </Button>
             </div>
-            <div aria-hidden="true" style={{ height: 200 }} />
+            <div aria-hidden="true" style={{ height: 64 }} />
             <Chat preview />
           </div>
         );
@@ -107,7 +107,7 @@ export default function Index() {
               <ArrowLeft className="h-4 w-4" />
               Go Back
             </Button>
-            <div aria-hidden="true" style={{ height: 200 }} />
+            <div aria-hidden="true" style={{ height: 64 }} />
             <Minimal userDetails={userDetails} edit={false} />
             {ProBadge}
           </>
@@ -126,7 +126,7 @@ export default function Index() {
                 Exit Preview
               </Button>
             </div>
-            <div aria-hidden="true" style={{ height: 200 }} />
+            <div aria-hidden="true" style={{ height: 64 }} />
             <Mono preview />
             {ProBadge}
           </>
@@ -145,7 +145,7 @@ export default function Index() {
                 </button>
               </div>
             </div>
-            <div aria-hidden="true" style={{ height: 200 }} />
+            <div aria-hidden="true" style={{ height: 64 }} />
             <Professional isEditing={false} preview />
             {ProBadge}
           </>

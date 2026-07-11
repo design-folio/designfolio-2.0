@@ -129,7 +129,7 @@ export default function ContainerResizer({ children, className, contentClassName
           onSelect={(w) => changeContainerWidth(w, true)}
         />
       </div>
-      <div className="pointer-events-none sticky top-[300px] z-[60] h-0 overflow-visible">
+      <div className="pointer-events-none sticky top-[140px] z-[60] h-0 overflow-visible">
         <ResizeGripHandle
           side="left"
           active={isResizing}

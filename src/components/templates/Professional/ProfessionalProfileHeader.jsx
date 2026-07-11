@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Pencil, UserCircle } from "lucide-react";
 import { format } from "date-fns";
 import CinematicThemeSwitcher from "./cinematic-theme-switcher";
+import ProfileAvatar from "@/components/templates/ProfileAvatar";
 import { itemVariants } from "./professional-utils";
 
 function ProfessionalProfileHeader({
@@ -47,14 +48,13 @@ function ProfessionalProfileHeader({
           <CinematicThemeSwitcher persist={persistTheme} />
         </div>
 
-        <div className="mt-2 mb-6 flex h-[80px] w-[80px] shrink-0 items-center justify-center overflow-hidden bg-[#E37941]">
-          <img
-            src={avatarSrc}
-            alt="Profile"
-            className="h-full w-full object-cover"
-            style={{ filter: "contrast(1.2)" }}
-          />
-        </div>
+        <ProfileAvatar
+          src={avatarSrc}
+          size={120}
+          className="mt-2 mb-6"
+          imgClassName="bg-[#E37941]"
+          imgStyle={{ filter: "contrast(1.2)" }}
+        />
 
         <div className="relative mb-6 flex h-[100px] w-full items-center overflow-hidden md:h-[120px]">
           <motion.div

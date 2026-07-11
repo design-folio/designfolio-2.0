@@ -145,7 +145,6 @@ export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }
   const isCanvas = effectiveTemplate === TEMPLATE_IDS.CANVAS;
   const isMono = effectiveTemplate === TEMPLATE_IDS.MONO;
   const isProfessional = effectiveTemplate === TEMPLATE_IDS.PROFESSIONAL;
-  const isChatfolio = effectiveTemplate === TEMPLATE_IDS.CHATFOLIO;
 
   // Set data-template on <html> so template-scoped CSS (canvas.css, mono.css etc.) works on the public page
   useEffect(() => {
@@ -169,10 +168,7 @@ export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }
 
   // Compute wallpaper URL for this project
   const currentTheme = resolvedTheme || theme || (project?.theme == 1 ? "dark" : "light");
-  // Chat template uses solid bg — no wallpaper. Remove the isChatfolio check to re-enable.
-  const wallpaperUrl = isChatfolio
-    ? null
-    : getWallpaperUrl(wpValue ?? 0, currentTheme, effectiveTemplate);
+  const wallpaperUrl = getWallpaperUrl(wpValue ?? 0, currentTheme, effectiveTemplate);
 
   // Get wallpaper effects from project → owner → userDetails
   const effects =

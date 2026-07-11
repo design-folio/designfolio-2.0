@@ -337,7 +337,16 @@ export default function Index() {
                 [TEMPLATE_IDS.RETRO_OS]: "",
               }[t] ?? "px-2 pt-24 pb-0 md:px-4 lg:px-0"
             )}
-            contentClassName={t === TEMPLATE_IDS.MONO ? "mt-[184px]" : undefined}
+            contentClassName={
+              [
+                TEMPLATE_IDS.MONO,
+                TEMPLATE_IDS.PROFESSIONAL,
+                TEMPLATE_IDS.CHATFOLIO,
+                TEMPLATE_IDS.SPOTLIGHT,
+              ].includes(t)
+                ? "mt-[184px]"
+                : undefined
+            }
           >
             {userDetails && !userDetails?.pro && TEMPLATES_BY_ID[t]?.isPro && <ProWarning />}
             {userDetails && (

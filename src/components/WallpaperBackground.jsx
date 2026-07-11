@@ -97,20 +97,30 @@ export default function WallpaperBackground({
       return;
     }
 
+    // In the builder, window scroll is locked and the real scroll container is
+    // FloatingPageContainer's inner [data-scroll-root] div. Fall back to window
+    // for public/preview routes (and mobile, where that div doesn't scroll).
+    const root = document.querySelector("[data-scroll-root]");
+    let scrollEl = window;
+    if (root && /(auto|scroll)/.test(window.getComputedStyle(root).overflowY)) {
+      scrollEl = root;
+    }
+    const isWindow = scrollEl === window;
+
     const handleScroll = () => {
       if (rafRef.current) {
         cancelAnimationFrame(rafRef.current);
       }
       rafRef.current = requestAnimationFrame(() => {
-        setScrollOffset(window.scrollY);
+        setScrollOffset(isWindow ? window.scrollY : scrollEl.scrollTop);
       });
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    scrollEl.addEventListener("scroll", handleScroll, { passive: true });
     handleScroll();
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      scrollEl.removeEventListener("scroll", handleScroll);
       if (rafRef.current) {
         cancelAnimationFrame(rafRef.current);
       }
@@ -186,7 +196,7 @@ export default function WallpaperBackground({
               position: "absolute",
               inset: 0,
               background:
-                "linear-gradient(to bottom, transparent 0%, transparent 55%, var(--background) 100%)",
+                "linear-gradient(to bottom, transparent 0%, transparent 82%, color-mix(in srgb, var(--background) 70%, transparent) 92%, var(--background) 100%)",
             }}
           />
         </div>

@@ -124,7 +124,7 @@ export default function Index({ initialUserDetails }) {
       case TEMPLATE_IDS.CHATFOLIO:
         return (
           <>
-            <div aria-hidden="true" style={{ height: 200 }} />
+            <div aria-hidden="true" style={{ height: 64 }} />
             <Chat publicView />
             {ProBadge}
           </>
@@ -132,7 +132,7 @@ export default function Index({ initialUserDetails }) {
       case TEMPLATE_IDS.SPOTLIGHT:
         return (
           <>
-            <div aria-hidden="true" style={{ height: 200 }} />
+            <div aria-hidden="true" style={{ height: 64 }} />
             <Minimal userDetails={finalUserDetails} />
             {ProBadge}
           </>
@@ -140,7 +140,7 @@ export default function Index({ initialUserDetails }) {
       case TEMPLATE_IDS.MONO:
         return (
           <>
-            <div aria-hidden="true" style={{ height: 200 }} />
+            <div aria-hidden="true" style={{ height: 64 }} />
             <Mono preview publicView />
             {ProBadge}
           </>
@@ -148,7 +148,7 @@ export default function Index({ initialUserDetails }) {
       case TEMPLATE_IDS.PROFESSIONAL:
         return (
           <>
-            <div aria-hidden="true" style={{ height: 200 }} />
+            <div aria-hidden="true" style={{ height: 64 }} />
             <Professional isEditing={false} />
             {ProBadge}
           </>

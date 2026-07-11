@@ -20,21 +20,21 @@ export const TEMPLATES_BY_ID = {
     value: "chatfolio",
     item: "Chatfolio",
     isNew: false,
-    isPro: true,
+    isPro: false,
   },
   [TEMPLATE_IDS.SPOTLIGHT]: {
     id: TEMPLATE_IDS.SPOTLIGHT,
     value: "spotlight",
     item: "Spotlight",
     isNew: false,
-    isPro: true,
+    isPro: false,
   },
   [TEMPLATE_IDS.MONO]: {
     id: TEMPLATE_IDS.MONO,
     value: "mono",
     item: "Mono",
     isNew: false,
-    isPro: true,
+    isPro: false,
   },
   [TEMPLATE_IDS.RETRO_OS]: {
     id: TEMPLATE_IDS.RETRO_OS,
@@ -48,7 +48,7 @@ export const TEMPLATES_BY_ID = {
     value: "professional",
     item: "Gridline", //Professional
     isNew: false,
-    isPro: true,
+    isPro: false,
   },
 };
 

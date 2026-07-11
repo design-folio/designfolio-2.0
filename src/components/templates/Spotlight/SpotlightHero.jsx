@@ -1,15 +1,12 @@
-import { Avatar } from "@/components/ui/avatar";
-import { useState } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import Button from "@/components/button";
 import { EditIcon } from "lucide-react";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
-import { cn } from "@/lib/utils";
+import ProfileAvatar from "@/components/templates/ProfileAvatar";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export const SpotlightHero = ({ userDetails, edit }) => {
-  const [isLoaded, setIsLoaded] = useState(true);
   const { openModal } = useGlobalContext();
 
   const { avatar, introduction, bio, skills } = userDetails || {};
@@ -27,39 +24,15 @@ export const SpotlightHero = ({ userDetails, edit }) => {
         >
           <Tooltip delayDuration={300}>
             <TooltipTrigger asChild>
-              <Avatar className="relative mb-6 h-24 w-24 rounded-[24px]">
-                <div className="relative h-full w-full">
-                  <AnimatePresence mode="wait">
-                    {!isLoaded && (
-                      <motion.div
-                        key="loading"
-                        initial={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        className="bg-secondary/50 absolute inset-0 animate-pulse rounded-2xl"
-                      />
-                    )}
-                  </AnimatePresence>
-                  <motion.img
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: isLoaded ? 1 : 0 }}
-                    transition={{ duration: 0.2 }}
-                    src={getUserAvatarImage(userDetails)}
-                    alt="Profile"
-                    className={cn(
-                      "h-full w-full rounded-3xl object-cover",
-                      !avatar ? "bg-[#FFB088]" : ""
-                    )}
-                    loading="eager"
-                    decoding="async"
-                    onLoad={() => setIsLoaded(true)}
-                    style={{
-                      backfaceVisibility: "hidden",
-                      WebkitBackfaceVisibility: "hidden",
-                    }}
-                  />
-                </div>
-              </Avatar>
+              <div className="mb-6">
+                <ProfileAvatar
+                  src={getUserAvatarImage(userDetails)}
+                  alt="Profile"
+                  size={96}
+                  radius="rounded-[24px]"
+                  imgClassName={!avatar ? "bg-[#FFB088]" : ""}
+                />
+              </div>
             </TooltipTrigger>
             <TooltipContent
               side="top"

@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { format } from "date-fns";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
+import ProfileAvatar from "@/components/templates/ProfileAvatar";
 import { sidebars } from "@/lib/constant";
 import { Switch } from "../Canvas/switch-button";
 import { usePersistableThemeToggle } from "@/hooks/usePersistableThemeToggle";
@@ -53,9 +54,12 @@ export default function ChatHeader({ chatRevealStep, s, canEdit }) {
               </Button>
             </div>
           )}
-          <div className="relative h-16 w-16 overflow-hidden rounded-2xl border border-black/10 transition-transform duration-300 group-hover/avatar:scale-105 dark:border-white/10">
-            <img src={avatarSrc} alt="Profile" className="h-full w-full object-cover" />
-          </div>
+          <ProfileAvatar
+            src={avatarSrc}
+            size={64}
+            innerClassName="border border-black/10 dark:border-white/10"
+            shadow={false}
+          />
         </div>
         <div className="group/text relative space-y-2">
           {canEdit && (

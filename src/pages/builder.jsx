@@ -344,7 +344,7 @@ export default function Index() {
                 TEMPLATE_IDS.CHATFOLIO,
                 TEMPLATE_IDS.SPOTLIGHT,
               ].includes(t)
-                ? "mt-[184px]"
+                ? "mt-14"
                 : undefined
             }
           >

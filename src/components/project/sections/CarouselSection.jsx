@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Plus, Trash2, Loader2, Upload } from "lucide-react";
 import { uploadSectionImage } from "@/components/project/uploadSectionImage";
 import { normalizeEditableEmpty, handlePlainTextPaste } from "@/components/project/editableUtils";
+import ImageLightbox from "@/components/project/ImageLightbox";
 
 function ImageUploadSlot({ url, onUpload }) {
   const inputRef = useRef(null);
@@ -98,6 +99,7 @@ export default function CarouselSection({ section, onChange, mode }) {
   };
   const items = content.items?.length ? content.items : [{ url: null, key: null, caption: "" }];
   const [activeIndex, setActiveIndex] = useState(0);
+  const [lightboxSrc, setLightboxSrc] = useState(null);
   const total = items.length;
   const safeIndex = Math.min(activeIndex, total - 1);
   const current = items[safeIndex];
@@ -160,7 +162,8 @@ export default function CarouselSection({ section, onChange, mode }) {
                 <img
                   src={current.url}
                   alt={current?.caption || ""}
-                  className="h-full w-full object-cover"
+                  className="h-full w-full cursor-pointer object-cover"
+                  onClick={() => setLightboxSrc(current.url)}
                 />
               )}
             </div>
@@ -229,6 +232,7 @@ export default function CarouselSection({ section, onChange, mode }) {
           )}
         </div>
       )}
+      <ImageLightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />
     </div>
   );
 }

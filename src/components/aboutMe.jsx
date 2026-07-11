@@ -75,6 +75,11 @@ export function AboutMeContent({
   );
 }
 
+// Fixed pixel bounds (not ref-measured) so drag position stays correct through
+// mobile Safari's touch-scroll + address-bar-resize quirks that corrupt
+// getBoundingClientRect-based dragConstraints mid-gesture.
+const PEGBOARD_DRAG_BOUNDS = { top: -50, left: -50, right: 50, bottom: 50 };
+
 function Pegboard({ images = [], stickers = [] }) {
   const pinBoardRef = useRef(null);
   const { playPick, playPlace } = usePegboardSounds();
@@ -145,7 +150,6 @@ function Pegboard({ images = [], stickers = [] }) {
           return (
             <PegboardItem
               key={`img-${index}`}
-              pinBoardRef={pinBoardRef}
               onDragStart={playPick}
               onDragEnd={playPlace}
               style={config.style}
@@ -198,7 +202,6 @@ function Pegboard({ images = [], stickers = [] }) {
 }
 
 function PegboardItem({
-  pinBoardRef,
   onDragStart,
   onDragEnd,
   style,
@@ -221,7 +224,7 @@ function PegboardItem({
       <motion.div
         drag
         dragMomentum={false}
-        dragConstraints={pinBoardRef}
+        dragConstraints={PEGBOARD_DRAG_BOUNDS}
         dragElastic={0.1}
         onDragStart={onDragStart}
         onDragEnd={onDragEnd}

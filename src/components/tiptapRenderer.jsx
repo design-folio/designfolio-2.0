@@ -1,5 +1,4 @@
 import React, { useState, useCallback } from "react";
-import { createPortal } from "react-dom";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
@@ -19,7 +18,7 @@ import { LinkNode } from "./tiptap/LinkExtension";
 import { YoutubeNode } from "./tiptap/YoutubeExtension";
 import { ResizableImage } from "./tiptap/ResizableImage";
 import { cn } from "@/lib/utils";
-import { X } from "lucide-react";
+import ImageLightbox from "@/components/project/ImageLightbox";
 
 const TiptapRenderer = ({ content, className }) => {
   const [fullscreenImageSrc, setFullscreenImageSrc] = useState(null);
@@ -127,28 +126,7 @@ const TiptapRenderer = ({ content, className }) => {
         <EditorContent editor={editor} />
       </div>
 
-      {fullscreenImageSrc &&
-        typeof document !== "undefined" &&
-        createPortal(
-          <button
-            type="button"
-            className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 p-4 outline-none"
-            onClick={() => setFullscreenImageSrc(null)}
-            aria-label="Close fullscreen image"
-          >
-            <img
-              src={fullscreenImageSrc}
-              alt="Fullscreen"
-              className="max-h-full max-w-full rounded-lg object-contain"
-              onClick={(e) => e.stopPropagation()}
-              draggable={false}
-            />
-            <span className="absolute top-4 right-4 rounded-full bg-white/10 p-2 text-white transition-colors hover:bg-white/20">
-              <X className="h-6 w-6" />
-            </span>
-          </button>,
-          document.body
-        )}
+      <ImageLightbox src={fullscreenImageSrc} onClose={() => setFullscreenImageSrc(null)} />
     </>
   );
 };

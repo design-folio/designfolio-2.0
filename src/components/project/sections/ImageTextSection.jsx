@@ -3,6 +3,7 @@ import { Upload, Loader2 } from "lucide-react";
 import EditableText from "@/components/project/EditableText";
 import { uploadSectionImage } from "@/components/project/uploadSectionImage";
 import ResizeHandle from "@/components/project/ResizeHandle";
+import ImageLightbox from "@/components/project/ImageLightbox";
 
 const LAYOUTS = ["image-left", "image-right", "image-top"];
 const LAYOUT_LABELS = { "image-left": "Left", "image-right": "Right", "image-top": "Top" };
@@ -13,6 +14,7 @@ function ImageSlot({
   height,
   onUpload,
   onResize,
+  onImageClick,
   editable,
   className,
   defaultAspect = "4/3",
@@ -60,7 +62,7 @@ function ImageSlot({
           !url
             ? "border border-dashed border-black/20 bg-black/[0.03] dark:border-white/20 dark:bg-white/[0.03]"
             : "",
-          editable ? "cursor-pointer" : "",
+          editable || url ? "cursor-pointer" : "",
         ].join(" ")}
         style={{
           boxShadow:
@@ -71,7 +73,13 @@ function ImageSlot({
               : undefined,
           transition: "box-shadow 0.2s ease",
         }}
-        onClick={() => editable && !uploading && inputRef.current?.click()}
+        onClick={() => {
+          if (editable) {
+            if (!uploading) inputRef.current?.click();
+          } else if (url) {
+            onImageClick?.(url);
+          }
+        }}
         onDrop={(e) => {
           if (!editable) return;
           e.preventDefault();
@@ -150,6 +158,7 @@ function ImageSlot({
 
 export default function ImageTextSection({ section, onChange, mode }) {
   const editable = mode === "editor";
+  const [lightboxSrc, setLightboxSrc] = useState(null);
   const content = section.content || {
     layout: "image-left",
     image: { url: null, key: null },
@@ -206,6 +215,7 @@ export default function ImageTextSection({ section, onChange, mode }) {
       editable={editable}
       onUpload={({ key, url }) => onChange({ ...content, image: { key, url } })}
       onResize={(patch) => onChange({ ...content, image: { ...image, ...patch } })}
+      onImageClick={setLightboxSrc}
       defaultAspect={isTop ? "21/9" : "4/3"}
       className={isTop ? "aspect-[21/9] w-full" : "min-h-[260px] w-full"}
       isTopLayout={isTop}
@@ -254,6 +264,7 @@ export default function ImageTextSection({ section, onChange, mode }) {
           <div className="w-full min-w-0 flex-1">{textBlock}</div>
         </div>
       )}
+      <ImageLightbox src={lightboxSrc} onClose={() => setLightboxSrc(null)} />
     </div>
   );
 }

@@ -8,7 +8,7 @@ import { BACKGROUND_MODE, BACKGROUND_COLORS } from "@/lib/wallpaper";
 import { TYPOGRAPHY } from "@/lib/typography";
 import styles from "@/styles/domain.module.css";
 import imageCompression from "browser-image-compression";
-import { Upload, RotateCcw, Check, Sun, Moon, Eye, EyeOff } from "lucide-react";
+import { Upload, RotateCcw, Check, Sun, Moon, Eye, EyeOff, ChevronDown } from "lucide-react";
 import DragHandle from "../DragHandle";
 import React, { useEffect, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
@@ -126,6 +126,8 @@ function TemplateCard({ tmpl, isSelected, onChange, previewSrc }) {
   );
 }
 
+const DEFAULT_VISIBLE_WALLPAPERS = 2;
+
 // Section display names mapping
 const SECTION_NAMES = {
   about: "About me",
@@ -222,6 +224,7 @@ const ThemePanel = ({
   const [customColor, setCustomColor] = useState("#D4C5F9");
   const colorInputRef = useRef(null);
   const [isCompressing, setIsCompressing] = useState(false);
+  const [showMoreWallpapers, setShowMoreWallpapers] = useState(false);
   const isMobileOrTablet = useIsMobile();
   const isDarkWallpapers = theme === "dark" || theme === 1;
 
@@ -1011,42 +1014,102 @@ const ThemePanel = ({
                   </button>
                 )}
 
-                {wallpapers.map((wp, index) => {
-                  if (wp.value === 0) return null;
-                  if (isMacOSTemplate && wp.value === 8) return null;
-                  return (
-                    <button
-                      key={index}
-                      onClick={() => changeWallpaper(wp.value)}
-                      className={twMerge(
-                        "group/card relative cursor-pointer rounded-[14px] border-[2.5px] transition-colors focus:outline-none",
-                        wallpaper === wp.value
-                          ? "border-df-orange-color"
-                          : "border-transparent hover:bg-black/5 dark:hover:bg-white/5"
-                      )}
-                      data-testid={
-                        isMobile ? `button-wallpaper-${wp.id}-mobile` : `button-wallpaper-${wp.id}`
-                      }
-                    >
-                      <div
-                        className={twMerge(
-                          "pointer-events-none relative aspect-video w-full overflow-hidden rounded-[14px] border border-black/5 shadow-sm dark:border-white/5",
-                          "transition-[box-shadow,background-color] duration-200 ease-out",
-                          wallpaper === wp.value ? "bg-accent" : "bg-card"
-                        )}
-                      >
-                        <div className="pointer-events-none h-full w-full [&>div]:h-full! [&>div]:rounded-none!">
-                          {wp.item}
-                        </div>
-                      </div>
-                      {wallpaper === wp.value && (
-                        <div className="bg-df-orange-color border-sidebar pointer-events-none absolute -bottom-1 -left-1 z-10 flex items-center justify-center rounded-full border-2 p-1.5 shadow-sm">
-                          <Check size={14} strokeWidth={3.5} className="text-primary-foreground" />
-                        </div>
-                      )}
-                    </button>
+                {(() => {
+                  const presetWallpapers = wallpapers.filter(
+                    (wp) => wp.value !== 0 && !(isMacOSTemplate && wp.value === 8)
                   );
-                })}
+                  const visibleWallpapers = showMoreWallpapers
+                    ? presetWallpapers
+                    : presetWallpapers.slice(0, DEFAULT_VISIBLE_WALLPAPERS);
+                  const remainingCount = presetWallpapers.length - DEFAULT_VISIBLE_WALLPAPERS;
+
+                  return (
+                    <>
+                      {visibleWallpapers.map((wp, index) => {
+                        const isRevealed = index >= DEFAULT_VISIBLE_WALLPAPERS;
+                        return (
+                          <motion.div
+                            key={wp.id}
+                            layout
+                            initial={isRevealed ? { opacity: 0, y: 6, scale: 0.96 } : false}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            transition={{
+                              duration: 0.3,
+                              delay: isRevealed ? (index - DEFAULT_VISIBLE_WALLPAPERS) * 0.05 : 0,
+                              ease: [0.32, 0.72, 0, 1],
+                            }}
+                          >
+                            <button
+                              onClick={() => changeWallpaper(wp.value)}
+                              className={twMerge(
+                                "group/card relative w-full cursor-pointer rounded-[14px] border-[2.5px] transition-colors focus:outline-none",
+                                wallpaper === wp.value
+                                  ? "border-df-orange-color"
+                                  : "border-transparent hover:bg-black/5 dark:hover:bg-white/5"
+                              )}
+                              data-testid={
+                                isMobile
+                                  ? `button-wallpaper-${wp.id}-mobile`
+                                  : `button-wallpaper-${wp.id}`
+                              }
+                            >
+                              <div
+                                className={twMerge(
+                                  "pointer-events-none relative aspect-video w-full overflow-hidden rounded-[14px] border border-black/5 shadow-sm dark:border-white/5",
+                                  "transition-[box-shadow,background-color] duration-200 ease-out",
+                                  wallpaper === wp.value ? "bg-accent" : "bg-card"
+                                )}
+                              >
+                                <div className="pointer-events-none h-full w-full [&>div]:h-full! [&>div]:rounded-none!">
+                                  {wp.item}
+                                </div>
+                              </div>
+                              {wallpaper === wp.value && (
+                                <div className="bg-df-orange-color border-sidebar pointer-events-none absolute -bottom-1 -left-1 z-10 flex items-center justify-center rounded-full border-2 p-1.5 shadow-sm">
+                                  <Check
+                                    size={14}
+                                    strokeWidth={3.5}
+                                    className="text-primary-foreground"
+                                  />
+                                </div>
+                              )}
+                            </button>
+                          </motion.div>
+                        );
+                      })}
+
+                      {remainingCount > 0 && (
+                        <AnimatePresence mode="popLayout" initial={false}>
+                          {!showMoreWallpapers && (
+                            <motion.button
+                              key="view-more-wallpapers"
+                              layout
+                              type="button"
+                              initial={{ opacity: 1, scale: 1 }}
+                              exit={{ opacity: 0, scale: 0.9 }}
+                              transition={{ duration: 0.2, ease: [0.32, 0.72, 0, 1] }}
+                              onClick={() => setShowMoreWallpapers(true)}
+                              className={twMerge(
+                                "group/card relative flex aspect-video w-full cursor-pointer flex-col items-center justify-center gap-1 overflow-hidden rounded-[14px] border border-dashed border-black/10 bg-transparent transition-all focus:outline-none",
+                                "hover:border-black/20 dark:border-white/10 dark:hover:border-white/20"
+                              )}
+                              data-testid={
+                                isMobile
+                                  ? "button-wallpapers-view-more-mobile"
+                                  : "button-wallpapers-view-more"
+                              }
+                            >
+                              <ChevronDown className="text-foreground h-4 w-4" />
+                              <span className="text-foreground text-[11px] font-medium">
+                                View {remainingCount} more
+                              </span>
+                            </motion.button>
+                          )}
+                        </AnimatePresence>
+                      )}
+                    </>
+                  );
+                })()}
               </div>
 
               {/* Colors — a solid background colour, an alternative to an image wallpaper.

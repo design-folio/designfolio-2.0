@@ -142,7 +142,7 @@ export const DEFAULT_SECTION_ORDER = ["projects", "reviews", "tools", "about", "
 // Stored on user.containerWidth as a px number; null = use the template default.
 // Presets shown in the editor toolbar + Background tab; free drag clamps to [min, max].
 export const CONTAINER_WIDTH_PRESETS = [640, 880, 1024, 1200, 1440];
-export const CONTAINER_WIDTH_MIN = 400;
+export const CONTAINER_WIDTH_MIN = 640;
 export const CONTAINER_WIDTH_MAX = 1440;
 
 // Per-template width config. `default` mirrors each template's current hard-coded

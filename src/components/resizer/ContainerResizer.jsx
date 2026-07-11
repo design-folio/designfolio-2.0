@@ -1,6 +1,12 @@
 import { useRef, useState } from "react";
 import { useGlobalContext } from "@/context/globalContext";
-import { TEMPLATE_CONTAINER_WIDTHS, CONTAINER_WIDTH_PRESETS } from "@/lib/constant";
+import {
+  TEMPLATE_CONTAINER_WIDTHS,
+  CONTAINER_WIDTH_PRESETS,
+  isSidebarThatShifts,
+  getSidebarShiftWidth,
+} from "@/lib/constant";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import ResizeGripHandle from "./ResizeGripHandle";
 import ContainerWidthToolbar from "./ContainerWidthToolbar";
@@ -16,8 +22,9 @@ import ContainerWidthToolbar from "./ContainerWidthToolbar";
  * top of the viewport and stays pinned as the page scrolls.
  */
 export default function ContainerResizer({ children, className, contentClassName }) {
-  const { template, containerMaxWidth, changeContainerWidth } = useGlobalContext();
+  const { template, containerMaxWidth, changeContainerWidth, activeSidebar } = useGlobalContext();
   const cfg = TEMPLATE_CONTAINER_WIDTHS[template];
+  const isMobile = useIsMobile();
 
   const [isResizing, setIsResizing] = useState(false);
   const [showHandles, setShowHandles] = useState(false);
@@ -34,6 +41,11 @@ export default function ContainerResizer({ children, className, contentClassName
   const width = containerMaxWidth ?? cfg.default;
   const presets = CONTAINER_WIDTH_PRESETS.filter((w) => w <= cfg.max);
   const chromeVisible = showHandles || isResizing;
+
+  // Shift the floating toolbar with the right sidebar so it stays centred over the
+  // content — mirrors BuilderTopNav exactly, keeping the pill aligned under the nav.
+  const shouldShift = !isMobile && isSidebarThatShifts(activeSidebar);
+  const shiftWidth = shouldShift ? getSidebarShiftWidth(activeSidebar) : "0px";
 
   const clamp = (w) => Math.min(cfg.max, Math.max(cfg.min, Math.round(w)));
 
@@ -101,8 +113,13 @@ export default function ContainerResizer({ children, className, contentClassName
         }
       }}
     >
-      {/* Sticky sentinel — holds the floating toolbar + edge handles, pinned near the top */}
-      <div className="pointer-events-none sticky top-[100px] z-[60] h-0 overflow-visible">
+      <div
+        className="pointer-events-none fixed top-[74px] left-0 z-[60] flex justify-center px-4"
+        style={{
+          right: shouldShift ? `calc(${shiftWidth} + 16px)` : shiftWidth,
+          transition: "right 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        }}
+      >
         <ContainerWidthToolbar
           width={width}
           presets={presets}

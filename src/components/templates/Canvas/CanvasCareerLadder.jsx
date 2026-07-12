@@ -85,7 +85,7 @@ function ExperienceCard({ experience, isEditing, expandedCards, onToggleExpand, 
               initial={false}
               animate={{ height: isExpanded ? "auto" : "4.875em" }}
               transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
-              className="overflow-hidden"
+              className="relative overflow-hidden"
             >
               <SimpleTiptapRenderer
                 content={description || ""}
@@ -94,6 +94,13 @@ function ExperienceCard({ experience, isEditing, expandedCards, onToggleExpand, 
                 className="text-scaled-15 leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]"
                 noCardStyle
               />
+              {/* Fade the hard clamp edge into the card bg (matches CanvasAboutSection) */}
+              {!isExpanded && (
+                <div
+                  className="pointer-events-none absolute inset-x-0 bottom-0 h-10 bg-gradient-to-t from-white to-transparent dark:from-[#2A2520]"
+                  aria-hidden
+                />
+              )}
             </motion.div>
             <button
               onClick={(e) => {

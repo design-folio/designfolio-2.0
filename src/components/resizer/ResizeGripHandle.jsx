@@ -8,11 +8,14 @@ export default function ResizeGripHandle({ side, active, visible, onMouseDown, o
   return (
     <div
       className={cn(
-        "group absolute top-0 z-[60] hidden h-40 w-7 cursor-ew-resize items-center justify-center select-none lg:flex",
+        "group absolute top-0 z-[60] hidden h-40 w-7 items-center justify-center select-none lg:flex",
         side === "left" ? "-left-7" : "-right-7",
         visible ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
       )}
-      style={{ transition: "opacity 0.2s ease" }}
+      // cursor set inline (not via `cursor-ew-resize`): globals.scss has an unlayered
+      // `* { cursor: inherit }` that beats Tailwind's layered cursor utilities. Inline
+      // style wins — same approach as ResizeHandle.jsx.
+      style={{ cursor: "ew-resize", transition: "opacity 0.2s ease" }}
       onMouseEnter={() => onHoverChange?.(true)}
       onMouseLeave={() => onHoverChange?.(false)}
       onMouseDown={(e) => onMouseDown?.(e, side)}

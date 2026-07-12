@@ -310,28 +310,43 @@ export default function UpgradeModal() {
             onClick={handleCloseModal}
           />
 
-          {/* Modal card */}
+          {/* Modal card — centered dialog on desktop, bottom sheet on mobile */}
           <motion.div
             key="upgrade-card"
-            transformTemplate={centeredTransform}
+            transformTemplate={sideBySide ? centeredTransform : undefined}
             className={`${styles.modal} ${plansReady && sideBySide ? styles.modalFMRow : ""} ${plansReady && sideBySide && showFaq ? styles.modalFaqOpen : ""}`}
-            initial={{ opacity: 0, y: 12, scale: 0.97, ...(sideBySide ? { width: 440 } : {}) }}
-            animate={{
-              opacity: 1,
-              y: 0,
-              scale: 1,
-              ...(plansReady && cardWidth !== undefined ? { width: cardWidth } : {}),
-            }}
-            exit={{ opacity: 0, y: 6, scale: 0.97 }}
+            initial={sideBySide ? { opacity: 0, y: 12, scale: 0.97, width: 440 } : { y: "100%" }}
+            animate={
+              sideBySide
+                ? {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    ...(plansReady && cardWidth !== undefined ? { width: cardWidth } : {}),
+                  }
+                : { y: 0 }
+            }
+            exit={sideBySide ? { opacity: 0, y: 6, scale: 0.97 } : { y: "100%" }}
             transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
-            style={{
-              position: "fixed",
-              top: "50%",
-              left: "50%",
-              zIndex: 10002,
-              animation: "none",
-              ...(plansReady && sideBySide ? { maxWidth: "none", overflow: "hidden" } : {}),
-            }}
+            style={
+              sideBySide
+                ? {
+                    position: "fixed",
+                    top: "50%",
+                    left: "50%",
+                    zIndex: 10002,
+                    animation: "none",
+                    ...(plansReady ? { maxWidth: "none", overflow: "hidden" } : {}),
+                  }
+                : {
+                    position: "fixed",
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    zIndex: 10002,
+                    animation: "none",
+                  }
+            }
             onClick={(e) => e.stopPropagation()}
           >
             {!plansReady ? (

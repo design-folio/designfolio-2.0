@@ -177,7 +177,7 @@ export default function FreeformToolbar({ editor, onImageUpload }) {
       // Keep the editor focused when interacting with any part of the toolbar.
       onMouseDown={(e) => e.preventDefault()}
       className={cn(
-        "relative mb-4 w-fit max-w-full transition-all duration-200 ease-out",
+        "relative z-20 mb-4 w-fit max-w-full transition-all duration-200 ease-out",
         focused
           ? "pointer-events-auto translate-y-0 opacity-100"
           : "pointer-events-none -translate-y-1 opacity-0"
@@ -335,7 +335,7 @@ export default function FreeformToolbar({ editor, onImageUpload }) {
 
       {/* Colour picker — rendered outside the scrollable row so it is never clipped. */}
       {showColor && (
-        <div className="absolute top-full left-0 z-30 mt-2 w-[248px] rounded-xl border border-black/[0.08] bg-white p-3 shadow-lg dark:border-white/[0.08] dark:bg-[#2A2520]">
+        <div className="absolute top-full left-0 z-[200] mt-2 w-[248px] rounded-xl border border-black/[0.08] bg-white p-3 shadow-lg dark:border-white/[0.08] dark:bg-[#2A2520]">
           <div className="mb-1.5 text-[11px] font-medium tracking-wide text-[#9E9893] uppercase">
             Text
           </div>

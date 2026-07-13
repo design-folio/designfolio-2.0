@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import Image from "@tiptap/extension-image";
 import Underline from "@tiptap/extension-underline";
 import Link from "@tiptap/extension-link";
 import Youtube from "@tiptap/extension-youtube";
@@ -74,6 +75,11 @@ export default function FreeformSection({ section, onChange, mode }) {
       }),
       Highlight.configure({ multicolor: true }),
       TextAlign.configure({ types: ["heading", "paragraph"] }),
+      Image.configure({
+        inline: false,
+        allowBase64: true,
+        HTMLAttributes: { class: "cursor-pointer" },
+      }),
       Youtube.configure({
         controls: true,
         nocookie: true,
@@ -113,6 +119,15 @@ export default function FreeformSection({ section, onChange, mode }) {
       }, 800);
     },
   });
+
+  //HACK: Sync initial content once if the editor is empty to avoid missing content after mount.
+  useEffect(() => {
+    if (!editor) return;
+    const content = section.content?.tiptapContent;
+    if (editor.isEmpty && content?.content?.length > 0) {
+      editor.commands.setContent(content, { emitUpdate: false });
+    }
+  }, [editor, section.content?.tiptapContent]);
 
   // Drag-and-drop image upload into the editor
   useEffect(() => {

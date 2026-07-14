@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
+import { BubbleMenu } from "@tiptap/react/menus";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import Underline from "@tiptap/extension-underline";
@@ -181,12 +182,26 @@ export default function FreeformSection({ section, onChange, mode }) {
 
   return (
     <div
-      className="project-editor-container mx-auto max-w-[880px] overflow-x-hidden px-6 py-8 md:px-10"
+      className="project-editor-container mx-auto max-w-[880px] overflow-x-hidden px-6 py-8.5 md:px-10"
       onClick={() => {
         if (editor && !editor.isFocused) editor.chain().focus().run();
       }}
     >
-      <FreeformToolbar editor={editor} onImageUpload={uploadImage} />
+      {editor && (
+        <BubbleMenu
+          editor={editor}
+          pluginKey="freeformToolbar"
+          // Show while the editor is focused (not only on a text selection) so
+          // insert actions (image/table/divider) stay reachable on an empty
+          // caret/line — this is what lets the toolbar replace the old
+          // top-pinned one everywhere, not just when text is selected.
+          shouldShow={({ editor }) => editor.isEditable && editor.isFocused}
+          updateDelay={200}
+          options={{ placement: "top", offset: 8 }}
+        >
+          <FreeformToolbar editor={editor} onImageUpload={uploadImage} />
+        </BubbleMenu>
+      )}
       <EditorContent editor={editor} />
     </div>
   );

@@ -21,9 +21,10 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// Compact, reference-styled formatting toolbar for the Freeform editor. It sits
-// at the top of the block and reveals itself while the editor is focused — so it
-// appears right next to what you're editing and shows reliably on click/focus.
+// Compact, reference-styled formatting toolbar for the Freeform editor. It is
+// rendered inside a TipTap BubbleMenu (see FreeformSection.jsx), which floats it
+// near the caret and keeps it visible while the editor is focused — including on
+// long blocks where a top-pinned toolbar would otherwise scroll out of view.
 //
 // Lean set + the essentials restored from the old TiptapMenuBar: strikethrough,
 // text/background colour, divider and table. The editor keeps every extension and
@@ -58,7 +59,6 @@ export default function FreeformToolbar({ editor, onImageUpload }) {
   const { resolvedTheme } = useTheme();
   const fileInputRef = useRef(null);
   const wrapperRef = useRef(null);
-  const [focused, setFocused] = useState(false);
   const [showColor, setShowColor] = useState(false);
   // Re-render on editor changes so active-state highlighting stays in sync.
   const [, force] = useState(0);
@@ -76,19 +76,16 @@ export default function FreeformToolbar({ editor, onImageUpload }) {
   useEffect(() => {
     if (!editor) return;
     const rerender = () => force((n) => n + 1);
-    const onFocus = () => setFocused(true);
-    const onBlur = () => {
-      setFocused(false);
-      setShowColor(false);
-    };
+    // The BubbleMenu hides via CSS visibility rather than unmounting us, so a
+    // popover left open on blur would otherwise still be "open" the next time
+    // the menu reappears — close it explicitly.
+    const onBlur = () => setShowColor(false);
     editor.on("transaction", rerender);
     editor.on("selectionUpdate", rerender);
-    editor.on("focus", onFocus);
     editor.on("blur", onBlur);
     return () => {
       editor.off("transaction", rerender);
       editor.off("selectionUpdate", rerender);
-      editor.off("focus", onFocus);
       editor.off("blur", onBlur);
     };
   }, [editor]);
@@ -176,12 +173,7 @@ export default function FreeformToolbar({ editor, onImageUpload }) {
       ref={wrapperRef}
       // Keep the editor focused when interacting with any part of the toolbar.
       onMouseDown={(e) => e.preventDefault()}
-      className={cn(
-        "relative z-20 mb-4 w-fit max-w-full transition-all duration-200 ease-out",
-        focused
-          ? "pointer-events-auto translate-y-0 opacity-100"
-          : "pointer-events-none -translate-y-1 opacity-0"
-      )}
+      className="relative z-20 w-fit max-w-full"
     >
       <div
         className={cn(

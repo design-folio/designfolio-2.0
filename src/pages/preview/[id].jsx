@@ -200,6 +200,7 @@ export default function Index({ initialUserDetails }) {
         >
           <div
             className={cn(
+              "w-full",
               (() => {
                 switch (finalUserDetails?.template) {
                   case TEMPLATE_IDS.CANVAS:
@@ -218,7 +219,7 @@ export default function Index({ initialUserDetails }) {
               })(),
               isHeaderMode &&
                 finalUserDetails?.template !== TEMPLATE_IDS.RETRO_OS &&
-                "relative z-10 w-full"
+                "relative z-10"
             )}
           >
             {finalUserDetails && renderTemplate()}

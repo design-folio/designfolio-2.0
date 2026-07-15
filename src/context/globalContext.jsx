@@ -795,6 +795,15 @@ export const GlobalProvider = ({ children }) => {
       console.error("Error updating typography:", err);
     });
   };
+  const changeProjectsColumns = (cols) => {
+    const value = cols === 1 ? 1 : 2;
+    setUserDetails((prev) => ({ ...prev, projectsColumns: value }));
+    updateCache("userDetails", (prev) => ({ ...prev, projectsColumns: value }));
+
+    _updateUser({ projectsColumns: value }).catch((err) => {
+      console.error("Error updating projects columns:", err);
+    });
+  };
 
   const openModal = (type = null) => {
     if (type === modals.aiProject) {
@@ -1021,6 +1030,7 @@ export const GlobalProvider = ({ children }) => {
         typography,
         setTypography,
         changeTypography,
+        changeProjectsColumns,
         isLoadingTemplate,
         activeSidebar,
         openSidebar,

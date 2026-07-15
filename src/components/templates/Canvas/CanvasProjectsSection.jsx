@@ -9,6 +9,7 @@ import {
   ChevronsUpDown,
   WandSparklesIcon,
   Sparkles,
+  Rows3,
 } from "lucide-react";
 import { Button } from "../../ui/button";
 import {
@@ -34,6 +35,7 @@ function ProjectCard({
   project,
   isEditing,
   isPreview,
+  single,
   onNavigate,
   onPrefetch,
   onDelete,
@@ -80,7 +82,9 @@ function ProjectCard({
           </Button>
         </div>
       )}
-      <div className="pointer-events-none relative aspect-[3/2] overflow-hidden rounded-2xl border border-black/5 bg-[#F5F5F5] dark:border-white/10 dark:bg-[#1A1A1A]">
+      <div
+        className={`pointer-events-none relative overflow-hidden rounded-2xl border border-black/5 bg-[#F5F5F5] dark:border-white/10 dark:bg-[#1A1A1A] ${single ? "aspect-[16/9]" : "aspect-[3/2]"}`}
+      >
         <img
           src={project?.thumbnail?.url}
           alt={project?.title || "project image"}
@@ -166,11 +170,13 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
     updateCache,
     setShowUpgradeModal,
     setUpgradeModalUnhideProject,
+    changeProjectsColumns,
   } = useGlobalContext();
   const router = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const { projects } = userDetails || {};
+  const columns = userDetails?.projectsColumns ?? 2;
 
   const visibleProjects = useMemo(() => {
     if (!isEditing && projects) {
@@ -246,6 +252,32 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
               onClick={() => openSidebar(sidebars.sortProjects)}
             />
           )}
+          {(projects?.length ?? 0) >= 1 && (
+            <CanvasSectionButton
+              icon={
+                columns === 1 ? (
+                  <Rows3 className="h-3.5 w-3.5" />
+                ) : (
+                  <svg
+                    className="h-3.5 w-3.5"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.25"
+                    strokeLinejoin="round"
+                  >
+                    <rect x="1.5" y="1.5" width="5" height="5" rx="1" />
+                    <rect x="9.5" y="1.5" width="5" height="5" rx="1" />
+                    <rect x="1.5" y="9.5" width="5" height="5" rx="1" />
+                    <rect x="9.5" y="9.5" width="5" height="5" rx="1" />
+                  </svg>
+                )
+              }
+              ariaLabel="Toggle project columns"
+              tooltipText={columns === 1 ? "Switch to two columns" : "Switch to single column"}
+              onClick={() => changeProjectsColumns(columns === 1 ? 2 : 1)}
+            />
+          )}
           <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
             <DropdownMenuTrigger asChild>
               <CanvasSectionButton
@@ -289,7 +321,7 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
         PROJECTS
       </h2>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div className={`grid grid-cols-1 gap-6 ${columns === 1 ? "" : "md:grid-cols-2"}`}>
         {visibleProjects?.length === 0 ? (
           <ProjectsEmptyState
             isEditing={isEditing}
@@ -304,6 +336,7 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
                 project={project}
                 isEditing={isEditing}
                 isPreview={preview && !publicView}
+                single={columns === 1}
                 onNavigate={handleNavigation}
                 onPrefetch={handlePrefetch}
                 onDelete={onDeleteProject}
@@ -312,7 +345,9 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
             ))}
             {isEditing && (
               <div className="flex flex-col gap-4">
-                <div className="flex aspect-[3/2] flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-black/15 bg-black/[0.015] transition-colors hover:bg-black/[0.03] dark:border-white/10 dark:bg-white/[0.015] dark:hover:bg-white/[0.03]">
+                <div
+                  className={`flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-black/15 bg-black/[0.015] transition-colors hover:bg-black/[0.03] dark:border-white/10 dark:bg-white/[0.015] dark:hover:bg-white/[0.03] ${columns === 1 ? "aspect-[16/9]" : "aspect-[3/2]"}`}
+                >
                   <Button
                     onClick={() => openSidebar(sidebars.project)}
                     className="text-scaled-13 flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"

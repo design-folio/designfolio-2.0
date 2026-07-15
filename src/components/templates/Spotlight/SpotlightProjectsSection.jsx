@@ -28,7 +28,6 @@ import {
   rectSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import Text from "@/components/text";
 import { cn } from "@/lib/utils";
 
 export const SpotlightProjectsSection = ({ userDetails: userDetailsProp, edit, headerActions }) => {
@@ -283,12 +282,9 @@ export const SpotlightProjectsSection = ({ userDetails: userDetailsProp, edit, h
                 {project.title}
               </h3>
               {project.description && (
-                <Text
-                  size="p-xxsmall"
-                  className="text-df-description-color line-clamp-3 leading-relaxed font-normal"
-                >
+                <p className="text-df-description-color text-scaled-14 line-clamp-3 leading-relaxed font-normal">
                   {project.description}
-                </Text>
+                </p>
               )}
             </div>
             {edit && (

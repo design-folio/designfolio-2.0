@@ -128,6 +128,9 @@ function TemplateCard({ tmpl, isSelected, onChange, previewSrc }) {
 
 const DEFAULT_VISIBLE_WALLPAPERS = 2;
 
+const TAB_TRIGGER_CLASS =
+  "data-[state=active]:border-foreground text-foreground/60 data-[state=active]:text-foreground cursor-pointer rounded-none border-b-2 border-transparent bg-transparent px-0 pb-2 font-medium transition-all data-[state=active]:bg-transparent data-[state=active]:shadow-none";
+
 // Section display names mapping
 const SECTION_NAMES = {
   about: "About me",
@@ -485,14 +488,14 @@ const ThemePanel = ({
           <TabsList className="h-auto w-full min-w-fit justify-start gap-6 bg-transparent p-0">
             <TabsTrigger
               value="layouts"
-              className="data-[state=active]:border-foreground text-foreground/60 data-[state=active]:text-foreground rounded-none border-b-2 border-transparent bg-transparent px-0 pb-2 font-medium transition-all data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+              className={TAB_TRIGGER_CLASS}
               data-testid={isMobile ? "tab-layouts-mobile" : "tab-layouts"}
             >
               Layouts
             </TabsTrigger>
             <TabsTrigger
               value="background"
-              className="data-[state=active]:border-foreground text-foreground/60 data-[state=active]:text-foreground rounded-none border-b-2 border-transparent bg-transparent px-0 pb-2 font-medium transition-all data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+              className={TAB_TRIGGER_CLASS}
               data-testid={isMobile ? "tab-background-mobile" : "tab-background"}
             >
               Background
@@ -500,7 +503,7 @@ const ThemePanel = ({
             {!isMacOSTemplate && (
               <TabsTrigger
                 value="blocks"
-                className="data-[state=active]:border-foreground text-foreground/60 data-[state=active]:text-foreground rounded-none border-b-2 border-transparent bg-transparent px-0 pb-2 font-medium transition-all data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+                className={TAB_TRIGGER_CLASS}
                 data-testid={isMobile ? "tab-blocks-mobile" : "tab-blocks"}
               >
                 Blocks
@@ -508,7 +511,7 @@ const ThemePanel = ({
             )}
             <TabsTrigger
               value="cursors"
-              className="data-[state=active]:border-foreground text-foreground/60 data-[state=active]:text-foreground rounded-none border-b-2 border-transparent bg-transparent px-0 pb-2 font-medium transition-all data-[state=active]:bg-transparent data-[state=active]:shadow-none"
+              className={TAB_TRIGGER_CLASS}
               data-testid={isMobile ? "tab-cursors-mobile" : "tab-cursors"}
             >
               Cursors
@@ -688,8 +691,9 @@ const ThemePanel = ({
             </div>
           )}
 
-          {/* Display mode — header only vs full page (wallpaper-capable templates, not MacOS) */}
-          {!isMacOSTemplate && (
+          {/* Display mode — header only vs full page (wallpaper-capable templates, not MacOS).
+              Meaningless without a background, so only show once one is set. */}
+          {!isMacOSTemplate && Boolean(wallpaperColor || wallpaper) && (
             <div className="mb-4 space-y-2">
               <p className="text-muted-foreground px-1 text-[12px] font-medium">Display mode</p>
               <div className="grid grid-cols-2 gap-2">
@@ -755,7 +759,7 @@ const ThemePanel = ({
             <>
               <AnimatePresence mode="wait">
                 {/* Wallpaper effects (blur/grain/motion) apply in full-page mode for both image and solid color backgrounds */}
-                {(wallpaperColor || (wallpaper && wallpaper !== 0)) &&
+                {Boolean(wallpaperColor || wallpaper) &&
                   backgroundMode === BACKGROUND_MODE.FULL_PAGE && (
                     <motion.div
                       key="bg-effects"
@@ -964,7 +968,7 @@ const ThemePanel = ({
                       />
                     ) : (
                       <div className="from-background to-muted flex h-full w-full items-center justify-center bg-linear-to-br">
-                        <span className="text-foreground/60 text-sm font-medium">Default</span>
+                        <span className="text-foreground/60 text-sm font-medium">None</span>
                       </div>
                     )}
                   </div>
@@ -1114,49 +1118,12 @@ const ThemePanel = ({
 
               {/* Colors — a solid background colour, an alternative to an image wallpaper.
                   Picking one clears the image; blur/motion don't apply to a flat colour, so
-                  only grain is offered. Hidden for MacOS (full-screen desktop wallpaper only). */}
+                  only grain is offered. Hidden for MacOS (full-screen desktop wallpaper only).
+                  No "None" swatch here — Backgrounds already has one and clears the colour too. */}
               {!isMacOSTemplate && (
                 <div className="mt-6 space-y-3">
                   <p className="text-muted-foreground px-1 text-[12px] font-medium">Colors</p>
                   <div className="grid grid-cols-5 gap-2">
-                    {/* None — clears the colour (and any image) */}
-                    {(() => {
-                      return (
-                        <div className="flex flex-col items-center gap-1.5">
-                          <button
-                            type="button"
-                            onClick={() => changeWallpaperColor(null)}
-                            title="None"
-                            className="border-border relative h-10 w-10 overflow-hidden rounded-full border-2 transition-all hover:scale-105 focus:outline-none"
-                            data-testid={
-                              isMobile ? "button-bg-color-none-mobile" : "button-bg-color-none"
-                            }
-                          >
-                            <div className="bg-background/50 absolute inset-0">
-                              <svg
-                                className="text-df-orange-color absolute inset-0 h-full w-full"
-                                viewBox="0 0 40 40"
-                                preserveAspectRatio="none"
-                              >
-                                <line
-                                  x1="4"
-                                  y1="36"
-                                  x2="36"
-                                  y2="4"
-                                  stroke="currentColor"
-                                  strokeWidth="2.5"
-                                  strokeLinecap="round"
-                                />
-                              </svg>
-                            </div>
-                          </button>
-                          <span className="text-muted-foreground text-[10px] leading-tight font-medium">
-                            None
-                          </span>
-                        </div>
-                      );
-                    })()}
-
                     {BACKGROUND_COLORS.map((p) => {
                       const isSelected = wallpaperColor === p.color;
                       return (

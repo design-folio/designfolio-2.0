@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useGlobalContext } from "@/context/globalContext";
 import { _updateProject } from "@/network/post-request";
 import { cn } from "@/lib/utils";
@@ -32,6 +33,7 @@ import {
   EyeOff,
   Pencil,
   Plus,
+  Rows3,
   Sparkles,
   Trash2,
   UserCircle,
@@ -96,6 +98,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
     setUpgradeModalUnhideProject,
     containerMaxWidth,
     hasWallpaper,
+    changeProjectsColumns,
   } = useGlobalContext();
   const avatarSrc = useMemo(() => getUserAvatarImage(userDetails), [userDetails]);
   const atSignRef = useRef(null);
@@ -166,6 +169,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
     () => (preview ? projects.filter((project) => !project.hidden) : projects),
     [preview, projects]
   );
+  const projectsColumns = userDetails?.projectsColumns ?? 2;
   const avatarFallbackText = useMemo(() => getInitials(displayName, "U"), [displayName]);
 
   useEffect(() => {
@@ -611,6 +615,50 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                     tooltipText="Rearrange"
                   />
                 )}
+                {visibleProjects.length >= 1 && (
+                  <TooltipProvider delayDuration={300}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-8 w-8 rounded-full border-black/10 bg-white p-0 opacity-100 shadow-sm transition-opacity hover:bg-gray-50 md:opacity-0 md:group-hover/section:opacity-100 dark:border-white/10 dark:bg-[#2A2520] dark:hover:bg-[#35302A]"
+                          onClick={() => changeProjectsColumns(projectsColumns === 1 ? 2 : 1)}
+                          aria-label="Toggle project columns"
+                        >
+                          {projectsColumns === 1 ? (
+                            <Rows3 className="h-3.5 w-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                          ) : (
+                            <svg
+                              className="h-3.5 w-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]"
+                              viewBox="0 0 16 16"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="1.25"
+                              strokeLinejoin="round"
+                            >
+                              <rect x="1.5" y="1.5" width="5" height="5" rx="1" />
+                              <rect x="9.5" y="1.5" width="5" height="5" rx="1" />
+                              <rect x="1.5" y="9.5" width="5" height="5" rx="1" />
+                              <rect x="9.5" y="9.5" width="5" height="5" rx="1" />
+                            </svg>
+                          )}
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent
+                        side="top"
+                        sideOffset={8}
+                        className="bg-tooltip-bg-color text-tooltip-text-color rounded-xl border-0 px-4 py-2 shadow-xl"
+                      >
+                        <span className="text-scaled-14 font-medium">
+                          {projectsColumns === 1
+                            ? "Switch to two columns"
+                            : "Switch to single column"}
+                        </span>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
                 <SectionVisibilityButton
                   sectionId="projects"
                   showOnHoverWhenVisible
@@ -667,7 +715,9 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 gap-x-5 gap-y-8 sm:grid-cols-2">
+                <div
+                  className={`grid grid-cols-1 gap-x-5 gap-y-8 ${projectsColumns === 1 ? "" : "sm:grid-cols-2"}`}
+                >
                   {visibleProjects.map((project) => (
                     <div
                       key={project.id}
@@ -711,7 +761,9 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                           </Button>
                         </div>
                       )}
-                      <div className="relative mb-4 aspect-[3/2] overflow-hidden rounded-xl border border-black/5 bg-white drop-shadow-sm transition-colors group-hover:border-black/10 dark:border-white/10 dark:bg-[#2A2520] dark:group-hover:border-white/20">
+                      <div
+                        className={`relative mb-4 overflow-hidden rounded-xl border border-black/5 bg-white drop-shadow-sm transition-colors group-hover:border-black/10 dark:border-white/10 dark:bg-[#2A2520] dark:group-hover:border-white/20 ${projectsColumns === 1 ? "aspect-[16/9]" : "aspect-[3/2]"}`}
+                      >
                         <img
                           src={project.image}
                           alt={project.title}
@@ -736,7 +788,9 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                   ))}
                   {isEditing && (
                     <div className="flex flex-col gap-4">
-                      <div className="flex aspect-[3/2] flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-black/15 bg-black/[0.015] transition-colors hover:bg-black/[0.03] dark:border-white/10 dark:bg-white/[0.015] dark:hover:bg-white/[0.03]">
+                      <div
+                        className={`flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-black/15 bg-black/[0.015] transition-colors hover:bg-black/[0.03] dark:border-white/10 dark:bg-white/[0.015] dark:hover:bg-white/[0.03] ${projectsColumns === 1 ? "aspect-[16/9]" : "aspect-[3/2]"}`}
+                      >
                         <Button
                           onClick={() => openSidebar?.(sidebars.project)}
                           className="text-scaled-13 flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"

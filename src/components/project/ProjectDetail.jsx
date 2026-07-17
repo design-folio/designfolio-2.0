@@ -479,7 +479,7 @@ export default function ProjectDetail({ project, mode, onBack, onWorkClick, resu
         {/* Legacy EditorJS content (v1) — read-only, never editable */}
         {showLegacyEditorJS && (
           <div className="mx-auto max-w-[880px] px-6 py-10 md:px-10">
-            <BlockRenderer content={mergedProject.content} />
+            <BlockRenderer editorJsData={mergedProject.content} />
           </div>
         )}
 

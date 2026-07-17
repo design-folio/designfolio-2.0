@@ -331,7 +331,7 @@ export default function Index() {
             className={cn(
               isHeaderMode && t !== TEMPLATE_IDS.RETRO_OS && "relative z-10",
               {
-                [TEMPLATE_IDS.CHATFOLIO]: "py-[94px]",
+                [TEMPLATE_IDS.CHATFOLIO]: "pt-10",
                 [TEMPLATE_IDS.SPOTLIGHT]: "pt-24",
                 [TEMPLATE_IDS.PROFESSIONAL]: "pt-24",
                 [TEMPLATE_IDS.RETRO_OS]: "",

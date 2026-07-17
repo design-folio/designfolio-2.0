@@ -115,7 +115,7 @@ export default function ChatHeader({ chatRevealStep, s, canEdit }) {
         <div className="absolute inset-0 flex items-center">
           <div className="w-full border-t border-dashed border-black/10 dark:border-white/10"></div>
         </div>
-        <span className="text-scaled-12 relative bg-[#EFECE6] px-4 font-medium text-[#7A736C] transition-colors duration-700 dark:bg-[#1A1A1A] dark:text-[#B5AFA5]">
+        <span className="text-scaled-12 relative px-4 font-medium text-[#7A736C] transition-colors duration-700 dark:text-[#B5AFA5]">
           {format(currentTime, "d EEE, h:mm:ss a")}
         </span>
       </motion.div>

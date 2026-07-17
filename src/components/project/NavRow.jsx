@@ -1,6 +1,7 @@
 import { ChevronLeft, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { PublishDropdown } from "@/components/loggedInHeader/publish-dropdown";
 import LockPopover from "./LockPopover";
 import ViewToggle from "./ViewToggle";
 
@@ -114,6 +115,7 @@ export default function NavRow({
             <ViewToggle heroView={heroView} setHeroView={setHeroView} dark={dark} />
           </div>
         )}
+        {isEditor && <PublishDropdown />}
       </div>
     </div>
   );

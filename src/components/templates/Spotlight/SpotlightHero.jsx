@@ -5,9 +5,10 @@ import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import ProfileAvatar from "@/components/templates/ProfileAvatar";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { cn } from "@/lib/utils";
 
 export const SpotlightHero = ({ userDetails, edit }) => {
-  const { openModal } = useGlobalContext();
+  const { openModal, hasWallpaper } = useGlobalContext();
 
   const { avatar, introduction, bio, skills } = userDetails || {};
 
@@ -83,7 +84,10 @@ export const SpotlightHero = ({ userDetails, edit }) => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.7 }}
-          className="relative w-full overflow-hidden py-4"
+          className={cn(
+            "relative w-full overflow-hidden py-4",
+            hasWallpaper && "w-[calc(100%+2rem)]"
+          )}
         >
           <motion.div
             className="flex gap-4 whitespace-nowrap"

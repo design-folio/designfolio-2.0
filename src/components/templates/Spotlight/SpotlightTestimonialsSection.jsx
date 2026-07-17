@@ -91,7 +91,7 @@ export const SpotlightTestimonialsSection = ({ userDetails, edit, headerActions 
   return (
     <section className="py-12">
       <div className="mb-12 flex items-center justify-between gap-4">
-        <h2 className="text-scaled-30 flex-1 font-bold">What People Say</h2>
+        <h2 className="text-scaled-24 flex-1 font-bold">What People Say</h2>
         {headerActions && <div className="shrink-0">{headerActions}</div>}
       </div>
 

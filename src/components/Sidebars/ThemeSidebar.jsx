@@ -529,51 +529,14 @@ const ThemePanel = ({
           {!isMacOSTemplate && (
             <div className="border-border mb-4 flex items-center justify-between rounded-[16px] border bg-black/[0.02] p-4 dark:bg-white/[0.02]">
               <span className="text-foreground text-[13px] font-medium">Appearance</span>
-              {template === TEMPLATE_IDS.CANVAS ? (
-                <div className="flex items-center gap-3">
-                  <SwitchCanvas
-                    value={theme === "dark" || theme === 1}
-                    onToggle={() => changeTheme(theme === "dark" || theme === 1 ? 0 : 1)}
-                    iconOn={<Moon className="size-4" />}
-                    iconOff={<Sun className="size-4" />}
-                  />
-                </div>
-              ) : (
-                <div className="inline-flex items-center gap-2">
-                  <span
-                    className={twMerge(
-                      "cursor-pointer transition-colors",
-                      theme === "dark" || theme === 1 ? "text-muted-foreground" : "text-foreground"
-                    )}
-                    onClick={() => changeTheme(0)}
-                  >
-                    <Sun className="size-4" />
-                  </span>
-                  <div ref={appearanceSwitchRefLayouts} className="inline-flex">
-                    <Switch
-                      checked={theme === "dark" || theme === 1}
-                      onCheckedChange={(checked) =>
-                        applyThemeChange(checked, appearanceSwitchRefLayouts.current)
-                      }
-                      className="data-[state=checked]:!bg-df-orange-color"
-                      data-testid={
-                        isMobile ? "switch-theme-mode-layouts-mobile" : "switch-theme-mode-layouts"
-                      }
-                    />
-                  </div>
-                  <span
-                    className={twMerge(
-                      "cursor-pointer transition-colors",
-                      !(theme === "dark" || theme === 1)
-                        ? "text-muted-foreground"
-                        : "text-foreground"
-                    )}
-                    onClick={() => changeTheme(1)}
-                  >
-                    <Moon className="size-4" />
-                  </span>
-                </div>
-              )}
+              <div className="flex items-center gap-3">
+                <SwitchCanvas
+                  value={theme === "dark" || theme === 1}
+                  onToggle={() => changeTheme(theme === "dark" || theme === 1 ? 0 : 1)}
+                  iconOn={<Moon className="size-4" />}
+                  iconOff={<Sun className="size-4" />}
+                />
+              </div>
             </div>
           )}
 

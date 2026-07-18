@@ -8,6 +8,7 @@ import { _analyzeCaseStudy, _analyzeCaseStudyStatus, _updateProject } from "@/ne
 import { useRouter } from "next/router";
 import { useTheme } from "next-themes";
 import { useGlobalContext } from "@/context/globalContext";
+import { useProGate } from "@/hooks/useProGate";
 import queryClient from "@/network/queryClient";
 import Modal from "@/components/modal";
 import AnalyzeCaseStudy from "@/components/analyzeCaseStudy";
@@ -84,6 +85,7 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
   const [avatarImageSrc, setAvatarImageSrc] = useState(avatarSrc);
   const firstName = ownerUser?.firstName || ownerUser?.name || "Me";
   const [isPassword, setIsPassword] = useState(project?.protected);
+  const requirePro = useProGate();
   const [passwordInput, setPasswordInput] = useState(project?.password || "");
   const [showModal, setShowModal] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -245,6 +247,8 @@ export default function ChatProjectView({ project, ownerUser, onBack, edit = fal
 
   const handlePasswordToggle = async () => {
     if (!projectId) return;
+    // Enabling protection is Pro-only; disabling stays free.
+    if (!isPassword && requirePro("password-protect")) return;
     await _updateProject(projectId, { protected: !isPassword }).then((res) => {
       updateProjectCache("protected", res?.data?.project?.protected);
       setIsPassword((prev) => !prev);

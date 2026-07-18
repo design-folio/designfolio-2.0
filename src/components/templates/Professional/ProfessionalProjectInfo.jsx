@@ -19,6 +19,7 @@ import {
 import Modal from "@/components/modal";
 import AnalyzeCaseStudy from "@/components/analyzeCaseStudy";
 import { useGlobalContext } from "@/context/globalContext";
+import { useProGate } from "@/hooks/useProGate";
 import { toast } from "react-toastify";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
@@ -115,6 +116,7 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
   const [titleIsPlaceholder, setTitleIsPlaceholder] = useState(false);
   const [descIsPlaceholder, setDescIsPlaceholder] = useState(false);
   const [isPassword, setIsPassword] = useState(false);
+  const requirePro = useProGate();
   const [passwordInput, setPasswordInput] = useState("");
   const [isLockOpen, setIsLockOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -274,6 +276,8 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
   };
 
   const handlePasswordToggle = async () => {
+    // Enabling protection is Pro-only; disabling stays free.
+    if (!isPassword && requirePro("password-protect")) return;
     await _updateProject(projectId, { protected: !isPassword }).then((res) => {
       updateProjectCache("protected", res?.data?.project?.protected);
       setIsPassword((prev) => !prev);

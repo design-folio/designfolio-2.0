@@ -10,6 +10,7 @@ import EyeIcon from "../../../public/assets/svgs/eye.svg";
 import EyeCloseIcon from "../../../public/assets/svgs/eye-close.svg";
 import { Switch } from "../ui/switch";
 import { useGlobalContext } from "@/context/globalContext";
+import { useProGate } from "@/hooks/useProGate";
 import { _updateUser } from "@/network/post-request";
 import { usePostHogEvent } from "@/hooks/usePostHogEvent";
 import { POSTHOG_EVENT_NAMES } from "@/lib/posthogEventNames";
@@ -25,6 +26,7 @@ const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png", "image/gif", 
 export default function AddProject() {
   const [imagePreview, setImagePreview] = useState(null);
   const [isPassword, setPassword] = useState(false);
+  const requirePro = useProGate();
   const [showEye, setShowEye] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -296,7 +298,11 @@ export default function AddProject() {
                   </div>
                   <Switch
                     checked={isPassword}
-                    onCheckedChange={(checked) => setPassword(checked)}
+                    onCheckedChange={(checked) => {
+                      // Enabling protection is Pro-only; disabling stays free.
+                      if (checked && requirePro("password-protect")) return;
+                      setPassword(checked);
+                    }}
                     className="data-[state=unchecked]:bg-input"
                   />
                 </div>

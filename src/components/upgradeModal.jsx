@@ -273,19 +273,25 @@ export default function UpgradeModal() {
             subtitle:
               "You're using a Pro template. Upgrade to publish your portfolio and unlock all Pro features.",
           }
-        : upgradeModalSource === "write-ai"
+        : upgradeModalSource === "password-protect"
           ? {
-              title: "Unlock AI Case Study Writing",
+              title: "Unlock password protection",
               subtitle:
-                "You've used all your free credits. Upgrade to Pro for unlimited AI-written case studies.",
+                "Protect your projects with a password. Upgrade to Pro to unlock this and all Pro features.",
             }
-          : upgradeModalSource === "analyze"
+          : upgradeModalSource === "write-ai"
             ? {
-                title: "Unlock AI Case Study Analysis",
+                title: "Unlock AI Case Study Writing",
                 subtitle:
-                  "You've used all your free analysis credits. Upgrade to Pro for unlimited AI feedback on your work.",
+                  "You've used all your free credits. Upgrade to Pro for unlimited AI-written case studies.",
               }
-            : PLAN_HEADING;
+            : upgradeModalSource === "analyze"
+              ? {
+                  title: "Unlock AI Case Study Analysis",
+                  subtitle:
+                    "You've used all your free analysis credits. Upgrade to Pro for unlimited AI feedback on your work.",
+                }
+              : PLAN_HEADING;
 
   const isPremiumPlan = selectedPlan?.plan === "yrly" || selectedPlan?.plan === "lifetime";
 

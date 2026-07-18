@@ -19,7 +19,7 @@ import queryClient from "@/network/queryClient";
 import { removeCursor } from "@/lib/cursor";
 import MemoDFLogoV2 from "@/components/icons/DFLogoV2";
 import Link from "next/link";
-import { TEMPLATE_IDS, TEMPLATES_BY_ID } from "@/lib/templates";
+import { TEMPLATE_IDS } from "@/lib/templates";
 import { cn } from "@/lib/utils";
 import { UpgradePill } from "./UpgradePill";
 
@@ -80,7 +80,7 @@ export default function Navbar() {
   };
 
   const handlePublish = () => {
-    if (!userDetails?.pro && TEMPLATES_BY_ID[template]?.isPro) {
+    if (!userDetails?.pro) {
       setUpgradeModalSource("pro-template");
       setShowUpgradeModal(true);
       return;
@@ -230,9 +230,17 @@ export default function Navbar() {
                   <Button
                     disabled={isPublishing}
                     onClick={handlePublish}
-                    className="bg-primary hover:bg-primary/90 text-primary-foreground h-8 rounded-lg px-4 text-xs font-medium"
+                    className={
+                      !userDetails?.pro
+                        ? "h-8 rounded-lg bg-[#FF5A36] px-4 text-xs font-medium text-white hover:brightness-[1.06]"
+                        : "bg-primary hover:bg-primary/90 text-primary-foreground h-8 rounded-lg px-4 text-xs font-medium"
+                    }
                   >
-                    {isPublishing ? "Updating…" : "Publish"}
+                    {!userDetails?.pro
+                      ? "Upgrade to publish"
+                      : isPublishing
+                        ? "Updating…"
+                        : "Publish"}
                   </Button>
                 </div>
               </div>

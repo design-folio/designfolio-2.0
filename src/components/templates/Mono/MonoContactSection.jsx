@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import { Pencil, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useGlobalContext } from "@/context/globalContext";
+import { cn } from "@/lib/utils";
 import { sidebars } from "@/lib/constant";
 
 const itemVariants = {
@@ -76,7 +77,7 @@ function ExternalLink({ href, children }) {
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
-export default function MonoContactSection({ isEditing }) {
+export default function MonoContactSection({ isEditing, hasWallpaper = true }) {
   const { userDetails, openSidebar } = useGlobalContext();
 
   const email = userDetails?.contact_email || "";
@@ -128,7 +129,10 @@ export default function MonoContactSection({ isEditing }) {
   return (
     <motion.div
       variants={itemVariants}
-      className="group/section relative bg-white px-6 py-10 md:px-10 dark:bg-[#1A1A1A]"
+      className={cn(
+        "group/section relative px-6 py-10 md:px-10",
+        hasWallpaper && "bg-white dark:bg-[#1A1A1A]"
+      )}
     >
       {isEditing && (
         <div className="absolute top-4 right-4 z-10 opacity-100 transition-opacity md:opacity-0 md:group-hover/section:opacity-100">
@@ -198,7 +202,11 @@ export default function MonoContactSection({ isEditing }) {
       {showAddButton && (
         <button
           onClick={openFooter}
-          className="text-scaled-14 mt-6 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-black/10 bg-white py-3.5 text-[#B5AFA5] transition-colors hover:border-[#1A1A1A]/20 hover:text-[#7A736C] dark:border-white/10 dark:bg-[#1A1A1A] dark:text-[#7A736C] dark:hover:border-white/20 dark:hover:text-[#B5AFA5]"
+          className={cn(
+            "text-scaled-14 mt-6 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed py-3.5 text-[#B5AFA5] transition-colors hover:border-[#1A1A1A]/20 hover:text-[#7A736C] dark:border-white/10 dark:text-[#7A736C] dark:hover:border-white/20 dark:hover:text-[#B5AFA5]",
+            !hasWallpaper && "border-[#E5D7C4]",
+            hasWallpaper && "border-black/10 bg-white dark:bg-[#1A1A1A]"
+          )}
         >
           <Plus className="h-3.5 w-3.5" />
           Add

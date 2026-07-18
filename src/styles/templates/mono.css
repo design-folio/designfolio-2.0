@@ -28,7 +28,7 @@
 
 /* Mono dark: neutral gray */
 [data-theme="dark"][data-template="mono"] {
-  --background: #1a1817;
+  --background: #1a1a1a;
   --card: #2a2520;
   --secondary: #302b25;
   --secondary-hover: #3a342d;
@@ -80,6 +80,16 @@
 [data-template="mono"] .custom-dashed-t {
   width: 100%;
   border-top: 1px solid rgba(200, 194, 186, 0.55);
+}
+[data-template="mono"] .mono-no-wallpaper .custom-dashed-t {
+  border-top: 0;
+  height: 1px;
+  background-image: linear-gradient(to right, rgba(200, 194, 186, 0.55) 50%, transparent 50%);
+  background-size: 10px 1px;
+}
+
+[data-theme="dark"][data-template="mono"] .mono-no-wallpaper .custom-dashed-t {
+  background-image: linear-gradient(to right, rgba(58, 53, 46, 0.7) 50%, transparent 50%);
 }
 
 [data-template="mono"] .dino-color {

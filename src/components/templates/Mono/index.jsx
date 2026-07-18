@@ -425,7 +425,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         <motion.div variants={itemVariants} className="custom-dashed-t"></motion.div>
 
         {/* Experience Section — using MonoExperienceSection */}
-        <MonoExperienceSection isEditing={isEditing} />
+        <MonoExperienceSection isEditing={isEditing} hasWallpaper={hasWallpaper} />
       </React.Fragment>
     ),
     projects:
@@ -437,7 +437,10 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           <motion.div
             id="section-projects"
             variants={itemVariants}
-            className="group/section relative bg-white px-6 py-10 pb-16 md:px-10 dark:bg-[#1A1A1A]"
+            className={cn(
+              "group/section relative px-6 py-10 pb-16 md:px-10",
+              hasWallpaper && "bg-white dark:bg-[#1A1A1A]"
+            )}
           >
             {isEditing && (
               <div className="absolute top-4 right-4 z-10 flex gap-2 transition-opacity">
@@ -824,7 +827,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         <motion.div variants={itemVariants} className="custom-dashed-t"></motion.div>
 
         {/* Recommendations Section — using MonoReviewsSection */}
-        <MonoReviewsSection isEditing={isEditing} />
+        <MonoReviewsSection isEditing={isEditing} hasWallpaper={hasWallpaper} />
       </React.Fragment>
     ),
     about: (
@@ -834,7 +837,10 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         {/* My Story Section */}
         <motion.div
           variants={itemVariants}
-          className="group/section relative bg-white px-6 py-10 pb-16 md:px-10 dark:bg-[#1A1A1A]"
+          className={cn(
+            "group/section relative px-6 py-10 pb-16 md:px-10",
+            hasWallpaper && "bg-white dark:bg-[#1A1A1A]"
+          )}
         >
           {isEditing && (
             <div className="absolute top-4 right-4 z-10 flex gap-2 transition-opacity">
@@ -982,7 +988,10 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           {/* Stack Section */}
           <motion.div
             variants={itemVariants}
-            className="group/section relative bg-white px-6 py-10 md:px-10 dark:bg-[#1A1A1A]"
+            className={cn(
+              "group/section relative px-6 py-10 md:px-10",
+              hasWallpaper && "bg-white dark:bg-[#1A1A1A]"
+            )}
           >
             {isEditing && (
               <div className="absolute top-4 right-4 z-10 flex gap-2 transition-opacity">
@@ -1074,14 +1083,20 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
 
   return (
     <div
-      className="mx-auto flex w-full flex-1 flex-col gap-3 pt-0 pb-0"
+      className={cn(
+        "mx-auto flex w-full flex-1 flex-col gap-3 pt-0 pb-0",
+        !hasWallpaper && "px-4 md:px-0"
+      )}
       style={{ maxWidth: containerMaxWidth ?? 848 }}
     >
       <motion.div
         className={cn(
           "font-inter relative flex min-h-screen w-full flex-col transition-colors duration-700",
-          !hasWallpaper && "bg-white dark:bg-[#1A1A1A]",
-          "rounded-t-2xl dark:border dark:border-[rgba(58,53,46,0.7)]"
+          // No wallpaper → original warm paper base + dashed side edges.
+          // (mono-no-wallpaper drives the dashed separator CSS override.)
+          !hasWallpaper && "custom-dashed-x mono-no-wallpaper bg-[#F0EDE7] dark:bg-[#1A1A1A]",
+          // Wallpaper → frosted card treatment (rounded top + dark hairline border).
+          hasWallpaper && "rounded-t-2xl dark:border dark:border-[rgba(58,53,46,0.7)]"
         )}
         variants={containerVariants}
         initial="hidden"
@@ -1091,10 +1106,11 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         {/* Header Section */}
         <motion.div
           variants={itemVariants}
-          // Always on, matching the reference exactly (not gated on hasWallpaper) — 83% white
-          // + blur is visually identical to solid white when there's nothing behind to blur,
-          // so conditioning it on wallpaper presence was a distinction without a difference.
-          className="group/section relative rounded-t-2xl bg-white/83 px-6 pt-8 pb-8 backdrop-blur-md md:px-10 dark:bg-[#1A1A1A]/75"
+          className={cn(
+            "group/section relative px-6 pb-8 md:px-10",
+            !hasWallpaper && "pt-12 md:pt-16",
+            hasWallpaper && "rounded-t-2xl bg-white/83 pt-8 backdrop-blur-md dark:bg-[#1A1A1A]/75"
+          )}
         >
           {isEditing && (
             <div className="absolute top-4 right-4 z-10 flex gap-1.5 opacity-100 transition-opacity md:opacity-0 md:group-hover/section:opacity-100">
@@ -1109,18 +1125,37 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               </Button>
             </div>
           )}
-          <div className="absolute -top-[42px] left-10 z-20">
-            <ProfileAvatar
-              src={avatarSrc}
-              alt={displayName || "Profile image"}
-              size={120}
-              innerClassName="border-[3px] border-white dark:border-[#1A1A1A]"
-              imgClassName="bg-[#E5D7C4] dark:bg-[#3A352E]"
-              fallback={avatarFallbackText}
-              fallbackClassName="bg-[#E5D7C4] text-[#1A1A1A] dark:bg-[#3A352E] dark:text-[#F0EDE7]"
-            />
-          </div>
-          <div className="mb-6 flex items-start justify-end gap-4">
+          {/* Wallpaper → 120px avatar floats over the frosted card's top edge. */}
+          {hasWallpaper && (
+            <div className="absolute -top-[42px] left-10 z-20">
+              <ProfileAvatar
+                src={avatarSrc}
+                alt={displayName || "Profile image"}
+                size={120}
+                innerClassName="border-[3px] border-white dark:border-[#1A1A1A]"
+                imgClassName="bg-[#E5D7C4] dark:bg-[#3A352E]"
+                fallback={avatarFallbackText}
+                fallbackClassName="bg-[#E5D7C4] text-[#1A1A1A] dark:bg-[#3A352E] dark:text-[#F0EDE7]"
+              />
+            </div>
+          )}
+          <div
+            className={cn(
+              "mb-6 flex items-start gap-4",
+              hasWallpaper ? "justify-end" : "justify-between"
+            )}
+          >
+            {/* No wallpaper → original inline 96px avatar at the top-left (matches old layout). */}
+            {!hasWallpaper && (
+              <ProfileAvatar
+                src={avatarSrc}
+                alt={displayName || "Profile image"}
+                size={96}
+                imgClassName="bg-[#E5D7C4] dark:bg-[#3A352E]"
+                fallback={avatarFallbackText}
+                fallbackClassName="bg-[#E5D7C4] text-[#1A1A1A] dark:bg-[#3A352E] dark:text-[#F0EDE7]"
+              />
+            )}
             <div className="mt-1 flex items-center gap-2">
               <AnimatedThemeToggler persist={isEditing && !preview} />
             </div>
@@ -1201,7 +1236,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           </div>
         </motion.div>
 
-        <div className="flex flex-1 flex-col bg-white dark:bg-[#1A1A1A]">
+        <div className={cn("flex flex-1 flex-col", hasWallpaper && "bg-white dark:bg-[#1A1A1A]")}>
           <MonoEmailSocialLinksSection
             email={email}
             socials={socials}
@@ -1241,14 +1276,18 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           <motion.div variants={itemVariants} className="custom-dashed-t"></motion.div>
 
           {/* Contact Section — using MonoContactSection */}
-          <MonoContactSection isEditing={isEditing} />
+          <MonoContactSection isEditing={isEditing} hasWallpaper={hasWallpaper} />
 
           <motion.div variants={itemVariants} className="custom-dashed-t"></motion.div>
 
           {/* Dino Game Section */}
           <motion.div
             variants={itemVariants}
-            className="relative flex flex-col items-center justify-center overflow-hidden border-b border-black/10 bg-white dark:border-[#3A352E] dark:bg-[#1A1A1A]"
+            className={cn(
+              "relative flex flex-col items-center justify-center overflow-hidden border-b",
+              !hasWallpaper && "border-[#E5D7C4]/50 dark:border-[#3A352E]",
+              hasWallpaper && "border-black/10 bg-white dark:border-[#3A352E] dark:bg-[#1A1A1A]"
+            )}
           >
             <div className="font-dm-mono text-scaled-10 pointer-events-none absolute top-6 right-8 left-8 z-10 flex justify-between tracking-widest text-[#1A1A1A] uppercase dark:text-[#C4B5A0]">
               <span>{isGameOver ? "Game Over" : isPlaying ? "Playing" : "Tap to play"}</span>

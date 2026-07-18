@@ -29,7 +29,7 @@ function getInitials(name, fallback = "U") {
   return `${parts[0][0] || ""}${parts[1][0] || ""}`.toUpperCase() || fallback;
 }
 
-function ReviewCard({ rec, isEditing, onEdit, onDelete }) {
+function ReviewCard({ rec, isEditing, hasWallpaper = true, onEdit, onDelete }) {
   const [expanded, setExpanded] = useState(false);
   const [needsExpand, setNeedsExpand] = useState(false);
   const contentRef = useRef(null);
@@ -75,7 +75,10 @@ function ReviewCard({ rec, isEditing, onEdit, onDelete }) {
               </AlertDialogTrigger>
               <AlertDialogContent
                 onClick={(e) => e.stopPropagation()}
-                className="w-[90vw] max-w-md gap-6 rounded-2xl border-black/10 bg-white p-6 dark:border-white/10 dark:bg-[#1A1A1A]"
+                className={cn(
+                  "w-[90vw] max-w-md gap-6 rounded-2xl border-black/10 p-6 dark:border-white/10 dark:bg-[#1A1A1A]",
+                  hasWallpaper ? "bg-white" : "bg-[#F0EDE7]"
+                )}
               >
                 <AlertDialogHeader>
                   <AlertDialogTitle className="text-scaled-20 font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
@@ -172,7 +175,7 @@ function ReviewCard({ rec, isEditing, onEdit, onDelete }) {
   );
 }
 
-export default function MonoReviewsSection({ isEditing }) {
+export default function MonoReviewsSection({ isEditing, hasWallpaper = true }) {
   const { userDetails, openSidebar, openNewReview, setSelectedReview } = useGlobalContext();
 
   const mappedRecommendations = useMemo(
@@ -213,7 +216,12 @@ export default function MonoReviewsSection({ isEditing }) {
   if (!isEditing && recommendations.length === 0) return null;
 
   return (
-    <div className="group/section relative bg-white px-6 py-10 md:px-10 dark:bg-[#1A1A1A]">
+    <div
+      className={cn(
+        "group/section relative px-6 py-10 md:px-10",
+        hasWallpaper && "bg-white dark:bg-[#1A1A1A]"
+      )}
+    >
       {isEditing && (
         <div className="absolute top-4 right-4 z-10 flex gap-2 transition-opacity">
           {recommendations.length >= 2 && (
@@ -244,7 +252,13 @@ export default function MonoReviewsSection({ isEditing }) {
       </h2>
 
       {recommendations.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-black/10 bg-white px-4 py-16 text-center backdrop-blur-sm dark:border-white/10 dark:bg-[#1A1A1A]">
+        <div
+          className={cn(
+            "flex flex-col items-center justify-center rounded-2xl border border-dashed border-black/10 px-4 py-16 text-center backdrop-blur-sm dark:border-white/10",
+            !hasWallpaper && "bg-background",
+            hasWallpaper && "bg-white dark:bg-[#1A1A1A]"
+          )}
+        >
           <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-black/[0.03] dark:bg-white/[0.03]">
             <svg
               className="h-6 w-6 text-[#7A736C] dark:text-[#9E9893]"
@@ -282,6 +296,7 @@ export default function MonoReviewsSection({ isEditing }) {
               key={rec.id}
               rec={rec}
               isEditing={isEditing}
+              hasWallpaper={hasWallpaper}
               onEdit={handleOpenReviewSidebar}
               onDelete={handleDelete}
             />

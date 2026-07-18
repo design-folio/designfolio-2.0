@@ -125,6 +125,7 @@ export function PublishDropdown({ onClose, open: openProp, onOpenChange }) {
         : { background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.09)" };
 
   useClickAway(dropdownRef, () => {
+    if (!isOpen) return;
     setIsOpen(false);
     setIsEditingSlug(false);
   });
@@ -288,14 +289,18 @@ export function PublishDropdown({ onClose, open: openProp, onOpenChange }) {
                           .{baseDomain}
                         </span>
                       </div>
-                    ) : (
+                    ) : isPro ? (
                       <button
                         type="button"
                         onClick={() => window.open(`https://${domain}`, "_blank")}
-                        className="min-w-0 flex-1 truncate text-left text-[13px] font-medium tracking-tight text-white/55 underline-offset-2 hover:underline"
+                        className="min-w-0 flex-1 cursor-pointer truncate text-left text-[13px] font-medium tracking-tight text-white/55 underline-offset-2 hover:underline"
                       >
                         <span className="text-white/80">{username}</span>.{baseDomain}
                       </button>
+                    ) : (
+                      <span className="min-w-0 flex-1 truncate text-[13px] font-medium tracking-tight text-white/55">
+                        <span className="text-white/80">{username}</span>.{baseDomain}
+                      </span>
                     )}
 
                     {isEditingSlug ? (
@@ -321,40 +326,42 @@ export function PublishDropdown({ onClose, open: openProp, onOpenChange }) {
                       </Button>
                     ) : (
                       <div className="flex shrink-0 items-center gap-1">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={handleCopy}
-                          aria-label="Copy URL"
-                          className="relative size-7 rounded-[9px] text-white/60 hover:bg-white/10 hover:text-white"
-                        >
-                          <AnimatePresence mode="wait" initial={false}>
-                            {copied ? (
-                              <motion.span
-                                key="check"
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.8 }}
-                                transition={{ duration: 0.15 }}
-                                className="absolute inset-0 flex items-center justify-center text-emerald-400"
-                              >
-                                <Check size={12} strokeWidth={2.5} />
-                              </motion.span>
-                            ) : (
-                              <motion.span
-                                key="copy"
-                                initial={{ opacity: 0, scale: 0.8 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.8 }}
-                                transition={{ duration: 0.15 }}
-                                className="absolute inset-0 flex items-center justify-center"
-                              >
-                                <Copy size={12} strokeWidth={2} />
-                              </motion.span>
-                            )}
-                          </AnimatePresence>
-                        </Button>
+                        {isPro && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            onClick={handleCopy}
+                            aria-label="Copy URL"
+                            className="relative size-7 rounded-[9px] text-white/60 hover:bg-white/10 hover:text-white"
+                          >
+                            <AnimatePresence mode="wait" initial={false}>
+                              {copied ? (
+                                <motion.span
+                                  key="check"
+                                  initial={{ opacity: 0, scale: 0.8 }}
+                                  animate={{ opacity: 1, scale: 1 }}
+                                  exit={{ opacity: 0, scale: 0.8 }}
+                                  transition={{ duration: 0.15 }}
+                                  className="absolute inset-0 flex items-center justify-center text-emerald-400"
+                                >
+                                  <Check size={12} strokeWidth={2.5} />
+                                </motion.span>
+                              ) : (
+                                <motion.span
+                                  key="copy"
+                                  initial={{ opacity: 0, scale: 0.8 }}
+                                  animate={{ opacity: 1, scale: 1 }}
+                                  exit={{ opacity: 0, scale: 0.8 }}
+                                  transition={{ duration: 0.15 }}
+                                  className="absolute inset-0 flex items-center justify-center"
+                                >
+                                  <Copy size={12} strokeWidth={2} />
+                                </motion.span>
+                              )}
+                            </AnimatePresence>
+                          </Button>
+                        )}
                         <Button
                           type="button"
                           variant="ghost"
@@ -431,11 +438,11 @@ export function PublishDropdown({ onClose, open: openProp, onOpenChange }) {
                   ) : (
                     <Button
                       type="button"
-                      variant="tertiary"
+                      variant="ghost"
                       size="sm"
                       onClick={openUpgrade}
                       aria-label="Upgrade to unlock custom domain"
-                      className="shrink-0 rounded-full"
+                      className="shrink-0 gap-1.5 rounded-full border border-[rgba(255,90,54,0.2)] bg-[rgba(255,90,54,0.12)] px-3 text-[12px] font-semibold text-[#FF5A36] transition-all duration-150 hover:border-[rgba(255,90,54,0.35)] hover:bg-[rgba(255,90,54,0.22)] hover:text-[#FF5A36] [&_svg]:size-[11px]"
                     >
                       <Lock strokeWidth={2.5} />
                       Upgrade to unlock

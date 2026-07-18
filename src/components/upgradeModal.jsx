@@ -268,9 +268,9 @@ export default function UpgradeModal() {
       ? { title: jobToolConfig.title, subtitle: jobToolConfig.subtitle }
       : upgradeModalSource === "pro-template"
         ? {
-            title: "Go live today",
+            title: "Upgrade Designfolio PRO",
             subtitle:
-              "Publish your portfolio and unlock every Pro feature designed to help you stand out to recruiters.",
+              "Publish your portfolio, get discovered by recruiters, and land your next design job.",
           }
         : upgradeModalSource === "password-protect"
           ? {

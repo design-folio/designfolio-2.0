@@ -20,9 +20,8 @@ import { Button } from "@/components/ui/button";
 const PLAN_LABELS = { mthly: "Monthly", qtrly: "Quarterly", yrly: "Yearly", lifetime: "Lifetime" };
 
 const PLAN_HEADING = {
-  title: "Career OS for Job Seekers",
-  subtitle:
-    "Build your portfolio, tailor every application, find jobs, and prepare for interviews—all in one place.",
+  title: "Upgrade to Designfolio PRO",
+  subtitle: "Everything you need to build your portfolio and get hired.",
 };
 
 const JOB_TOOL_CONFIG = {
@@ -269,9 +268,9 @@ export default function UpgradeModal() {
       ? { title: jobToolConfig.title, subtitle: jobToolConfig.subtitle }
       : upgradeModalSource === "pro-template"
         ? {
-            title: "Upgrade to publish",
+            title: "Go live today",
             subtitle:
-              "You're using a Pro template. Upgrade to publish your portfolio and unlock all Pro features.",
+              "Publish your portfolio and unlock every Pro feature designed to help you stand out to recruiters.",
           }
         : upgradeModalSource === "password-protect"
           ? {
@@ -517,7 +516,7 @@ export default function UpgradeModal() {
                         exit={{ opacity: 0, y: -4 }}
                         transition={{ duration: 0.14 }}
                       >
-                        <PlanQuote plan={selectedPlan?.plan} />
+                        {/* <PlanQuote plan={selectedPlan?.plan} /> */}
                       </motion.div>
                     </AnimatePresence>
 
@@ -648,8 +647,8 @@ function PlanQuote({ plan }) {
 }
 
 function FeaturesList({ showAll, onToggle }) {
-  const visible = ALL_FEATURES.slice(0, 2);
-  const hidden = ALL_FEATURES.slice(2);
+  const visible = ALL_FEATURES.slice(0, 3);
+  const hidden = ALL_FEATURES.slice(3);
   return (
     <div className={styles.featuresList}>
       {visible.map((f) => (

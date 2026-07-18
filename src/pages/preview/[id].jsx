@@ -2,8 +2,16 @@ import dynamic from "next/dynamic";
 import Seo from "@/components/seo";
 import { useGlobalContext } from "@/context/globalContext";
 import useClient from "@/hooks/useClient";
-import { getWallpaperUrl } from "@/lib/wallpaper";
+import {
+  getWallpaperUrl,
+  extractWallpaperMode,
+  extractWallpaperColor,
+  resolveBackgroundColor,
+  BACKGROUND_MODE,
+} from "@/lib/wallpaper";
+import { normalizeTypography } from "@/lib/typography";
 import { TEMPLATE_IDS } from "@/lib/templates";
+import { cn } from "@/lib/utils";
 import { _getUser } from "@/network/get-request";
 import { useQuery } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
@@ -30,6 +38,9 @@ export default function Index({ initialUserDetails }) {
     wallpaperEffects,
     setUserDetails: setCtxUserDetails,
     setTemplateContext,
+    setBackgroundMode,
+    setContainerWidth,
+    setTypography,
     viewerThemeOverride,
   } = useGlobalContext();
 
@@ -73,7 +84,10 @@ export default function Index({ initialUserDetails }) {
       if (wp && typeof wp === "object" && wp.effects) {
         setWallpaperEffects(wp.effects);
       }
+      setBackgroundMode(extractWallpaperMode(wp));
     }
+    setContainerWidth(finalUserDetails?.containerWidth ?? null);
+    setTypography(normalizeTypography(finalUserDetails?.typography));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userDetailsId, userDetailsUpdatedAt]);
 
@@ -81,9 +95,14 @@ export default function Index({ initialUserDetails }) {
   const wpValue = wp && typeof wp === "object" ? wp.url || wp.value : wp;
   const currentTheme = resolvedTheme || theme || (finalUserDetails?.theme == 1 ? "dark" : "light");
   const isChatfolioTemplate = finalUserDetails?.template === TEMPLATE_IDS.CHATFOLIO;
-  const wallpaperUrl = isChatfolioTemplate
-    ? null
-    : getWallpaperUrl(wpValue ?? 0, currentTheme, finalUserDetails?.template);
+  const wallpaperUrl = getWallpaperUrl(wpValue ?? 0, currentTheme, finalUserDetails?.template);
+  const backgroundColor = resolveBackgroundColor(extractWallpaperColor(wp), currentTheme);
+  const backgroundMode = extractWallpaperMode(wp);
+  const isHeaderMode = backgroundMode === BACKGROUND_MODE.HEADER;
+  const hasBackground = !!wallpaperUrl || !!backgroundColor;
+  // Show the full-page background (transparent page) only with a background AND full-page mode.
+  // Width is applied by each template's own container via context (containerMaxWidth).
+  const transparentForWallpaper = hasBackground && !isHeaderMode;
   const ProBadge = !finalUserDetails?.pro && (
     <div
       className="relative mb-[120px] flex cursor-pointer justify-center text-center lg:fixed lg:right-[36px] lg:bottom-[20px] lg:m-1 xl:block"
@@ -105,6 +124,7 @@ export default function Index({ initialUserDetails }) {
       case TEMPLATE_IDS.CHATFOLIO:
         return (
           <>
+            <div aria-hidden="true" style={{ height: 64 }} />
             <Chat publicView />
             {ProBadge}
           </>
@@ -112,6 +132,7 @@ export default function Index({ initialUserDetails }) {
       case TEMPLATE_IDS.SPOTLIGHT:
         return (
           <>
+            <div aria-hidden="true" style={{ height: 64 }} />
             <Minimal userDetails={finalUserDetails} />
             {ProBadge}
           </>
@@ -119,6 +140,7 @@ export default function Index({ initialUserDetails }) {
       case TEMPLATE_IDS.MONO:
         return (
           <>
+            <div aria-hidden="true" style={{ height: 64 }} />
             <Mono preview publicView />
             {ProBadge}
           </>
@@ -126,6 +148,7 @@ export default function Index({ initialUserDetails }) {
       case TEMPLATE_IDS.PROFESSIONAL:
         return (
           <>
+            <div aria-hidden="true" style={{ height: 64 }} />
             <Professional isEditing={false} />
             {ProBadge}
           </>
@@ -161,35 +184,48 @@ export default function Index({ initialUserDetails }) {
         imageUrl={finalUserDetails?.avatar?.url ?? "/assets/png/seo-profile.png"}
         url={`https://${finalUserDetails?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
       />
-      <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
-      <main
-        className={
-          isChatfolioTemplate
-            ? "flex min-h-screen justify-center bg-[#F0EDE7] transition-colors duration-700 dark:bg-[#1A1A1A]"
-            : "min-h-screen"
-        }
-      >
-        <div
-          className={(() => {
-            switch (finalUserDetails?.template) {
-              case TEMPLATE_IDS.CANVAS:
-                return "py-10";
-              case TEMPLATE_IDS.MONO:
-                return "";
-              case TEMPLATE_IDS.CHATFOLIO:
-                return "w-full py-[94px]";
-              case TEMPLATE_IDS.RETRO_OS:
-                return "mx-auto px-2 md:px-4 lg:px-0";
-              case TEMPLATE_IDS.PROFESSIONAL:
-                return "";
-              default:
-                return "py-10";
-            }
-          })()}
+      <div className="relative">
+        <WallpaperBackground
+          wallpaperUrl={wallpaperUrl}
+          backgroundColor={backgroundColor}
+          mode={backgroundMode}
+          effects={wallpaperEffects}
+        />
+        <main
+          className={cn(
+            "flex min-h-screen justify-center transition-colors duration-700",
+            isChatfolioTemplate && !transparentForWallpaper && "bg-[#F0EDE7] dark:bg-[#1A1A1A]",
+            !isChatfolioTemplate && !transparentForWallpaper && "bg-background"
+          )}
         >
-          {finalUserDetails && renderTemplate()}
-        </div>
-      </main>
+          <div
+            className={cn(
+              "w-full",
+              (() => {
+                switch (finalUserDetails?.template) {
+                  case TEMPLATE_IDS.CANVAS:
+                    return "py-10";
+                  case TEMPLATE_IDS.MONO:
+                    return "";
+                  case TEMPLATE_IDS.CHATFOLIO:
+                    return "w-full py-[94px]";
+                  case TEMPLATE_IDS.RETRO_OS:
+                    return "mx-auto px-2 md:px-4 lg:px-0";
+                  case TEMPLATE_IDS.PROFESSIONAL:
+                    return "";
+                  default:
+                    return "py-10";
+                }
+              })(),
+              isHeaderMode &&
+                finalUserDetails?.template !== TEMPLATE_IDS.RETRO_OS &&
+                "relative z-10"
+            )}
+          >
+            {finalUserDetails && renderTemplate()}
+          </div>
+        </main>
+      </div>
     </>
   );
 }

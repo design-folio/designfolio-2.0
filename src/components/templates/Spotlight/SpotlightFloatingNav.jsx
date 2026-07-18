@@ -105,7 +105,7 @@ export const SpotlightFloatingNav = () => {
                   className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors ${
                     activeSection === id
                       ? "bg-foreground dark:bg-[#2A2D37]"
-                      : "dark:bg-secondary-hover hover:bg-primary-hover dark:hover:bg-primary-hover bg-[#e5e5e7]"
+                      : "dark:bg-secondary-hover dark:hover:bg-secondary-border-hover bg-[#e5e5e7] hover:bg-[#d6d6d9]"
                   }`}
                 >
                   <Icon
@@ -116,7 +116,7 @@ export const SpotlightFloatingNav = () => {
                     }`}
                   />
                 </div>
-                <span className="absolute left-full pl-4 text-sm whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100">
+                <span className="text-scaled-14 absolute left-full pl-4 whitespace-nowrap opacity-0 transition-opacity group-hover:opacity-100">
                   {label}
                 </span>
               </button>
@@ -142,7 +142,7 @@ export const SpotlightFloatingNav = () => {
                     className={`flex h-10 w-10 items-center justify-center rounded-full transition-colors ${
                       activeSection === id
                         ? "bg-foreground dark:bg-[#2A2D37]"
-                        : "dark:bg-secondary-hover hover:bg-primary-hover dark:hover:bg-primary-hover bg-[#e5e5e7]"
+                        : "dark:bg-secondary-hover dark:hover:bg-secondary-border-hover bg-[#e5e5e7] hover:bg-[#d6d6d9]"
                     }`}
                   >
                     <Icon

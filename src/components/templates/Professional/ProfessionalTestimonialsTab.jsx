@@ -76,7 +76,7 @@ function TestimonialCard({ review, isEditing, isPlaying, onPlay, onEdit }) {
         </div>
       )}
       <div className="mb-6">
-        <p className="font-jetbrains relative z-10 text-[15px] leading-relaxed text-[#1A1A1A] dark:text-[#F0EDE7]">
+        <p className="font-jetbrains text-scaled-15 relative z-10 leading-relaxed text-[#1A1A1A] dark:text-[#F0EDE7]">
           {renderTiptapWords(
             review?.description,
             !isExpanded && shouldTruncate ? VIEW_MORE_THRESHOLD : null
@@ -85,7 +85,7 @@ function TestimonialCard({ review, isEditing, isPlaying, onPlay, onEdit }) {
         {shouldTruncate && (
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="font-jetbrains mt-2 text-[13px] text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#9E9893] dark:hover:text-[#F0EDE7]"
+            className="font-jetbrains text-scaled-13 mt-2 text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#9E9893] dark:hover:text-[#F0EDE7]"
           >
             {isExpanded ? "View less" : "View more"}
           </button>
@@ -101,7 +101,7 @@ function TestimonialCard({ review, isEditing, isPlaying, onPlay, onEdit }) {
                 className="h-full w-full object-cover"
               />
             ) : (
-              <div className="font-jetbrains flex h-full w-full items-center justify-center bg-[#E37941] text-[14px] font-semibold text-white">
+              <div className="font-jetbrains text-scaled-14 flex h-full w-full items-center justify-center bg-[#E37941] font-semibold text-white">
                 {review?.name
                   ?.split(" ")
                   .map((n) => n[0])
@@ -110,10 +110,10 @@ function TestimonialCard({ review, isEditing, isPlaying, onPlay, onEdit }) {
             )}
           </div>
           <div>
-            <h4 className="font-jetbrains text-[14px] font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
+            <h4 className="font-jetbrains text-scaled-14 font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
               {review.name}
             </h4>
-            <p className="font-jetbrains text-[12px] tracking-wider text-[#7A736C] uppercase dark:text-[#9E9893]">
+            <p className="font-jetbrains text-scaled-12 tracking-wider text-[#7A736C] uppercase dark:text-[#9E9893]">
               {review.company}
             </p>
           </div>
@@ -145,7 +145,7 @@ function TestimonialCard({ review, isEditing, isPlaying, onPlay, onEdit }) {
             ) : (
               <>
                 <Play size={14} className="fill-current" />
-                <span className="font-jetbrains w-[30px] text-center text-[12px]">Play</span>
+                <span className="font-jetbrains text-scaled-12 w-[30px] text-center">Play</span>
               </>
             )}
           </button>
@@ -215,7 +215,7 @@ function ProfessionalTestimonialsTab({ isEditing, reviews, onAddReview, onEditRe
               className="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-[#D5D0C6] bg-black/[0.02] py-4 text-[#7A736C] transition-all hover:border-[#1A1A1A] hover:bg-black/[0.04] hover:text-[#1A1A1A] dark:border-[#3A352E] dark:bg-white/[0.02] dark:text-[#9E9893] dark:hover:border-[#F0EDE7] dark:hover:bg-white/[0.04] dark:hover:text-[#F0EDE7]"
             >
               <Plus className="h-4 w-4" />
-              <span className="font-jetbrains text-[13px] font-medium tracking-wider uppercase">
+              <span className="font-jetbrains text-scaled-13 font-medium tracking-wider uppercase">
                 Add New Testimonial
               </span>
             </button>

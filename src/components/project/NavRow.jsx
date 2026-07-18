@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { ChevronLeft, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { PublishDropdown } from "@/components/loggedInHeader/publish-dropdown";
 import LockPopover from "./LockPopover";
 import ViewToggle from "./ViewToggle";
 
@@ -21,6 +23,7 @@ export default function NavRow({
   containerClass,
 }) {
   const isEditor = mode === "editor";
+  const [openPopover, setOpenPopover] = useState(null);
   const textClass = dark
     ? "text-white/80 hover:text-white"
     : "text-[#7A736C] dark:text-[#9E9893] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7]";
@@ -67,7 +70,12 @@ export default function NavRow({
         {/* Editor-only: Lock + Analyze */}
         {isEditor && (
           <div className="flex items-center gap-1.5">
-            <LockPopover project={project} dark={dark} />
+            <LockPopover
+              project={project}
+              dark={dark}
+              open={openPopover === "lock"}
+              onOpenChange={(o) => setOpenPopover(o ? "lock" : null)}
+            />
             {analyzeStatus && (
               <TooltipProvider delayDuration={200}>
                 <Tooltip>
@@ -113,6 +121,12 @@ export default function NavRow({
           <div data-joyride="view-toggle">
             <ViewToggle heroView={heroView} setHeroView={setHeroView} dark={dark} />
           </div>
+        )}
+        {isEditor && (
+          <PublishDropdown
+            open={openPopover === "publish"}
+            onOpenChange={(o) => setOpenPopover(o ? "publish" : null)}
+          />
         )}
       </div>
     </div>

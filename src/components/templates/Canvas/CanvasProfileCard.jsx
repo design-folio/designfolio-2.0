@@ -3,6 +3,7 @@ import { motion } from "motion/react";
 import { Moon, Pencil, Sun } from "lucide-react";
 import { useGlobalContext } from "@/context/globalContext";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
+import ProfileAvatar from "@/components/templates/ProfileAvatar";
 import { sidebars } from "@/lib/constant";
 import { CanvasSectionControls, CanvasSectionButton } from "./CanvasSectionControls";
 import { Switch } from "./switch-button";
@@ -45,14 +46,17 @@ function CanvasProfileCard({ isEditing, skills = [], persistTheme = false }) {
 
       {/* Profile content */}
       <div className="flex flex-col items-start gap-8 p-5 md:flex-row md:items-center md:p-6">
-        <div className="h-28 w-28 shrink-0 overflow-hidden rounded-2xl border border-black/5 shadow-sm dark:border-white/10">
-          <img src={avatarSrc} alt="Profile" className="h-full w-full object-cover" />
-        </div>
+        <ProfileAvatar
+          src={avatarSrc}
+          size={112}
+          innerClassName="border border-black/5 shadow-sm dark:border-white/10"
+          shadow={false}
+        />
         <div className="flex w-full flex-col gap-2">
-          <h1 className="pr-12 text-[24px] leading-tight font-semibold tracking-tight text-pretty text-[#1A1A1A] dark:text-[#F0EDE7]">
+          <h1 className="text-scaled-24 pr-12 leading-tight font-semibold tracking-tight text-pretty text-[#1A1A1A] dark:text-[#F0EDE7]">
             {introduction}
           </h1>
-          <p className="text-[16px] leading-relaxed text-pretty text-[#7A736C] dark:text-[#B5AFA5]">
+          <p className="text-scaled-16 leading-relaxed text-pretty text-[#7A736C] dark:text-[#B5AFA5]">
             {bio}
           </p>
         </div>
@@ -81,7 +85,7 @@ function CanvasProfileCard({ isEditing, skills = [], persistTheme = false }) {
             >
               {repeatedSkills.map((skill, index) => (
                 <div key={index} className="flex shrink-0 items-center gap-4">
-                  <span className="text-[12px] font-medium tracking-wider text-[#7A736C] uppercase dark:text-[#B5AFA5]">
+                  <span className="text-scaled-12 font-medium tracking-wider text-[#7A736C] uppercase dark:text-[#B5AFA5]">
                     {skill.label}
                   </span>
                   <div className="h-3 w-3 text-[#1A1A1A] dark:text-[#F0EDE7]">

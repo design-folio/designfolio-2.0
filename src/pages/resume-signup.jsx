@@ -116,9 +116,9 @@ function CanvasPreview({ parsed }) {
           </div>
         </div>
         {skills.length > 0 && (
-          <div className="relative w-full overflow-hidden rounded-b-[26px] border-t border-[#E5D7C4] bg-gradient-to-b from-[#EEE9E3] to-[#F4F1EC] py-2 shadow-[inset_0_1px_3px_rgba(0,0,0,0.04),inset_0_-1px_1px_rgba(255,255,255,0.45)] dark:border-white/10 dark:from-[#252119] dark:to-[#2B2620] dark:shadow-[inset_0_1px_3px_rgba(0,0,0,0.15)]">
-            <div className="absolute top-0 bottom-0 left-0 z-10 w-12 bg-gradient-to-r from-[#F0EBE5] to-transparent dark:from-[#272219]" />
-            <div className="absolute top-0 right-0 bottom-0 z-10 w-12 bg-gradient-to-l from-[#F0EBE5] to-transparent dark:from-[#272219]" />
+          <div className="relative w-full overflow-hidden rounded-b-[26px] border-t border-[#E5D7C4] bg-linear-to-b from-[#EEE9E3] to-[#F4F1EC] py-2 shadow-[inset_0_1px_3px_rgba(0,0,0,0.04),inset_0_-1px_1px_rgba(255,255,255,0.45)] dark:border-white/10 dark:from-[#252119] dark:to-[#2B2620] dark:shadow-[inset_0_1px_3px_rgba(0,0,0,0.15)]">
+            <div className="absolute top-0 bottom-0 left-0 z-10 w-12 bg-linear-to-r from-[#F0EBE5] to-transparent dark:from-[#272219]" />
+            <div className="bg-linaer-to-l absolute top-0 right-0 bottom-0 z-10 w-12 from-[#F0EBE5] to-transparent dark:from-[#272219]" />
             <motion.div
               className="flex gap-4 whitespace-nowrap"
               animate={{ x: [0, "-50%"] }}
@@ -195,7 +195,7 @@ function CanvasPreview({ parsed }) {
             {visibleExp.length > 1 && (
               <>
                 {/* Climbing character at top */}
-                <div className="absolute left-[1px] z-20 h-[54px] w-[40px]" style={{ top: 0 }}>
+                <div className="absolute left-px z-20 h-[54px] w-[40px]" style={{ top: 0 }}>
                   <img
                     src="/assets/svgs/character-me.svg"
                     alt="Character climbing"
@@ -412,7 +412,7 @@ function PreviewContent({ tab, onTabChange, parsed }) {
   return (
     <div className="relative flex h-full flex-1 flex-col overflow-hidden bg-[#EFECE6] dark:bg-[#141414]">
       {/* Top fade */}
-      <div className="from-background pointer-events-none absolute top-0 right-0 left-0 z-20 h-20 bg-gradient-to-b to-transparent" />
+      <div className="from-background pointer-events-none absolute top-0 right-0 left-0 z-20 h-20 bg-linear-to-b to-transparent" />
 
       {/* Floating tabs */}
       <div className="pointer-events-auto absolute top-4 right-0 left-0 z-30 flex justify-center">
@@ -449,7 +449,7 @@ function PreviewContent({ tab, onTabChange, parsed }) {
       </AnimatePresence>
 
       {/* Bottom fade */}
-      <div className="from-background pointer-events-none absolute right-0 bottom-0 left-0 h-16 bg-gradient-to-t to-transparent" />
+      <div className="from-background pointer-events-none absolute right-0 bottom-0 left-0 h-16 bg-linear-to-t to-transparent" />
     </div>
   );
 }
@@ -958,7 +958,7 @@ export default function ResumeSignup() {
                 </div>
 
                 {/* Top fade */}
-                <div className="from-background pointer-events-none absolute top-0 right-0 left-0 z-20 h-24 bg-gradient-to-b to-transparent" />
+                <div className="from-background pointer-events-none absolute top-0 right-0 left-0 z-20 h-24 bg-linear-to-b to-transparent" />
 
                 {/* Mobile tabs */}
                 <div className="pointer-events-auto absolute top-7 right-0 left-0 z-30 flex justify-center">
@@ -996,7 +996,7 @@ export default function ResumeSignup() {
                 </AnimatePresence>
 
                 {/* Bottom fade */}
-                <div className="from-background pointer-events-none absolute right-0 bottom-0 left-0 h-24 bg-gradient-to-t to-transparent" />
+                <div className="from-background pointer-events-none absolute right-0 bottom-0 left-0 h-24 bg-linear-to-t to-transparent" />
               </motion.div>
             </>
           )}

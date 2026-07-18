@@ -19,6 +19,7 @@ import {
 import Modal from "@/components/modal";
 import AnalyzeCaseStudy from "@/components/analyzeCaseStudy";
 import { useGlobalContext } from "@/context/globalContext";
+import { useProGate } from "@/hooks/useProGate";
 import { toast } from "react-toastify";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
@@ -77,11 +78,11 @@ function EditableDetailField({ label, field, value, onBlur }) {
 
   return (
     <div>
-      <h4 className="font-jetbrains mb-2 text-[11px] tracking-wider text-[#7A736C] uppercase dark:text-[#9E9893]">
+      <h4 className="font-jetbrains text-scaled-11 mb-2 tracking-wider text-[#7A736C] uppercase dark:text-[#9E9893]">
         {label}
       </h4>
       <p
-        className={`font-jetbrains text-[13px] uppercase outline-none ${isPlaceholder ? "text-[#B5AFA5] italic dark:text-[#4A4238]" : "text-[#1A1A1A] dark:text-[#F0EDE7]"}`}
+        className={`font-jetbrains text-scaled-13 uppercase outline-none ${isPlaceholder ? "text-[#B5AFA5] italic dark:text-[#4A4238]" : "text-[#1A1A1A] dark:text-[#F0EDE7]"}`}
         contentEditable
         suppressContentEditableWarning
         onFocus={(e) => {
@@ -115,6 +116,7 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
   const [titleIsPlaceholder, setTitleIsPlaceholder] = useState(false);
   const [descIsPlaceholder, setDescIsPlaceholder] = useState(false);
   const [isPassword, setIsPassword] = useState(false);
+  const requirePro = useProGate();
   const [passwordInput, setPasswordInput] = useState("");
   const [isLockOpen, setIsLockOpen] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -274,6 +276,8 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
   };
 
   const handlePasswordToggle = async () => {
+    // Enabling protection is Pro-only; disabling stays free.
+    if (!isPassword && requirePro("password-protect")) return;
     await _updateProject(projectId, { protected: !isPassword }).then((res) => {
       updateProjectCache("protected", res?.data?.project?.protected);
       setIsPassword((prev) => !prev);
@@ -309,7 +313,7 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
       {/* Header */}
       <motion.div
         variants={itemVariants}
-        className={`font-jetbrains flex items-center justify-between border-b border-[#D5D0C6] bg-[#EFECE6] px-4 py-3 text-[13px] tracking-wide text-[#1A1A1A] uppercase dark:border-[#3A352E] dark:bg-[#1A1A1A] dark:text-[#B5AFA5] ${edit ? "" : "sticky top-0 z-50"}`}
+        className={`font-jetbrains text-scaled-13 flex items-center justify-between border-b border-[#D5D0C6] bg-[#EFECE6] px-4 py-3 tracking-wide text-[#1A1A1A] uppercase dark:border-[#3A352E] dark:bg-[#1A1A1A] dark:text-[#B5AFA5] ${edit ? "" : "sticky top-0 z-50"}`}
       >
         <button
           onClick={() => router.back()}
@@ -351,10 +355,10 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
                   <div className="flex flex-col gap-4">
                     <div className="flex items-start justify-between gap-3">
                       <div className="space-y-1">
-                        <Label className="cursor-pointer text-[12px] font-medium tracking-wider text-[#1A1A1A] uppercase dark:text-[#F0EDE7]">
+                        <Label className="text-scaled-12 cursor-pointer font-medium tracking-wider text-[#1A1A1A] uppercase dark:text-[#F0EDE7]">
                           Protect Project
                         </Label>
-                        <p className="text-[11px] leading-snug text-[#7A736C] dark:text-[#9E9893]">
+                        <p className="text-scaled-11 leading-snug text-[#7A736C] dark:text-[#9E9893]">
                           Require a password (e.g., for NDAs).
                         </p>
                       </div>
@@ -379,12 +383,12 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
                               placeholder="Enter password"
                               value={passwordInput}
                               onChange={(e) => setPasswordInput(e.target.value)}
-                              className="h-9 rounded-none border-[#D5D0C6] bg-white/50 text-[13px] dark:border-[#3A352E] dark:bg-white/5"
+                              className="text-scaled-13 h-9 rounded-none border-[#D5D0C6] bg-white/50 dark:border-[#3A352E] dark:bg-white/5"
                             />
                             <Button
                               size="sm"
                               onClick={handlePasswordSave}
-                              className="font-jetbrains h-8 rounded-none bg-[#1A1A1A] text-[12px] tracking-wider text-white uppercase dark:bg-[#F0EDE7] dark:text-[#1A1A1A]"
+                              className="font-jetbrains text-scaled-12 h-8 rounded-none bg-[#1A1A1A] tracking-wider text-white uppercase dark:bg-[#F0EDE7] dark:text-[#1A1A1A]"
                             >
                               Save Password
                             </Button>
@@ -410,7 +414,7 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
                         <button
                           onClick={handleAnalyzeClick}
                           disabled={isAnalyzeDisabled}
-                          className="flex cursor-pointer items-center gap-1.5 text-[11px] tracking-wider uppercase transition-colors hover:text-[#E37941] disabled:cursor-not-allowed disabled:opacity-40"
+                          className="text-scaled-11 flex cursor-pointer items-center gap-1.5 tracking-wider uppercase transition-colors hover:text-[#E37941] disabled:cursor-not-allowed disabled:opacity-40"
                         >
                           {isAnalyzing ? (
                             <AnimatedLoadingDots className="h-[5px] w-[18px] shrink-0" />
@@ -424,7 +428,7 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
                     {tooltipMessage && (
                       <TooltipContent
                         side="bottom"
-                        className="bg-foreground text-background rounded px-2 py-1 text-xs"
+                        className="bg-foreground text-background text-scaled-12 rounded px-2 py-1"
                       >
                         {tooltipMessage}
                       </TooltipContent>
@@ -442,7 +446,7 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
         {/* Title + Description */}
         <motion.div variants={itemVariants}>
           <h1
-            className={`font-jetbrains mb-4 text-[22px] leading-[1.2] font-semibold tracking-tight uppercase md:text-[28px] ${edit ? "outline-none" : ""} ${edit && titleIsPlaceholder ? "text-[#B5AFA5] italic dark:text-[#4A4238]" : "text-[#1A1A1A] dark:text-[#F0EDE7]"}`}
+            className={`font-jetbrains text-scaled-22 md:text-scaled-28 mb-4 leading-[1.2] font-semibold tracking-tight uppercase ${edit ? "outline-none" : ""} ${edit && titleIsPlaceholder ? "text-[#B5AFA5] italic dark:text-[#4A4238]" : "text-[#1A1A1A] dark:text-[#F0EDE7]"}`}
             contentEditable={edit}
             suppressContentEditableWarning={edit}
             onFocus={
@@ -468,7 +472,7 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
           </h1>
           {(edit || descriptionText) && (
             <p
-              className={`font-jetbrains text-[15px] leading-relaxed ${edit ? "outline-none" : ""} ${edit && descIsPlaceholder ? "text-[#B5AFA5] italic dark:text-[#4A4238]" : "text-[#7A736C] dark:text-[#B5AFA5]"}`}
+              className={`font-jetbrains text-scaled-15 leading-relaxed ${edit ? "outline-none" : ""} ${edit && descIsPlaceholder ? "text-[#B5AFA5] italic dark:text-[#4A4238]" : "text-[#7A736C] dark:text-[#B5AFA5]"}`}
               contentEditable={edit}
               suppressContentEditableWarning={edit}
               onFocus={
@@ -551,10 +555,10 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
                 ))
               : viewDetailFields.map(({ label, value }) => (
                   <div key={label}>
-                    <h4 className="font-jetbrains mb-2 text-[11px] tracking-wider text-[#7A736C] uppercase dark:text-[#9E9893]">
+                    <h4 className="font-jetbrains text-scaled-11 mb-2 tracking-wider text-[#7A736C] uppercase dark:text-[#9E9893]">
                       {label}
                     </h4>
-                    <p className="font-jetbrains text-[13px] text-[#1A1A1A] uppercase dark:text-[#F0EDE7]">
+                    <p className="font-jetbrains text-scaled-13 text-[#1A1A1A] uppercase dark:text-[#F0EDE7]">
                       {value}
                     </p>
                   </div>
@@ -571,7 +575,7 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
 
         {/* {!edit && hasEditorJSContent && (
           <motion.div variants={itemVariants}>
-            <h3 className="font-jetbrains text-[14px] text-[#1A1A1A] dark:text-[#F0EDE7] font-semibold mb-6 uppercase tracking-wider flex items-center gap-3">
+            <h3 className="font-jetbrains text-scaled-14 text-[#1A1A1A] dark:text-[#F0EDE7] font-semibold mb-6 uppercase tracking-wider flex items-center gap-3">
               <span className="w-2 h-2 bg-[#E37941] shrink-0" /> Overview
             </h3>
             <BlockRenderer editorJsData={content}  />
@@ -586,7 +590,7 @@ export default function ProfessionalProjectInfo({ projectDetails, userDetails, e
           >
             <button
               onClick={() => router.back()}
-              className="font-jetbrains flex items-center gap-2 text-[13px] tracking-wide text-[#1A1A1A] uppercase transition-colors hover:text-[#E37941] dark:text-[#F0EDE7] dark:hover:text-[#E37941]"
+              className="font-jetbrains text-scaled-13 flex items-center gap-2 tracking-wide text-[#1A1A1A] uppercase transition-colors hover:text-[#E37941] dark:text-[#F0EDE7] dark:hover:text-[#E37941]"
             >
               <ChevronLeft size={16} /> All Projects
             </button>

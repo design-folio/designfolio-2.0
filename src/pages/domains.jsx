@@ -1,13 +1,18 @@
-import Button from "@/components/button";
-import { useRouter } from "next/router";
 import React, { useEffect, useState, startTransition } from "react";
-import LeftArrow from "../../public/assets/svgs/left-arrow.svg";
+import { useRouter } from "next/router";
+import { Button } from "@/components/ui/button";
+import MemoLeftArrow from "@/components/icons/LeftArrow";
 import DeleteAccount from "@/components/deleteAccount";
 import DefaultDomain from "@/components/defaultDomain";
-import { useGlobalContext } from "@/context/globalContext";
 import CustomDomain from "@/components/customDomain";
+import { useGlobalContext } from "@/context/globalContext";
 import { _getDomainDetails } from "@/network/get-request";
+import { TEMPLATE_IDS } from "@/lib/templates";
 import WallpaperBackground from "@/components/WallpaperBackground";
+import AppSidebar from "@/components/Sidebars";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { getSidebarShiftWidth } from "@/lib/constant";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function Domains() {
   const {
@@ -16,12 +21,36 @@ export default function Domains() {
     userDetailsIsState,
     wallpaperUrl,
     wallpaperEffects,
+    activeSidebar,
+    closeSidebar,
   } = useGlobalContext();
   const [domainDetails, setDomainDetails] = useState(null);
   const router = useRouter();
+  const isMobile = useIsMobile();
+
+  const [lastSidebar, setLastSidebar] = useState(() => activeSidebar ?? null);
+  useEffect(() => {
+    if (activeSidebar != null) startTransition(() => setLastSidebar(activeSidebar));
+  }, [activeSidebar]);
+
+  // Compensate for scrollbar gutter when sidebar opens so content doesn't shift.
+  useEffect(() => {
+    if (activeSidebar && !isMobile) {
+      const el = document.documentElement;
+      const scrollbarWidth = window.innerWidth - el.clientWidth;
+      el.style.paddingRight = scrollbarWidth > 0 ? `${scrollbarWidth}px` : "";
+    } else {
+      document.documentElement.style.paddingRight = "";
+    }
+    return () => {
+      document.documentElement.style.paddingRight = "";
+    };
+  }, [activeSidebar, isMobile]);
+
   const handleBack = () => {
     router.back({ scroll: false });
   };
+
   const fetchDomainDetails = () => {
     _getDomainDetails().then((res) => {
       setDomainDetails(res.data);
@@ -32,33 +61,87 @@ export default function Domains() {
     startTransition(() => setIsUserDetailsFromCache(!userDetailsIsState));
     fetchDomainDetails();
   }, [userDetailsIsState, setIsUserDetailsFromCache]);
-  return (
-    <>
-      <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
-      <main className="min-h-screen">
-        <div className={`mx-auto max-w-[848px] px-2 py-[94px] md:px-4 md:py-[124px] lg:px-0`}>
-          <div className="bg-df-section-card-bg-color rounded-2xl p-8">
-            <Button
-              text="Go Back"
-              onClick={handleBack}
-              type="secondary"
-              size="small"
-              icon={<LeftArrow className="text-df-icon-color cursor-pointer" />}
-            />
-            <div className="mt-8">
-              <DefaultDomain />
-            </div>
-          </div>
-          <div className="bg-df-section-card-bg-color mt-6 rounded-2xl p-8">
-            <CustomDomain domainDetails={domainDetails} fetchDomainDetails={fetchDomainDetails} />
-          </div>
 
-          <div className="bg-df-section-card-bg-color mt-6 rounded-2xl p-8">
-            <DeleteAccount />
+  const template = userDetails?.template;
+
+  const containerClass = (() => {
+    switch (template) {
+      case TEMPLATE_IDS.CANVAS:
+        return "max-w-[848px] mx-auto flex flex-col gap-3 py-[94px] md:py-[124px] px-4 md:px-0";
+      case TEMPLATE_IDS.MONO:
+        return "max-w-[700px] mx-auto py-[94px] md:py-[124px] custom-dashed-x bg-[#F0EDE7] dark:bg-[#1A1A1A] min-h-screen";
+      case TEMPLATE_IDS.SPOTLIGHT:
+        return "max-w-[840px] mx-auto py-[94px] md:py-[124px] min-h-screen";
+      default:
+        return "max-w-[700px] mx-auto py-[94px] md:py-[124px] px-2 md:px-4 lg:px-0";
+    }
+  })();
+
+  const cardClass = (() => {
+    switch (template) {
+      case TEMPLATE_IDS.CANVAS:
+        return "bg-white dark:bg-[#2A2520] rounded-[32px] border border-[#E5D7C4] dark:border-white/10 p-8";
+      case TEMPLATE_IDS.MONO:
+        return "px-5 md:px-8 py-8";
+      case TEMPLATE_IDS.CHATFOLIO:
+        return "bg-white dark:bg-[#2A2520] rounded-2xl p-8";
+      case TEMPLATE_IDS.PROFESSIONAL:
+        return "bg-white dark:bg-[#2A2520] rounded-2xl p-8";
+      case TEMPLATE_IDS.SPOTLIGHT:
+        return "bg-df-section-card-bg-color rounded-2xl p-8";
+      default:
+        return "bg-white dark:bg-[#2A2520] p-8 rounded-2xl";
+    }
+  })();
+
+  const isMono = template === TEMPLATE_IDS.MONO;
+
+  const sidebarProviderProps = {
+    open: !!activeSidebar,
+    onOpenChange: (open) => !open && closeSidebar(true),
+    style: {
+      "--sidebar-width": getSidebarShiftWidth(lastSidebar) || "400px",
+    },
+    defaultOpen: false,
+  };
+
+  return (
+    <SidebarProvider {...sidebarProviderProps}>
+      <div className="min-w-0 flex-1">
+        <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
+        <main className="min-h-screen">
+          <div className={containerClass}>
+            {isMono && <div className="custom-dashed-t" />}
+            <div className={cardClass}>
+              <Button
+                variant="secondary"
+                onClick={handleBack}
+                className="h-9 rounded-full px-4 text-sm font-medium"
+              >
+                <MemoLeftArrow className="!size-2.5" />
+                Go Back
+              </Button>
+              <div className="mt-8">
+                <DefaultDomain />
+              </div>
+            </div>
+
+            {isMono && <div className="custom-dashed-t" />}
+            <div className={`${cardClass} ${!isMono ? "mt-6" : ""}`}>
+              <CustomDomain domainDetails={domainDetails} fetchDomainDetails={fetchDomainDetails} />
+            </div>
+
+            {isMono && <div className="custom-dashed-t" />}
+            <div className={`${cardClass} ${!isMono ? "mt-6" : ""}`}>
+              <DeleteAccount />
+            </div>
+
+            {isMono && <div className="custom-dashed-t" />}
           </div>
-        </div>
-      </main>
-    </>
+        </main>
+      </div>
+      <AppSidebar />
+    </SidebarProvider>
   );
 }
 

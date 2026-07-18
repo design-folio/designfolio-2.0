@@ -4,7 +4,7 @@ import Template2 from "@/components/template2";
 import Minimal from "@/components/templates/Spotlight";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/router";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, X } from "lucide-react";
 import MacOSTemplate from "@/components/comp/MacOSTemplate";
 import WallpaperBackground from "@/components/WallpaperBackground";
 import Canvas from "@/components/templates/Canvas";
@@ -13,6 +13,8 @@ import { TEMPLATE_IDS } from "@/lib/templates";
 import Chat from "@/components/templates/Chat";
 import Professional from "@/components/templates/Professional";
 import MemoMadewithdesignfolio from "@/components/icons/Madewithdesignfolio";
+import { BACKGROUND_MODE, hasNoWallpaper } from "@/lib/wallpaper";
+import { cn } from "@/lib/utils";
 
 export default function Index() {
   const {
@@ -24,7 +26,12 @@ export default function Index() {
     setWallpaper,
     setWallpaperEffects,
     wallpaperUrl,
+    wallpaperColorResolved,
     wallpaperEffects,
+    wallpaper,
+    backgroundMode,
+    setShowUpgradeModal,
+    setUpgradeModalSource,
   } = useGlobalContext();
   const router = useRouter();
 
@@ -40,11 +47,29 @@ export default function Index() {
   }, [userDetails?.wallpaper, setWallpaper, setWallpaperEffects]);
 
   const ProBadge = !userDetails?.pro && (
-    <div
-      className="relative mb-[120px] flex cursor-pointer justify-center text-center lg:fixed lg:right-[36px] lg:bottom-[10px] lg:m-0 xl:block"
-      onClick={() => window.open("https://www.designfolio.me", "_blank")}
-    >
-      <MemoMadewithdesignfolio />
+    <div className="relative mb-[120px] flex justify-center text-center lg:fixed lg:right-[36px] lg:bottom-[10px] lg:m-0 xl:block">
+      <div className="relative inline-block">
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          aria-label="Remove Designfolio badge"
+          onClick={(e) => {
+            e.stopPropagation();
+            setUpgradeModalSource("remove-badge");
+            setShowUpgradeModal(true);
+          }}
+          className="absolute -top-2 -right-2 z-10 h-6 w-6 rounded-full border border-[#E5D7C4] bg-white p-0 text-gray-500 shadow-sm transition-colors hover:bg-gray-50 hover:text-gray-700 dark:border-white/10 dark:bg-[#2A2520] dark:text-white/70 dark:hover:bg-[#35302A]"
+        >
+          <X />
+        </Button>
+        <div
+          className="cursor-pointer"
+          onClick={() => window.open("https://www.designfolio.me", "_blank")}
+        >
+          <MemoMadewithdesignfolio />
+        </div>
+      </div>
     </div>
   );
 
@@ -65,11 +90,17 @@ export default function Index() {
               </Button>
             </div>
             <Canvas isEditing={false} preview />
+            {ProBadge}
           </>
         );
       case TEMPLATE_IDS.CHATFOLIO:
         return (
-          <div className="flex min-h-screen flex-col items-center bg-[#F0EDE7] transition-colors duration-700 dark:bg-[#1A1A1A]">
+          <div
+            className={cn(
+              "flex min-h-screen flex-col items-center transition-colors duration-700",
+              !transparentForWallpaper && "bg-[#F0EDE7] dark:bg-[#1A1A1A]"
+            )}
+          >
             <div className="w-full max-w-[700px] px-4 pt-6 pb-2">
               <Button
                 variant="outline"
@@ -81,7 +112,9 @@ export default function Index() {
                 Exit Preview
               </Button>
             </div>
+            <div aria-hidden="true" style={{ height: 64 }} />
             <Chat preview />
+            {ProBadge}
           </div>
         );
       case TEMPLATE_IDS.SPOTLIGHT:
@@ -96,6 +129,7 @@ export default function Index() {
               <ArrowLeft className="h-4 w-4" />
               Go Back
             </Button>
+            <div aria-hidden="true" style={{ height: 64 }} />
             <Minimal userDetails={userDetails} edit={false} />
             {ProBadge}
           </>
@@ -114,6 +148,7 @@ export default function Index() {
                 Exit Preview
               </Button>
             </div>
+            <div aria-hidden="true" style={{ height: 64 }} />
             <Mono preview />
             {ProBadge}
           </>
@@ -132,6 +167,7 @@ export default function Index() {
                 </button>
               </div>
             </div>
+            <div aria-hidden="true" style={{ height: 64 }} />
             <Professional isEditing={false} preview />
             {ProBadge}
           </>
@@ -185,15 +221,38 @@ export default function Index() {
     template === TEMPLATE_IDS.PROFESSIONAL ||
     template === TEMPLATE_IDS.CHATFOLIO;
 
+  const isHeaderMode = backgroundMode === BACKGROUND_MODE.HEADER;
+  const hasBackground = !hasNoWallpaper(wallpaper, template) || !!wallpaperColorResolved;
+  const transparentForWallpaper = hasBackground && !isHeaderMode;
+
   return (
-    <>
-      <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
-      <main className="min-h-screen">
-        <div className={`mx-auto px-2 md:px-4 lg:px-0 ${fullWidth ? "" : "max-w-[848px]"}`}>
+    <div className="relative">
+      <WallpaperBackground
+        wallpaperUrl={wallpaperUrl}
+        backgroundColor={wallpaperColorResolved}
+        mode={backgroundMode}
+        effects={wallpaperEffects}
+      />
+      <main
+        className={cn(
+          "min-h-screen transition-colors duration-700",
+          !transparentForWallpaper && template !== TEMPLATE_IDS.CHATFOLIO && "bg-background",
+          !transparentForWallpaper &&
+            template === TEMPLATE_IDS.CHATFOLIO &&
+            "bg-[#F0EDE7] dark:bg-[#1A1A1A]"
+        )}
+      >
+        <div
+          className={cn(
+            "mx-auto px-2 md:px-4 lg:px-0",
+            !fullWidth && "max-w-[848px]",
+            isHeaderMode && template !== TEMPLATE_IDS.RETRO_OS && "relative z-10"
+          )}
+        >
           {userDetails && renderTemplate()}
         </div>
       </main>
-    </>
+    </div>
   );
 }
 

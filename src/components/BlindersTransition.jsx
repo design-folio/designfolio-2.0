@@ -32,9 +32,24 @@ const EASE_OPEN = [0.22, 1, 0.36, 1];
 
 // ─── Route filter ────────────────────────────────────────────────────────────
 
+// Subdomain/custom domain: proxy rewrites "/" to the portfolio home (blinders).
+// Main domain: "/" is the landing page (never blinders).
+function isPortfolioHost() {
+  if (typeof window === "undefined") return false;
+  const host = window.location.hostname;
+  const base = process.env.NEXT_PUBLIC_BASE_DOMAIN;
+  return !(
+    host === "localhost" ||
+    host === base ||
+    host === `www.${base}` ||
+    host === `beta.${base}`
+  );
+}
+
 function isBlindersRoute(url) {
   const path = url.split("?")[0];
   return (
+    (path === "/" && isPortfolioHost()) ||
     path === "/builder" ||
     path === "/portfolio-preview" ||
     /^\/preview\/[^/]+$/.test(path) ||

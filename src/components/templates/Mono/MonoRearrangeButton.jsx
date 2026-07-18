@@ -31,7 +31,7 @@ export const MonoRearrangeButton = ({ onClick, title, tooltipText, ariaLabel, ..
           sideOffset={8}
           className="bg-tooltip-bg-color text-tooltip-text-color rounded-xl border-0 px-4 py-2 shadow-xl"
         >
-          <span className="text-sm font-medium">{tooltipText}</span>
+          <span className="text-scaled-14 font-medium">{tooltipText}</span>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

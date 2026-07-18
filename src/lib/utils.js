@@ -1,5 +1,14 @@
 import clsx from "clsx";
-import { twMerge } from "tailwind-merge";
+import { extendTailwindMerge } from "tailwind-merge";
+
+// HACK: teach tailwind-merge about text-scaled-* (typography.css), else it's misread as a text-color class and dropped when merged with text-[#hex]
+const twMerge = extendTailwindMerge({
+  extend: {
+    classGroups: {
+      "font-size": [{ text: [(value) => /^scaled-\d+$/.test(value)] }],
+    },
+  },
+});
 
 export function cn(...inputs) {
   return twMerge(clsx(inputs));

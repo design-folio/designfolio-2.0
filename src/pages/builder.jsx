@@ -26,12 +26,13 @@ import MacOSTemplate from "@/components/comp/MacOSTemplate";
 import ProWarning from "@/components/proWarning";
 import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { hasNoWallpaper } from "@/lib/wallpaper";
+import { hasNoWallpaper, BACKGROUND_MODE } from "@/lib/wallpaper";
 import { UnsavedChangesDialog } from "@/components/ui/UnsavedChangesDialog";
 import { ReplacePortfolioDialog } from "@/components/ui/ReplacePortfolioDialog";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { CourseCard } from "@/components/CourceCard";
 import WallpaperBackground from "@/components/WallpaperBackground";
+import ContainerResizer from "@/components/resizer/ContainerResizer";
 import AiToolsWorkspace from "@/components/AiToolsWorkspace";
 import AppSidebar from "@/components/Sidebars";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -55,7 +56,9 @@ export default function Index() {
     setWallpaper,
     wallpaper,
     wallpaperUrl,
+    wallpaperColorResolved,
     wallpaperEffects,
+    backgroundMode,
     activeSidebar,
     closeSidebar,
     showUnsavedWarning,
@@ -293,11 +296,20 @@ export default function Index() {
 
   const t = userDetails?.template ?? TEMPLATE_IDS.CANVAS;
 
+  const isHeaderMode = backgroundMode === BACKGROUND_MODE.HEADER;
+  // A visible background is either an image wallpaper or a solid colour.
+  const hasBackground = !hasNoWallpaper(wallpaper, template) || !!wallpaperColorResolved;
+  // Page shows the full-page background (transparent) only when a background exists AND full-page mode.
+  // Header mode + no background both keep the page background solid.
+  const transparentForWallpaper = hasBackground && !isHeaderMode;
+
   return (
     <SidebarProvider {...sidebarProviderProps}>
-      <div className="min-w-0 flex-1">
+      <div className="relative min-w-0 flex-1">
         <WallpaperBackground
           wallpaperUrl={wallpaperUrl}
+          backgroundColor={wallpaperColorResolved}
+          mode={backgroundMode}
           effects={
             t === TEMPLATE_IDS.RETRO_OS
               ? { ...(wallpaperEffects || {}), motion: false }
@@ -306,23 +318,35 @@ export default function Index() {
         />
         <main
           className={cn(
-            "min-h-screen",
-            t === TEMPLATE_IDS.CHATFOLIO
-              ? "flex justify-center bg-[#F0EDE7] transition-colors duration-700 dark:bg-[#1A1A1A]"
-              : hasNoWallpaper(wallpaper, template) &&
-                  "bg-background font-inter text-foreground selection:bg-foreground selection:text-background flex justify-center transition-colors duration-700"
+            "flex min-h-screen justify-center transition-colors duration-700",
+            t === TEMPLATE_IDS.CHATFOLIO &&
+              !transparentForWallpaper &&
+              "bg-[#F0EDE7] dark:bg-[#1A1A1A]",
+            t !== TEMPLATE_IDS.CHATFOLIO &&
+              !transparentForWallpaper &&
+              "bg-background font-inter text-foreground selection:bg-foreground selection:text-background"
           )}
         >
-          <div
+          <ContainerResizer
             className={cn(
-              "mx-auto w-full",
+              isHeaderMode && t !== TEMPLATE_IDS.RETRO_OS && "relative z-10",
               {
-                [TEMPLATE_IDS.CHATFOLIO]: "py-[94px]",
+                [TEMPLATE_IDS.CHATFOLIO]: "pt-10",
                 [TEMPLATE_IDS.SPOTLIGHT]: "pt-24",
                 [TEMPLATE_IDS.PROFESSIONAL]: "pt-24",
                 [TEMPLATE_IDS.RETRO_OS]: "",
-              }[t] ?? "max-w-[880px] px-2 pt-24 pb-0 md:px-4 lg:px-0"
+              }[t] ?? "px-2 pt-24 pb-0 md:px-4 lg:px-0"
             )}
+            contentClassName={
+              [
+                TEMPLATE_IDS.MONO,
+                TEMPLATE_IDS.PROFESSIONAL,
+                TEMPLATE_IDS.CHATFOLIO,
+                TEMPLATE_IDS.SPOTLIGHT,
+              ].includes(t)
+                ? "mt-14"
+                : undefined
+            }
           >
             {userDetails && !userDetails?.pro && TEMPLATES_BY_ID[t]?.isPro && <ProWarning />}
             {userDetails && (
@@ -340,7 +364,7 @@ export default function Index() {
             {/* {userDetails && taskPercentage !== 100 && template !== 4 && (
               <BottomTask />
             )} */}
-          </div>
+          </ContainerResizer>
           <Modal
             show={
               showModal &&

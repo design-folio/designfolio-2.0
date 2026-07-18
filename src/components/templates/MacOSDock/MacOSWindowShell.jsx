@@ -10,6 +10,7 @@ import { _updateProject } from "@/network/post-request";
 import queryClient from "@/network/queryClient";
 import { toast } from "react-toastify";
 import { useGlobalContext } from "@/context/globalContext";
+import { useProGate } from "@/hooks/useProGate";
 import Toggle from "@/components/toggle";
 import Button from "@/components/button";
 import Text from "@/components/text";
@@ -55,6 +56,7 @@ const MacOSWindowShell = ({
   const [isMaximized, setIsMaximized] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
   const [isPasswordEnabled, setIsPasswordEnabled] = useState(!!hasPassword);
+  const requirePro = useProGate();
   const [showEye, setShowEye] = useState(false);
 
   const effectiveProjectId = projectId || router.query.id;
@@ -84,6 +86,8 @@ const MacOSWindowShell = ({
 
   const handlePasswordToggleProtected = async () => {
     if (!effectiveProjectId) return;
+    // Enabling protection is Pro-only; disabling stays free.
+    if (!isPasswordEnabled && requirePro("password-protect")) return;
     try {
       const res = await _updateProject(effectiveProjectId, {
         protected: !isPasswordEnabled,

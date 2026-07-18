@@ -27,7 +27,7 @@ function ExperienceDescription({ desc }) {
         }}
         initial="hidden"
         animate="show"
-        className="mt-1 text-[14px] leading-relaxed break-words whitespace-normal"
+        className="text-scaled-14 mt-1 leading-relaxed break-words whitespace-normal"
         style={{ color: "var(--tiptap-work-paragraph, #7a736c)" }}
       >
         {words.map((word, wordIndex) => {
@@ -127,7 +127,7 @@ export default function ChatExperienceSection({
                   ) : (
                     <div className="space-y-4">
                       <div className="mb-3 flex items-center justify-between">
-                        <p className="text-[15px] text-[#1A1A1A] dark:text-[#F0EDE7]">
+                        <p className="text-scaled-15 text-[#1A1A1A] dark:text-[#F0EDE7]">
                           Here&apos;s a quick overview of my experience:
                         </p>
                         {canEdit && experiences.length >= 2 && (
@@ -170,14 +170,14 @@ export default function ChatExperienceSection({
                             <AccordionTrigger className="px-1 py-3 hover:no-underline">
                               <div className="flex w-full flex-col pr-4 text-left">
                                 <div className="flex w-full items-baseline justify-between">
-                                  <h4 className="text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+                                  <h4 className="text-scaled-15 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                                     {exp.role}
                                   </h4>
-                                  <span className="text-[13px] text-[#7A736C] dark:text-[#B5AFA5]">
+                                  <span className="text-scaled-13 text-[#7A736C] dark:text-[#B5AFA5]">
                                     {`${exp.startMonth || ""} ${exp.startYear || ""}`}
                                   </span>
                                 </div>
-                                <span className="mt-0.5 text-[14px] text-[#7A736C] dark:text-[#B5AFA5]">
+                                <span className="text-scaled-14 mt-0.5 text-[#7A736C] dark:text-[#B5AFA5]">
                                   {exp.company}
                                 </span>
                               </div>
@@ -216,16 +216,16 @@ export default function ChatExperienceSection({
                       />
                     </svg>
                   </div>
-                  <h3 className="mb-1 text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+                  <h3 className="text-scaled-15 mb-1 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                     No experience yet
                   </h3>
-                  <p className="mb-5 max-w-[250px] text-[13px] text-[#7A736C] dark:text-[#9E9893]">
+                  <p className="text-scaled-13 mb-5 max-w-[250px] text-[#7A736C] dark:text-[#9E9893]">
                     Add your work experience to showcase your career journey.
                   </p>
                   {canEdit && (
                     <Button
                       onClick={() => openNewWork()}
-                      className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
+                      className="text-scaled-13 flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
                     >
                       <Plus className="h-3.5 w-3.5" />
                       Add Experience

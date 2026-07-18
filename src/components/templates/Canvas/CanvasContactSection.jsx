@@ -15,7 +15,7 @@ function LinkButton({ label, icon: Icon, iconRotate = 0, onClick }) {
   return (
     <motion.div whileHover="hover" initial="rest" className="max-w-full min-w-0 flex-[1_1_10rem]">
       <Button variant="outline" size="sm" onClick={onClick} className={btnClass}>
-        <span className="min-w-0 truncate text-left text-sm font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+        <span className="text-scaled-14 min-w-0 truncate text-left font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
           {label}
         </span>
         <motion.div
@@ -97,7 +97,7 @@ function CanvasContactSection({ isEditing }) {
       )}
 
       <div className="px-5 py-8 md:px-8">
-        <h2 className="font-dm-mono mb-6 text-[14px] font-bold tracking-widest text-[#463B34] uppercase dark:text-[#D4C9BC]">
+        <h2 className="font-dm-mono text-scaled-14 mb-6 font-bold tracking-widest text-[#463B34] uppercase dark:text-[#D4C9BC]">
           Contact
         </h2>
 
@@ -177,7 +177,7 @@ function CanvasContactSection({ isEditing }) {
         {showAddButton && (
           <button
             onClick={openFooter}
-            className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#E5D7C4] py-3.5 text-sm text-[#B5AFA5] transition-colors hover:border-[#1A1A1A]/20 hover:text-[#7A736C] dark:border-white/10 dark:text-[#7A736C] dark:hover:border-white/20 dark:hover:text-[#B5AFA5]"
+            className="text-scaled-14 mt-3 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-[#E5D7C4] py-3.5 text-[#B5AFA5] transition-colors hover:border-[#1A1A1A]/20 hover:text-[#7A736C] dark:border-white/10 dark:text-[#7A736C] dark:hover:border-white/20 dark:hover:text-[#B5AFA5]"
           >
             <Plus className="h-3.5 w-3.5" />
             Add

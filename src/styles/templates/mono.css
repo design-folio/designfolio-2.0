@@ -63,7 +63,7 @@
   top: 0;
   bottom: 0;
   width: 1px;
-  background-image: linear-gradient(to bottom, #c8c2ba 50%, transparent 50%);
+  background-image: linear-gradient(to bottom, rgba(200, 194, 186, 0.55) 50%, transparent 50%);
   background-size: 1px 10px;
   z-index: 0;
   pointer-events: none;
@@ -78,10 +78,18 @@
 }
 
 [data-template="mono"] .custom-dashed-t {
-  height: 1px;
   width: 100%;
-  background-image: linear-gradient(to right, #c8c2ba 50%, transparent 50%);
+  border-top: 1px solid rgba(200, 194, 186, 0.55);
+}
+[data-template="mono"] .mono-no-wallpaper .custom-dashed-t {
+  border-top: 0;
+  height: 1px;
+  background-image: linear-gradient(to right, rgba(200, 194, 186, 0.55) 50%, transparent 50%);
   background-size: 10px 1px;
+}
+
+[data-theme="dark"][data-template="mono"] .mono-no-wallpaper .custom-dashed-t {
+  background-image: linear-gradient(to right, rgba(58, 53, 46, 0.7) 50%, transparent 50%);
 }
 
 [data-template="mono"] .dino-color {
@@ -114,11 +122,11 @@
 
 [data-theme="dark"][data-template="mono"] .custom-dashed-x::before,
 [data-theme="dark"][data-template="mono"] .custom-dashed-x::after {
-  background-image: linear-gradient(to bottom, #3a352e 50%, transparent 50%);
+  background-image: linear-gradient(to bottom, rgba(58, 53, 46, 0.7) 50%, transparent 50%);
 }
 
 [data-theme="dark"][data-template="mono"] .custom-dashed-t {
-  background-image: linear-gradient(to right, #3a352e 50%, transparent 50%);
+  border-top-color: rgba(58, 53, 46, 0.7);
 }
 
 [data-theme="dark"][data-template="mono"] .dino-color {

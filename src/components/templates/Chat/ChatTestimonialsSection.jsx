@@ -69,7 +69,7 @@ export default function ChatTestimonialsSection({
                   <div className="mt-auto flex h-8 w-8 shrink-0 items-end">
                     <ChatAvatar avatarSrc={avatarSrc} show={chatRevealStep < s(15)} />
                   </div>
-                  <div className="flex min-h-[46px] items-center rounded-2xl rounded-tl-sm rounded-bl-sm border border-black/5 bg-[#E5E2DB] px-4 py-3 text-[15px] leading-relaxed text-[#1A1A1A] transition-colors duration-100 dark:border-white/5 dark:bg-[#2A2520] dark:text-[#F0EDE7]">
+                  <div className="text-scaled-15 flex min-h-[46px] items-center rounded-2xl rounded-tl-sm rounded-bl-sm border border-black/5 bg-[#E5E2DB] px-4 py-3 leading-relaxed text-[#1A1A1A] transition-colors duration-100 dark:border-white/5 dark:bg-[#2A2520] dark:text-[#F0EDE7]">
                     {chatRevealStep === s(14) ? (
                       <TypingIndicator />
                     ) : (
@@ -151,7 +151,7 @@ export default function ChatTestimonialsSection({
                               />
                             </div>
                             <div className="flex min-w-0 flex-col">
-                              <span className="truncate text-[14px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+                              <span className="text-scaled-14 truncate font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                                 {review?.name || "Anonymous"}
                               </span>
                               {review?.designation && (
@@ -163,7 +163,7 @@ export default function ChatTestimonialsSection({
                                   >
                                     <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
                                   </svg>
-                                  <span className="truncate text-[12px] text-[#7A736C] dark:text-[#B5AFA5]">
+                                  <span className="text-scaled-12 truncate text-[#7A736C] dark:text-[#B5AFA5]">
                                     {review.designation}
                                   </span>
                                 </div>
@@ -177,7 +177,7 @@ export default function ChatTestimonialsSection({
                               {/* Clipped region + gradient as a single positioned unit */}
                               <div className="relative">
                                 <p
-                                  className={`text-[13px] leading-relaxed break-words text-[#1A1A1A] italic dark:text-[#F0EDE7] overflow-hidden${isExpanded ? "" : " line-clamp-4"}`}
+                                  className={`text-scaled-13 leading-relaxed break-words text-[#1A1A1A] italic dark:text-[#F0EDE7] overflow-hidden${isExpanded ? "" : " line-clamp-4"}`}
                                 >
                                   {plainText ? `"${plainText}"` : ""}
                                 </p>
@@ -194,7 +194,7 @@ export default function ChatTestimonialsSection({
                                   e.stopPropagation();
                                   toggleExpand(reviewId);
                                 }}
-                                className="mt-2 flex items-center gap-0.5 text-[12px] font-medium text-[#7A736C] transition-[color,transform] duration-150 hover:text-[#1A1A1A] active:scale-[0.97] dark:text-[#B5AFA5] dark:hover:text-[#F0EDE7]"
+                                className="text-scaled-12 mt-2 flex items-center gap-0.5 font-medium text-[#7A736C] transition-[color,transform] duration-150 hover:text-[#1A1A1A] active:scale-[0.97] dark:text-[#B5AFA5] dark:hover:text-[#F0EDE7]"
                               >
                                 {isExpanded ? "View less" : "View more"}
                                 <motion.span
@@ -210,7 +210,7 @@ export default function ChatTestimonialsSection({
                               </button>
                             </div>
                           ) : (
-                            <p className="text-[13px] leading-relaxed text-[#1A1A1A] italic dark:text-[#F0EDE7]">
+                            <p className="text-scaled-13 leading-relaxed text-[#1A1A1A] italic dark:text-[#F0EDE7]">
                               {plainText ? `"${plainText}"` : ""}
                             </p>
                           )}
@@ -230,7 +230,7 @@ export default function ChatTestimonialsSection({
                     <div className="h-px flex-1 bg-black/[0.07] dark:bg-white/[0.07]" />
                     <button
                       onClick={() => setVisibleCount((v) => v + INITIAL_VISIBLE)}
-                      className="flex items-center gap-1 text-[11px] font-medium whitespace-nowrap text-[#7A736C] transition-[color,transform] duration-150 hover:text-[#1A1A1A] active:scale-[0.97] dark:text-[#B5AFA5] dark:hover:text-[#F0EDE7]"
+                      className="text-scaled-11 flex items-center gap-1 font-medium whitespace-nowrap text-[#7A736C] transition-[color,transform] duration-150 hover:text-[#1A1A1A] active:scale-[0.97] dark:text-[#B5AFA5] dark:hover:text-[#F0EDE7]"
                     >
                       {reviews.length - visibleCount} more
                       <ChevronDown className="h-3 w-3" />
@@ -264,16 +264,16 @@ export default function ChatTestimonialsSection({
                       />
                     </svg>
                   </div>
-                  <h3 className="mb-1 text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+                  <h3 className="text-scaled-15 mb-1 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                     No recommendations yet
                   </h3>
-                  <p className="mb-5 max-w-[250px] text-[13px] text-[#7A736C] dark:text-[#9E9893]">
+                  <p className="text-scaled-13 mb-5 max-w-[250px] text-[#7A736C] dark:text-[#9E9893]">
                     Add recommendations to build trust and credibility.
                   </p>
                   {canEdit && (
                     <Button
                       onClick={() => openNewReview()}
-                      className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-4 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
+                      className="text-scaled-13 flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-4 font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
                     >
                       <Plus className="h-3.5 w-3.5" />
                       Add Testimonial

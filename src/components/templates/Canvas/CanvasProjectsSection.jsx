@@ -9,6 +9,7 @@ import {
   ChevronsUpDown,
   WandSparklesIcon,
   Sparkles,
+  Rows3,
 } from "lucide-react";
 import { Button } from "../../ui/button";
 import {
@@ -34,6 +35,7 @@ function ProjectCard({
   project,
   isEditing,
   isPreview,
+  single,
   onNavigate,
   onPrefetch,
   onDelete,
@@ -80,24 +82,26 @@ function ProjectCard({
           </Button>
         </div>
       )}
-      <div className="pointer-events-none relative aspect-[3/2] overflow-hidden rounded-2xl border border-black/5 bg-[#F5F5F5] dark:border-white/10 dark:bg-[#1A1A1A]">
+      <div
+        className={`pointer-events-none relative overflow-hidden rounded-2xl border border-black/5 bg-[#F5F5F5] dark:border-white/10 dark:bg-[#1A1A1A] ${single ? "aspect-[16/9]" : "aspect-[3/2]"}`}
+      >
         <img
           src={project?.thumbnail?.url}
           alt={project?.title || "project image"}
           className="h-full w-full object-cover transition-transform duration-700 group-hover/card:scale-105"
         />
         {project?.hidden && (
-          <div className="absolute top-3 left-3 flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1 text-xs font-medium text-amber-700 dark:bg-amber-950/30 dark:text-amber-400">
+          <div className="text-scaled-12 absolute top-3 left-3 flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1 font-medium text-amber-700 dark:bg-amber-950/30 dark:text-amber-400">
             <EyeOff className="h-3 w-3" />
             Hidden from live site
           </div>
         )}
       </div>
       <div className="pointer-events-none">
-        <h3 className="mb-2 line-clamp-2 text-base leading-snug font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+        <h3 className="text-scaled-16 mb-2 line-clamp-2 leading-snug font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
           {project?.title}
         </h3>
-        <p className="line-clamp-2 text-sm leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]">
+        <p className="text-scaled-14 line-clamp-2 leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]">
           {project?.description}
         </p>
       </div>
@@ -125,17 +129,17 @@ function ProjectsEmptyState({ isEditing, openModal, openSidebar }) {
           />
         </svg>
       </div>
-      <h3 className="mb-1 text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+      <h3 className="text-scaled-15 mb-1 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
         No projects yet
       </h3>
-      <p className="mb-5 max-w-[250px] text-[13px] text-[#7A736C] dark:text-[#9E9893]">
+      <p className="text-scaled-13 mb-5 max-w-[250px] text-[#7A736C] dark:text-[#9E9893]">
         Add some projects to showcase your work and experience.
       </p>
       {isEditing && (
         <div className="flex flex-col items-center gap-3">
           <Button
             onClick={() => openSidebar(sidebars.project)}
-            className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
+            className="text-scaled-13 flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
           >
             <Pencil className="h-3.5 w-3.5" />
             Add Project
@@ -143,7 +147,7 @@ function ProjectsEmptyState({ isEditing, openModal, openSidebar }) {
           <Button
             variant="secondary"
             onClick={() => openModal(modals.aiProject)}
-            className="h-9 rounded-full px-5 text-[13px] font-medium"
+            className="text-scaled-13 h-9 rounded-full px-5 font-medium"
           >
             <Sparkles className="h-3.5 w-3.5" />
             Write with AI
@@ -166,11 +170,13 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
     updateCache,
     setShowUpgradeModal,
     setUpgradeModalUnhideProject,
+    changeProjectsColumns,
   } = useGlobalContext();
   const router = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const { projects } = userDetails || {};
+  const columns = userDetails?.projectsColumns ?? 2;
 
   const visibleProjects = useMemo(() => {
     if (!isEditing && projects) {
@@ -246,6 +252,32 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
               onClick={() => openSidebar(sidebars.sortProjects)}
             />
           )}
+          {(projects?.length ?? 0) >= 1 && (
+            <CanvasSectionButton
+              icon={
+                columns === 1 ? (
+                  <Rows3 className="h-3.5 w-3.5" />
+                ) : (
+                  <svg
+                    className="h-3.5 w-3.5"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.25"
+                    strokeLinejoin="round"
+                  >
+                    <rect x="1.5" y="1.5" width="5" height="5" rx="1" />
+                    <rect x="9.5" y="1.5" width="5" height="5" rx="1" />
+                    <rect x="1.5" y="9.5" width="5" height="5" rx="1" />
+                    <rect x="9.5" y="9.5" width="5" height="5" rx="1" />
+                  </svg>
+                )
+              }
+              ariaLabel="Toggle project columns"
+              tooltipText={columns === 1 ? "Switch to two columns" : "Switch to single column"}
+              onClick={() => changeProjectsColumns(columns === 1 ? 2 : 1)}
+            />
+          )}
           <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
             <DropdownMenuTrigger asChild>
               <CanvasSectionButton
@@ -261,7 +293,7 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
             >
               <DropdownMenuItem
                 onClick={() => openSidebar(sidebars.project)}
-                className="flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-[13px] text-[#1A1A1A] hover:bg-black/5 focus:bg-black/5 dark:text-[#F0EDE7] dark:hover:bg-white/10 dark:focus:bg-white/5"
+                className="text-scaled-13 flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-[#1A1A1A] hover:bg-black/5 focus:bg-black/5 dark:text-[#F0EDE7] dark:hover:bg-white/10 dark:focus:bg-white/5"
               >
                 <Pencil className="h-3.5 w-3.5" />
                 <span>Write from Scratch</span>
@@ -269,7 +301,7 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
 
               <DropdownMenuItem
                 onClick={() => openModal(modals.aiProject)}
-                className="flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-[13px] text-[#1A1A1A] hover:bg-black/5 focus:bg-black/5 dark:text-[#F0EDE7] dark:hover:bg-white/10 dark:focus:bg-white/5"
+                className="text-scaled-13 flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-[#1A1A1A] hover:bg-black/5 focus:bg-black/5 dark:text-[#F0EDE7] dark:hover:bg-white/10 dark:focus:bg-white/5"
               >
                 <Sparkles className="h-3.5 w-3.5" />
                 <span>Write using AI</span>
@@ -285,11 +317,11 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
         </CanvasSectionControls>
       )}
 
-      <h2 className="font-dm-mono mb-3 text-[14px] font-medium text-[#7A736C] dark:text-[#B5AFA5]">
+      <h2 className="font-dm-mono text-scaled-14 mb-3 font-medium text-[#7A736C] dark:text-[#B5AFA5]">
         PROJECTS
       </h2>
 
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div className={`grid grid-cols-1 gap-6 ${columns === 1 ? "" : "md:grid-cols-2"}`}>
         {visibleProjects?.length === 0 ? (
           <ProjectsEmptyState
             isEditing={isEditing}
@@ -304,6 +336,7 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
                 project={project}
                 isEditing={isEditing}
                 isPreview={preview && !publicView}
+                single={columns === 1}
                 onNavigate={handleNavigation}
                 onPrefetch={handlePrefetch}
                 onDelete={onDeleteProject}
@@ -312,10 +345,12 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
             ))}
             {isEditing && (
               <div className="flex flex-col gap-4">
-                <div className="flex aspect-[3/2] flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-black/15 bg-black/[0.015] transition-colors hover:bg-black/[0.03] dark:border-white/10 dark:bg-white/[0.015] dark:hover:bg-white/[0.03]">
+                <div
+                  className={`flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-black/15 bg-black/[0.015] transition-colors hover:bg-black/[0.03] dark:border-white/10 dark:bg-white/[0.015] dark:hover:bg-white/[0.03] ${columns === 1 ? "aspect-[16/9]" : "aspect-[3/2]"}`}
+                >
                   <Button
                     onClick={() => openSidebar(sidebars.project)}
-                    className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
+                    className="text-scaled-13 flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
                   >
                     <Pencil className="h-3.5 w-3.5" />
                     Add Project
@@ -323,7 +358,7 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
                   <Button
                     variant="secondary"
                     onClick={() => openModal(modals.aiProject)}
-                    className="flex h-9 items-center gap-2 rounded-full px-5 text-[13px] font-medium"
+                    className="text-scaled-13 flex h-9 items-center gap-2 rounded-full px-5 font-medium"
                   >
                     <Sparkles className="h-3.5 w-3.5" />
                     Write with AI

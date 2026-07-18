@@ -49,7 +49,7 @@ export const SpotlightFooter = ({ userDetails, edit }) => {
 
   return (
     <footer className="border-secondary-border border-t pt-16 pb-[140px] lg:pb-[80px]">
-      <div className="container mx-auto max-w-3xl px-4">
+      <div className="mx-auto w-full px-4">
         <motion.div
           ref={ref}
           variants={containerVariants}
@@ -57,13 +57,13 @@ export const SpotlightFooter = ({ userDetails, edit }) => {
           animate={isInView ? "visible" : "hidden"}
           className="flex flex-col items-center gap-8"
         >
-          <h2 className="text-foreground max-w-2xl text-center text-3xl leading-tight font-bold">
+          <h2 className="text-foreground text-scaled-30 max-w-2xl text-center leading-tight font-bold">
             Let&apos;s work together
           </h2>
           {userDetails?.resume?.url && (
             <div className="flex flex-wrap justify-center gap-4">
               <a href={userDetails?.resume?.url} download={true} target="_blank">
-                <Button size="lg" variant="outline" className="px-8 text-lg">
+                <Button size="lg" variant="outline" className="text-scaled-18 px-8">
                   <Download className="mr-2" />
                   Download Resume
                 </Button>

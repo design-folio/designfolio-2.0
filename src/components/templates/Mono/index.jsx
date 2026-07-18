@@ -1,7 +1,6 @@
 "use client";
 import { SmoothCursor } from "@/components/ui/smooth-cursor";
 import { SectionVisibilityButton, ProjectVisibilityButton } from "@/components/section";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -13,8 +12,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Switch } from "@/components/ui/switch";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useGlobalContext } from "@/context/globalContext";
 import { _updateProject } from "@/network/post-request";
+import { cn } from "@/lib/utils";
 import { DEFAULT_PEGBOARD_IMAGES } from "@/lib/aboutConstants";
 import {
   ABOUT_STORY_CHAR_THRESHOLD,
@@ -23,6 +24,7 @@ import {
 } from "@/lib/aboutStoryPreview";
 import { DEFAULT_SECTION_ORDER, modals, normalizeSectionOrder, sidebars } from "@/lib/constant";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
+import ProfileAvatar from "@/components/templates/ProfileAvatar";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { AtSignIcon, DownloadIcon, DribbbleIcon, TwitterIcon } from "lucide-animated";
 import {
@@ -31,6 +33,7 @@ import {
   EyeOff,
   Pencil,
   Plus,
+  Rows3,
   Sparkles,
   Trash2,
   UserCircle,
@@ -93,6 +96,9 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
     updateCache,
     setShowUpgradeModal,
     setUpgradeModalUnhideProject,
+    containerMaxWidth,
+    hasWallpaper,
+    changeProjectsColumns,
   } = useGlobalContext();
   const avatarSrc = useMemo(() => getUserAvatarImage(userDetails), [userDetails]);
   const atSignRef = useRef(null);
@@ -163,6 +169,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
     () => (preview ? projects.filter((project) => !project.hidden) : projects),
     [preview, projects]
   );
+  const projectsColumns = userDetails?.projectsColumns ?? 2;
   const avatarFallbackText = useMemo(() => getInitials(displayName, "U"), [displayName]);
 
   useEffect(() => {
@@ -418,7 +425,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         <motion.div variants={itemVariants} className="custom-dashed-t"></motion.div>
 
         {/* Experience Section — using MonoExperienceSection */}
-        <MonoExperienceSection isEditing={isEditing} />
+        <MonoExperienceSection isEditing={isEditing} hasWallpaper={hasWallpaper} />
       </React.Fragment>
     ),
     projects:
@@ -430,7 +437,10 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           <motion.div
             id="section-projects"
             variants={itemVariants}
-            className="group/section relative px-6 py-10 pb-16 md:px-10"
+            className={cn(
+              "group/section relative px-6 py-10 pb-16 md:px-10",
+              hasWallpaper && "bg-white dark:bg-[#1A1A1A]"
+            )}
           >
             {isEditing && (
               <div className="absolute top-4 right-4 z-10 flex gap-2 transition-opacity">
@@ -457,14 +467,14 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                   >
                     <DropdownMenuItem
                       onClick={() => openSidebar?.(sidebars.project)}
-                      className="flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-[13px] text-[#1A1A1A] hover:bg-black/5 focus:bg-black/5 dark:text-[#F0EDE7] dark:hover:bg-white/5 dark:focus:bg-white/5"
+                      className="text-scaled-13 flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-[#1A1A1A] hover:bg-black/5 focus:bg-black/5 dark:text-[#F0EDE7] dark:hover:bg-white/5 dark:focus:bg-white/5"
                     >
                       <Pencil className="h-3.5 w-3.5" />
                       <span>Write from Scratch</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       onClick={() => openModal?.(modals.aiProject)}
-                      className="flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-[13px] text-[#1A1A1A] hover:bg-black/5 focus:bg-black/5 dark:text-[#F0EDE7] dark:hover:bg-white/5 dark:focus:bg-white/5"
+                      className="text-scaled-13 flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-[#1A1A1A] hover:bg-black/5 focus:bg-black/5 dark:text-[#F0EDE7] dark:hover:bg-white/5 dark:focus:bg-white/5"
                     >
                       <Sparkles className="h-3.5 w-3.5" />
                       <span>Write using AI</span>
@@ -485,7 +495,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                     }}
                   >
                     <SheetHeader className="m-0 flex h-[65px] shrink-0 flex-row items-center space-y-0 border-b border-black/10 px-5 py-4 dark:border-white/10">
-                      <SheetTitle className="m-0 text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+                      <SheetTitle className="text-scaled-15 m-0 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                         Add Project
                       </SheetTitle>
                     </SheetHeader>
@@ -495,20 +505,20 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                         <div className="space-y-1.5">
                           <Label
                             htmlFor="proj-title"
-                            className="ml-1 text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]"
+                            className="text-scaled-13 ml-1 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]"
                           >
                             Project Title
                           </Label>
                           <Input
                             id="proj-title"
                             placeholder="e.g. Slate"
-                            className="h-10 rounded-xl border-transparent bg-black/[0.03] px-3.5 text-[14px] text-[#1A1A1A] shadow-none transition-all placeholder:text-black/30 focus-visible:border-black/20 focus-visible:bg-transparent focus-visible:ring-2 focus-visible:ring-black/10 dark:bg-white/[0.03] dark:text-[#F0EDE7] dark:placeholder:text-white/30 dark:focus-visible:border-white/20 dark:focus-visible:ring-white/10"
+                            className="text-scaled-14 h-10 rounded-xl border-transparent bg-black/[0.03] px-3.5 text-[#1A1A1A] shadow-none transition-all placeholder:text-black/30 focus-visible:border-black/20 focus-visible:bg-transparent focus-visible:ring-2 focus-visible:ring-black/10 dark:bg-white/[0.03] dark:text-[#F0EDE7] dark:placeholder:text-white/30 dark:focus-visible:border-white/20 dark:focus-visible:ring-white/10"
                           />
                         </div>
                         <div className="space-y-1.5">
                           <Label
                             htmlFor="proj-desc"
-                            className="ml-1 text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]"
+                            className="text-scaled-13 ml-1 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]"
                           >
                             Description
                           </Label>
@@ -516,11 +526,11 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                             id="proj-desc"
                             rows={3}
                             placeholder="Short description of the project"
-                            className="w-full resize-none rounded-xl border-transparent bg-black/[0.03] p-3.5 text-[14px] text-[#1A1A1A] shadow-none transition-all placeholder:text-black/30 focus-visible:border-black/20 focus-visible:bg-transparent focus-visible:ring-2 focus-visible:ring-black/10 focus-visible:outline-none dark:bg-white/[0.03] dark:text-[#F0EDE7] dark:placeholder:text-white/30 dark:focus-visible:border-white/20 dark:focus-visible:ring-white/10"
+                            className="text-scaled-14 w-full resize-none rounded-xl border-transparent bg-black/[0.03] p-3.5 text-[#1A1A1A] shadow-none transition-all placeholder:text-black/30 focus-visible:border-black/20 focus-visible:bg-transparent focus-visible:ring-2 focus-visible:ring-black/10 focus-visible:outline-none dark:bg-white/[0.03] dark:text-[#F0EDE7] dark:placeholder:text-white/30 dark:focus-visible:border-white/20 dark:focus-visible:ring-white/10"
                           />
                         </div>
                         <div className="space-y-1.5">
-                          <Label className="ml-1 text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+                          <Label className="text-scaled-13 ml-1 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                             Cover Image
                           </Label>
                           <div className="flex items-center gap-4">
@@ -530,7 +540,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                             <Button
                               variant="outline"
                               size="sm"
-                              className="h-8 rounded-full border-black/10 text-[12px] hover:bg-black/5 dark:border-white/10 dark:hover:bg-white/5"
+                              className="text-scaled-12 h-8 rounded-full border-black/10 hover:bg-black/5 dark:border-white/10 dark:hover:bg-white/5"
                             >
                               Upload Image
                             </Button>
@@ -540,10 +550,10 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                         <div className="pt-2">
                           <div className="flex items-center justify-between">
                             <div className="space-y-0.5">
-                              <Label className="ml-1 text-[13px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+                              <Label className="text-scaled-13 ml-1 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                                 Protect Project
                               </Label>
-                              <p className="ml-1 text-[12px] text-[#7A736C] dark:text-[#9E9893]">
+                              <p className="text-scaled-12 ml-1 text-[#7A736C] dark:text-[#9E9893]">
                                 Require a password to view this project (e.g., for NDAs).
                               </p>
                             </div>
@@ -574,7 +584,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                                     id="proj-password"
                                     type="password"
                                     placeholder="Enter password"
-                                    className="h-10 rounded-xl border-transparent bg-black/[0.03] px-3.5 text-[14px] text-[#1A1A1A] shadow-none transition-all placeholder:text-black/30 focus-visible:border-black/20 focus-visible:bg-transparent focus-visible:ring-2 focus-visible:ring-black/10 dark:bg-white/[0.03] dark:text-[#F0EDE7] dark:placeholder:text-white/30 dark:focus-visible:border-white/20 dark:focus-visible:ring-white/10"
+                                    className="text-scaled-14 h-10 rounded-xl border-transparent bg-black/[0.03] px-3.5 text-[#1A1A1A] shadow-none transition-all placeholder:text-black/30 focus-visible:border-black/20 focus-visible:bg-transparent focus-visible:ring-2 focus-visible:ring-black/10 dark:bg-white/[0.03] dark:text-[#F0EDE7] dark:placeholder:text-white/30 dark:focus-visible:border-white/20 dark:focus-visible:ring-white/10"
                                   />
                                 </div>
                               </motion.div>
@@ -588,13 +598,13 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                       <SheetClose asChild>
                         <Button
                           variant="outline"
-                          className="h-9 rounded-full border-black/10 px-4 text-[13px] font-medium text-[#1A1A1A] transition-colors hover:bg-black/5 dark:border-white/10 dark:text-[#F0EDE7] dark:hover:bg-white/5"
+                          className="text-scaled-13 h-9 rounded-full border-black/10 px-4 font-medium text-[#1A1A1A] transition-colors hover:bg-black/5 dark:border-white/10 dark:text-[#F0EDE7] dark:hover:bg-white/5"
                         >
                           Cancel
                         </Button>
                       </SheetClose>
                       <SheetClose asChild>
-                        <Button className="h-9 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90">
+                        <Button className="text-scaled-13 h-9 rounded-full bg-[#1A1A1A] px-5 font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90">
                           Add Project
                         </Button>
                       </SheetClose>
@@ -608,6 +618,50 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                     tooltipText="Rearrange"
                   />
                 )}
+                {visibleProjects.length >= 1 && (
+                  <TooltipProvider delayDuration={300}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="h-8 w-8 rounded-full border-black/10 bg-white p-0 opacity-100 shadow-sm transition-opacity hover:bg-gray-50 md:opacity-0 md:group-hover/section:opacity-100 dark:border-white/10 dark:bg-[#2A2520] dark:hover:bg-[#35302A]"
+                          onClick={() => changeProjectsColumns(projectsColumns === 1 ? 2 : 1)}
+                          aria-label="Toggle project columns"
+                        >
+                          {projectsColumns === 1 ? (
+                            <Rows3 className="h-3.5 w-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                          ) : (
+                            <svg
+                              className="h-3.5 w-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]"
+                              viewBox="0 0 16 16"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="1.25"
+                              strokeLinejoin="round"
+                            >
+                              <rect x="1.5" y="1.5" width="5" height="5" rx="1" />
+                              <rect x="9.5" y="1.5" width="5" height="5" rx="1" />
+                              <rect x="1.5" y="9.5" width="5" height="5" rx="1" />
+                              <rect x="9.5" y="9.5" width="5" height="5" rx="1" />
+                            </svg>
+                          )}
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent
+                        side="top"
+                        sideOffset={8}
+                        className="bg-tooltip-bg-color text-tooltip-text-color rounded-xl border-0 px-4 py-2 shadow-xl"
+                      >
+                        <span className="text-scaled-14 font-medium">
+                          {projectsColumns === 1
+                            ? "Switch to two columns"
+                            : "Switch to single column"}
+                        </span>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
                 <SectionVisibilityButton
                   sectionId="projects"
                   showOnHoverWhenVisible
@@ -615,7 +669,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                 />
               </div>
             )}
-            <h2 className="font-dm-mono mb-5 text-[14px] font-bold tracking-wider text-[#463B34] uppercase dark:text-[#D4C9BC]">
+            <h2 className="font-dm-mono text-scaled-14 mb-5 font-bold tracking-wider text-[#463B34] uppercase dark:text-[#D4C9BC]">
               Projects
             </h2>
 
@@ -636,17 +690,17 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                     />
                   </svg>
                 </div>
-                <h3 className="mb-1 text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+                <h3 className="text-scaled-15 mb-1 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                   No projects yet
                 </h3>
-                <p className="mb-5 max-w-[250px] text-[13px] text-[#7A736C] dark:text-[#9E9893]">
+                <p className="text-scaled-13 mb-5 max-w-[250px] text-[#7A736C] dark:text-[#9E9893]">
                   Add some projects to showcase your work and experience.
                 </p>
                 {isEditing && (
                   <div className="flex flex-col items-center gap-3">
                     <Button
                       onClick={() => openSidebar?.(sidebars.project)}
-                      className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
+                      className="text-scaled-13 flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
                     >
                       <Pencil className="h-3.5 w-3.5" />
                       Add Project
@@ -654,7 +708,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                     <Button
                       variant="secondary"
                       onClick={() => openModal?.(modals.aiProject)}
-                      className="border-button-outline hover:border-button-outline-hover h-9 rounded-full px-5 text-[13px] font-medium"
+                      className="border-button-outline hover:border-button-outline-hover text-scaled-13 h-9 rounded-full px-5 font-medium"
                     >
                       <Sparkles className="h-3.5 w-3.5" />
                       Write with AI
@@ -664,7 +718,9 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-1 gap-x-5 gap-y-8 sm:grid-cols-2">
+                <div
+                  className={`grid grid-cols-1 gap-x-5 gap-y-8 ${projectsColumns === 1 ? "" : "sm:grid-cols-2"}`}
+                >
                   {visibleProjects.map((project) => (
                     <div
                       key={project.id}
@@ -708,23 +764,25 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                           </Button>
                         </div>
                       )}
-                      <div className="relative mb-4 aspect-[3/2] overflow-hidden rounded-xl border border-black/5 bg-white drop-shadow-sm transition-colors group-hover:border-black/10 dark:border-white/10 dark:bg-[#2A2520] dark:group-hover:border-white/20">
+                      <div
+                        className={`relative mb-4 overflow-hidden rounded-xl border border-black/5 bg-white drop-shadow-sm transition-colors group-hover:border-black/10 dark:border-white/10 dark:bg-[#2A2520] dark:group-hover:border-white/20 ${projectsColumns === 1 ? "aspect-[16/9]" : "aspect-[3/2]"}`}
+                      >
                         <img
                           src={project.image}
                           alt={project.title}
                           className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                         />
                         {project.hidden && (
-                          <div className="absolute top-2 left-2 z-10 flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-950/30 dark:text-amber-400">
+                          <div className="text-scaled-12 absolute top-2 left-2 z-10 flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 font-medium text-amber-700 dark:bg-amber-950/30 dark:text-amber-400">
                             <EyeOff className="h-3 w-3" /> Hidden from live site
                           </div>
                         )}
                       </div>
-                      <h3 className="mb-1.5 text-base font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+                      <h3 className="text-scaled-16 mb-1.5 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                         {project.title}
                       </h3>
                       <p
-                        className="text-base leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]"
+                        className="text-scaled-16 leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]"
                         style={{ fontWeight: 450 }}
                       >
                         {project.description}
@@ -733,10 +791,12 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                   ))}
                   {isEditing && (
                     <div className="flex flex-col gap-4">
-                      <div className="flex aspect-[3/2] flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-black/15 bg-black/[0.015] transition-colors hover:bg-black/[0.03] dark:border-white/10 dark:bg-white/[0.015] dark:hover:bg-white/[0.03]">
+                      <div
+                        className={`flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-black/15 bg-black/[0.015] transition-colors hover:bg-black/[0.03] dark:border-white/10 dark:bg-white/[0.015] dark:hover:bg-white/[0.03] ${projectsColumns === 1 ? "aspect-[16/9]" : "aspect-[3/2]"}`}
+                      >
                         <Button
                           onClick={() => openSidebar?.(sidebars.project)}
-                          className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
+                          className="text-scaled-13 flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
                         >
                           <Pencil className="h-3.5 w-3.5" />
                           Add Project
@@ -744,7 +804,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                         <Button
                           variant="secondary"
                           onClick={() => openModal(modals.aiProject)}
-                          className="flex h-9 items-center gap-2 rounded-full px-5 text-[13px] font-medium"
+                          className="text-scaled-13 flex h-9 items-center gap-2 rounded-full px-5 font-medium"
                         >
                           <Sparkles className="h-3.5 w-3.5" />
                           Write with AI
@@ -754,7 +814,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                   )}
                 </div>
 
-                {/* <div className="bg-[#1A1A1A] dark:bg-[#F0EDE7] text-[#F0EDE7] dark:text-[#1A1A1A] px-3 py-1.5 rounded-full text-[13px] font-medium shadow-2xl flex items-center gap-1.5">
+                {/* <div className="bg-[#1A1A1A] dark:bg-[#F0EDE7] text-[#F0EDE7] dark:text-[#1A1A1A] px-3 py-1.5 rounded-full text-scaled-13 font-medium shadow-2xl flex items-center gap-1.5">
                                 View Project <ArrowUpRight size={14} />
                             </div> */}
               </>
@@ -767,7 +827,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         <motion.div variants={itemVariants} className="custom-dashed-t"></motion.div>
 
         {/* Recommendations Section — using MonoReviewsSection */}
-        <MonoReviewsSection isEditing={isEditing} />
+        <MonoReviewsSection isEditing={isEditing} hasWallpaper={hasWallpaper} />
       </React.Fragment>
     ),
     about: (
@@ -777,7 +837,10 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         {/* My Story Section */}
         <motion.div
           variants={itemVariants}
-          className="group/section relative px-6 py-10 pb-16 md:px-10"
+          className={cn(
+            "group/section relative px-6 py-10 pb-16 md:px-10",
+            hasWallpaper && "bg-white dark:bg-[#1A1A1A]"
+          )}
         >
           {isEditing && (
             <div className="absolute top-4 right-4 z-10 flex gap-2 transition-opacity">
@@ -796,7 +859,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               />
             </div>
           )}
-          <h2 className="font-dm-mono mb-5 text-[14px] font-bold tracking-wider text-[#463B34] uppercase dark:text-[#D4C9BC]">
+          <h2 className="font-dm-mono text-scaled-14 mb-5 font-bold tracking-wider text-[#463B34] uppercase dark:text-[#D4C9BC]">
             My Story
           </h2>
 
@@ -842,11 +905,11 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               />
             </motion.div>
           </div>
-          <p className="pointer-events-none -mt-2 mb-8 text-center text-[10px] font-medium tracking-widest text-[#7A736C]/70 uppercase dark:text-[#B5AFA5]/60">
+          <p className="text-scaled-10 pointer-events-none -mt-2 mb-8 text-center font-medium tracking-widest text-[#7A736C]/70 uppercase dark:text-[#B5AFA5]/60">
             Try moving things around :)
           </p>
 
-          <div className="flex flex-col gap-6 text-base leading-[1.7] text-[#7A736C] dark:text-[#B5AFA5]">
+          <div className="text-scaled-16 flex flex-col gap-6 leading-[1.7] text-[#7A736C] dark:text-[#B5AFA5]">
             {aboutStoryPlain ? (
               aboutStoryNeedsExpand ? (
                 <div className="flex flex-col gap-0">
@@ -881,7 +944,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                     variant="ghost"
                     aria-expanded={aboutStoryExpanded}
                     onClick={() => setAboutStoryExpanded((v) => !v)}
-                    className="mt-3 h-auto justify-start gap-1.5 self-start px-2 py-1.5 text-[13px] font-medium text-[#1A1A1A] hover:bg-black/[0.04] focus-visible:ring-2 focus-visible:ring-[#1A1A1A]/20 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F0EDE7] dark:text-[#F0EDE7] dark:hover:bg-white/[0.06] dark:focus-visible:ring-white/25 dark:focus-visible:ring-offset-[#1A1A1A]"
+                    className="text-scaled-13 mt-3 h-auto justify-start gap-1.5 self-start px-2 py-1.5 font-medium text-[#1A1A1A] hover:bg-black/[0.04] focus-visible:ring-2 focus-visible:ring-[#1A1A1A]/20 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F0EDE7] dark:text-[#F0EDE7] dark:hover:bg-white/[0.06] dark:focus-visible:ring-white/25 dark:focus-visible:ring-offset-[#1A1A1A]"
                   >
                     {aboutStoryExpanded ? "View less" : "View more"}
                     <motion.span
@@ -908,7 +971,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               <button
                 type="button"
                 onClick={() => openSidebar?.(sidebars.about)}
-                className="text-left text-[13px] text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:hover:text-white"
+                className="text-scaled-13 text-left text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#B5AFA5] dark:hover:text-white"
               >
                 Click here to add your story...
               </button>
@@ -925,7 +988,10 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           {/* Stack Section */}
           <motion.div
             variants={itemVariants}
-            className="group/section relative px-6 py-10 md:px-10"
+            className={cn(
+              "group/section relative px-6 py-10 md:px-10",
+              hasWallpaper && "bg-white dark:bg-[#1A1A1A]"
+            )}
           >
             {isEditing && (
               <div className="absolute top-4 right-4 z-10 flex gap-2 transition-opacity">
@@ -948,7 +1014,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                 />
               </div>
             )}
-            <h2 className="font-dm-mono mb-5 text-[14px] font-bold tracking-wider text-[#463B34] uppercase dark:text-[#D4C9BC]">
+            <h2 className="font-dm-mono text-scaled-14 mb-5 font-bold tracking-wider text-[#463B34] uppercase dark:text-[#D4C9BC]">
               Stack
             </h2>
             {activeTools.length === 0 ? (
@@ -974,16 +1040,16 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                     />
                   </svg>
                 </div>
-                <h3 className="mb-1 text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+                <h3 className="text-scaled-15 mb-1 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
                   No tools yet
                 </h3>
-                <p className="mb-5 max-w-[250px] text-[13px] text-[#7A736C] dark:text-[#9E9893]">
+                <p className="text-scaled-13 mb-5 max-w-[250px] text-[#7A736C] dark:text-[#9E9893]">
                   Add tools to showcase your stack and workflow.
                 </p>
                 {isEditing && (
                   <Button
                     onClick={() => openSidebar?.(sidebars.tools)}
-                    className="h-9 rounded-full bg-[#1A1A1A] px-4 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
+                    className="text-scaled-13 h-9 rounded-full bg-[#1A1A1A] px-4 font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
                   >
                     Add Tools
                   </Button>
@@ -996,14 +1062,14 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                     key={i}
                     whileHover={{ y: -5, scale: 1.05, rotate: i % 2 === 0 ? 2 : -2 }}
                     transition={{ type: "spring", stiffness: 350, damping: 18 }}
-                    className="group/tool relative flex cursor-pointer flex-col items-center gap-1.5"
+                    className="group/tool relative flex cursor-pointer flex-col items-center"
                   >
                     <img
                       src={tool.icon}
                       alt={tool.name}
                       className="h-10 w-10 cursor-pointer object-contain transition-[filter] duration-300 group-hover/tool:[filter:drop-shadow(0_4px_8px_rgba(0,0,0,0.18))]"
                     />
-                    <span className="text-[10px] leading-none font-medium whitespace-nowrap text-[#7A736C] opacity-0 transition-opacity duration-200 group-hover/tool:opacity-100 dark:text-[#9E9893]">
+                    <span className="text-scaled-10 absolute top-full left-1/2 mt-1.5 -translate-x-1/2 leading-none font-medium whitespace-nowrap text-[#7A736C] opacity-0 transition-opacity duration-200 group-hover/tool:opacity-100 dark:text-[#9E9893]">
                       {tool.name}
                     </span>
                   </motion.div>
@@ -1016,11 +1082,22 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-[848px] flex-1 flex-col gap-3 px-4 pt-0 pb-0 md:px-0">
+    <div
+      className={cn(
+        "mx-auto flex w-full flex-1 flex-col gap-3 pt-0 pb-0",
+        !hasWallpaper && "px-4 md:px-0"
+      )}
+      style={{ maxWidth: containerMaxWidth ?? 848 }}
+    >
       <motion.div
-        className={
-          "font-inter custom-dashed-x relative flex min-h-screen w-full max-w-[848px] flex-col bg-[#F0EDE7] transition-colors duration-700 dark:bg-[#1A1A1A]"
-        }
+        className={cn(
+          "font-inter relative flex min-h-screen w-full flex-col transition-colors duration-700",
+          // No wallpaper → original warm paper base + dashed side edges.
+          // (mono-no-wallpaper drives the dashed separator CSS override.)
+          !hasWallpaper && "custom-dashed-x mono-no-wallpaper bg-[#F0EDE7] dark:bg-[#1A1A1A]",
+          // Wallpaper → frosted card treatment (rounded top + dark hairline border).
+          hasWallpaper && "rounded-t-2xl dark:border dark:border-[rgba(58,53,46,0.7)]"
+        )}
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -1029,7 +1106,11 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
         {/* Header Section */}
         <motion.div
           variants={itemVariants}
-          className="group/section relative px-6 pt-12 pb-8 md:px-10 md:pt-16"
+          className={cn(
+            "group/section relative px-6 pb-8 md:px-10",
+            !hasWallpaper && "pt-12 md:pt-16",
+            hasWallpaper && "rounded-t-2xl bg-white/83 pt-8 backdrop-blur-md dark:bg-[#1A1A1A]/75"
+          )}
         >
           {isEditing && (
             <div className="absolute top-4 right-4 z-10 flex gap-1.5 opacity-100 transition-opacity md:opacity-0 md:group-hover/section:opacity-100">
@@ -1044,17 +1125,37 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               </Button>
             </div>
           )}
-          <div className="mb-6 flex items-start justify-between gap-4">
-            <Avatar className="h-[96px] w-[96px] rounded-2xl">
-              <AvatarImage
+          {/* Wallpaper → 120px avatar floats over the frosted card's top edge. */}
+          {hasWallpaper && (
+            <div className="absolute -top-[42px] left-10 z-20">
+              <ProfileAvatar
                 src={avatarSrc}
                 alt={displayName || "Profile image"}
-                className="object-cover"
+                size={120}
+                innerClassName="border-[3px] border-white dark:border-[#1A1A1A]"
+                imgClassName="bg-[#E5D7C4] dark:bg-[#3A352E]"
+                fallback={avatarFallbackText}
+                fallbackClassName="bg-[#E5D7C4] text-[#1A1A1A] dark:bg-[#3A352E] dark:text-[#F0EDE7]"
               />
-              <AvatarFallback className="rounded-2xl bg-[#E5D7C4] text-[#1A1A1A] dark:bg-[#3A352E] dark:text-[#F0EDE7]">
-                {avatarFallbackText}
-              </AvatarFallback>
-            </Avatar>
+            </div>
+          )}
+          <div
+            className={cn(
+              "mb-6 flex items-start gap-4",
+              hasWallpaper ? "justify-end" : "justify-between"
+            )}
+          >
+            {/* No wallpaper → original inline 96px avatar at the top-left (matches old layout). */}
+            {!hasWallpaper && (
+              <ProfileAvatar
+                src={avatarSrc}
+                alt={displayName || "Profile image"}
+                size={96}
+                imgClassName="bg-[#E5D7C4] dark:bg-[#3A352E]"
+                fallback={avatarFallbackText}
+                fallbackClassName="bg-[#E5D7C4] text-[#1A1A1A] dark:bg-[#3A352E] dark:text-[#F0EDE7]"
+              />
+            )}
             <div className="mt-1 flex items-center gap-2">
               <AnimatedThemeToggler persist={isEditing && !preview} />
             </div>
@@ -1062,13 +1163,40 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
 
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-0">
             <div>
-              <h1 className="mb-0.5 text-[30px] font-semibold tracking-[-0.01em] text-[#1A1A1A] dark:text-[#F0EDE7]">
-                {introduction}
+              <h1 className="text-scaled-30 mb-0.5 font-semibold tracking-[-0.01em] text-[#1A1A1A] dark:text-[#F0EDE7]">
+                {/* Word-by-word blur/stagger reveal, matching the reference exactly — split on
+                    whitespace since introduction is free-form text, not a fixed word list. */}
+                <motion.span
+                  initial="hidden"
+                  animate="visible"
+                  variants={{
+                    visible: { transition: { staggerChildren: 0.18, delayChildren: 0.55 } },
+                  }}
+                  className="inline-flex flex-wrap gap-x-[0.28em]"
+                >
+                  {introduction.split(/\s+/).map((word, i) => (
+                    <motion.span
+                      key={i}
+                      className="inline-block"
+                      variants={{
+                        hidden: { opacity: 0, filter: "blur(10px)", x: 12 },
+                        visible: {
+                          opacity: 1,
+                          filter: "blur(0px)",
+                          x: 0,
+                          transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] },
+                        },
+                      }}
+                    >
+                      {word}
+                    </motion.span>
+                  ))}
+                </motion.span>
               </h1>
               {isEditing ? (
                 <div className="group/role flex items-center gap-2">
                   <p
-                    className="text-[17px] text-[#4A4440] dark:text-[#C8C0B5]"
+                    className="text-scaled-17 text-[#4A4440] dark:text-[#C8C0B5]"
                     style={{ fontWeight: 450 }}
                   >
                     {userRole}
@@ -1085,7 +1213,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                 </div>
               ) : (
                 <p
-                  className="text-[17px] text-[#4A4440] dark:text-[#C8C0B5]"
+                  className="text-scaled-17 text-[#4A4440] dark:text-[#C8C0B5]"
                   style={{ fontWeight: 450 }}
                 >
                   {userRole}
@@ -1096,7 +1224,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
               href={resumeUrl || "#"}
               target={resumeUrl ? "_blank" : undefined}
               rel={resumeUrl ? "noopener noreferrer" : undefined}
-              className="group/download flex w-fit items-center gap-1.5 border-b border-[#1A1A1A] pb-0.5 text-[13px] font-medium text-[#1A1A1A] transition-opacity hover:opacity-70 dark:border-[#F0EDE7] dark:text-[#F0EDE7]"
+              className="group/download text-scaled-13 flex w-fit items-center gap-1.5 border-b border-[#1A1A1A] pb-0.5 font-medium text-[#1A1A1A] transition-opacity hover:opacity-70 dark:border-[#F0EDE7] dark:text-[#F0EDE7]"
               onMouseEnter={() => downloadRef.current?.startAnimation()}
               onMouseLeave={() => downloadRef.current?.stopAnimation()}
               onClick={(e) => {
@@ -1108,154 +1236,163 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
           </div>
         </motion.div>
 
-        <MonoEmailSocialLinksSection
-          email={email}
-          socials={socials}
-          portfolios={portfolios}
-          isEditing={isEditing}
-        />
-        {/* Intro Section */}
-        <motion.div variants={itemVariants} className="group/section relative px-6 py-10 md:px-10">
-          {isEditing && (
-            <div className="absolute top-4 right-4 z-10 opacity-100 transition-opacity md:opacity-0 md:group-hover/section:opacity-100">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => openSidebar?.(sidebars.profile)}
-                className="h-8 w-8 rounded-full border-black/10 bg-white p-0 shadow-sm transition-colors hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520] dark:hover:bg-[#35302A]"
-              >
-                <Pencil className="h-3.5 w-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
-              </Button>
-            </div>
-          )}
-          <h2 className="font-dm-mono mb-5 text-[14px] font-bold tracking-wider text-[#463B34] uppercase dark:text-[#D4C9BC]">
-            Intro
-          </h2>
-          <p
-            className="text-[17px] leading-[1.7] text-[#7A736C] dark:text-[#B5AFA5]"
-            style={{ fontWeight: 450 }}
+        <div className={cn("flex flex-1 flex-col", hasWallpaper && "bg-white dark:bg-[#1A1A1A]")}>
+          <MonoEmailSocialLinksSection
+            email={email}
+            socials={socials}
+            portfolios={portfolios}
+            isEditing={isEditing}
+          />
+          {/* Intro Section */}
+          <motion.div
+            variants={itemVariants}
+            className="group/section relative px-6 py-10 md:px-10"
           >
-            {bio}
-          </p>
-        </motion.div>
-
-        {sectionOrder.map((id) => (isSectionVisible(id) ? sectionComponents[id] : null))}
-
-        <motion.div variants={itemVariants} className="custom-dashed-t"></motion.div>
-
-        {/* Contact Section — using MonoContactSection */}
-        <MonoContactSection isEditing={isEditing} />
-
-        <motion.div variants={itemVariants} className="custom-dashed-t"></motion.div>
-
-        {/* Dino Game Section */}
-        <motion.div
-          variants={itemVariants}
-          className="relative flex flex-col items-center justify-center overflow-hidden border-b border-[#E5D7C4]/50"
-        >
-          <div className="font-dm-mono pointer-events-none absolute top-6 right-8 left-8 z-10 flex justify-between text-[10px] tracking-widest text-[#463B34] uppercase dark:text-[#C4B5A0]">
-            <span>{isGameOver ? "Game Over" : isPlaying ? "Playing" : "Tap to play"}</span>
-            <div className="flex gap-4">
-              <span>HI {String(highScore).padStart(5, "0")}</span>
-              <span>{String(Math.floor(score / 10)).padStart(5, "0")}</span>
-            </div>
-          </div>
-
-          <div
-            ref={gameRef}
-            onClick={jump}
-            className="relative flex h-48 w-full cursor-pointer items-end overflow-hidden bg-black/[0.015] transition-colors select-none hover:bg-black/[0.025] dark:bg-white/[0.03] dark:hover:bg-white/[0.05]"
-          >
-            {/* Ground Line */}
-            <div className="absolute bottom-12 left-0 h-px w-full bg-[#E5D7C4] dark:bg-[#3A352E]"></div>
-
-            {/* Dino */}
-            <motion.div
-              animate={{ y: -dinoY - 48 }}
-              transition={{ type: "just" }}
-              className="dino-game absolute bottom-0 left-12 z-20 mb-[-2px]"
-            >
-              <svg
-                width="40"
-                height="40"
-                viewBox="0 0 54 54"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="drop-shadow-sm"
-              >
-                <path
-                  d="M45.4502 6.75024V8.55005H47.25V18.7317H35.1006V20.2502H40.5V21.5999H35.1006V25.6497H39.1504V29.7004H37.3506V27.8997H35.1006V34.6497H33.2998V37.8H31.0498V40.05H29.25V48.1497H31.0498V49.9504H27.4502L27 43.6497H25.6504V41.8499H23.4004V43.6497H21.1504V45.8997H18.9004V48.1497H21.1504V49.9504H17.1006V41.8499H14.8506V40.05H13.0498V37.8H10.7998V35.55H9V33.3H7.2002V22.05H9V25.6497H10.7998V27.8997H13.0498V29.7004H17.1006V27.8997H19.3506V25.6497H22.0498V23.8499H25.2002V21.5999H27.1689L27.4502 8.55005H29.25V6.30005L45.4502 6.75024ZM31.0498 10.3499V14.8499H35.5498V10.3499H31.0498ZM34.6504 11.2502V13.9504H31.9502V11.2502H34.6504Z"
-                  className="dino-color"
-                />
-                {isPlaying && dinoY === 0 && (
-                  <motion.path
-                    animate={{ opacity: [1, 0, 1] }}
-                    transition={{ duration: 0.2, repeat: Infinity }}
-                    d="M18.9004 48.1497H21.1504V49.9504H17.1006V41.8499M29.25 48.1497H31.0498V49.9504H27.4502L27 43.6497"
-                    fill="#F0EDE7"
-                  />
-                )}
-              </svg>
-            </motion.div>
-
-            {/* Obstacles */}
-            {obstacles.map((obs) => (
-              <div
-                key={obs.id}
-                className="dino-game absolute bottom-12 z-10 mb-[-2px]"
-                style={{ left: `${obs.x}px` }}
-              >
-                <svg
-                  width="24"
-                  height="36"
-                  viewBox="0 0 20 30"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
+            {isEditing && (
+              <div className="absolute top-4 right-4 z-10 opacity-100 transition-opacity md:opacity-0 md:group-hover/section:opacity-100">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => openSidebar?.(sidebars.profile)}
+                  className="h-8 w-8 rounded-full border-black/10 bg-white p-0 shadow-sm transition-colors hover:bg-gray-50 dark:border-white/10 dark:bg-[#2A2520] dark:hover:bg-[#35302A]"
                 >
-                  <path d="M8 30H12V0H8V30Z" className="dino-color" />
-                  <path d="M4 10H8V14H4V10Z" className="dino-color" />
-                  <path d="M12 5H16V9H12V5Z" className="dino-color" />
-                </svg>
-              </div>
-            ))}
-
-            {/* Decorative Background Elements */}
-            <div className="absolute top-1/2 left-0 h-px w-full -translate-y-12 bg-linear-to-r from-transparent via-[#E5D7C4]/30 to-transparent dark:via-[#3A352E]/40"></div>
-
-            {isGameOver && (
-              <div className="absolute inset-0 z-30 flex items-center justify-center bg-[#F0EDE7]/40 backdrop-blur-[2px] dark:bg-[#1A1A1A]/60">
-                <motion.div
-                  initial={{ scale: 0.9, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  className="flex flex-col items-center gap-2 rounded-2xl border border-black/5 bg-white/80 px-8 py-4 shadow-xl backdrop-blur-md dark:border-white/10 dark:bg-[#2A2520]/90"
-                >
-                  <span className="font-dm-mono text-[11px] font-bold tracking-[0.2em] text-[#463B34] uppercase dark:text-[#D4C9BC]">
-                    Game Over
-                  </span>
-                  <div className="group flex flex-col items-center">
-                    <svg
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="mb-1 text-[#535353] transition-transform duration-500 group-hover:rotate-180 dark:text-[#9E9893]"
-                    >
-                      <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
-                      <path d="M3 3v5h5" />
-                    </svg>
-                    <span className="text-[9px] font-medium tracking-widest text-[#7A736C] uppercase dark:text-[#9E9893]">
-                      Tap to Restart
-                    </span>
-                  </div>
-                </motion.div>
+                  <Pencil className="h-3.5 w-3.5 text-[#1A1A1A] dark:text-[#F0EDE7]" />
+                </Button>
               </div>
             )}
-          </div>
-        </motion.div>
+            <h2 className="font-dm-mono text-scaled-14 mb-5 font-bold tracking-wider text-[#463B34] uppercase dark:text-[#D4C9BC]">
+              Intro
+            </h2>
+            <p
+              className="text-scaled-17 leading-[1.7] text-[#7A736C] dark:text-[#B5AFA5]"
+              style={{ fontWeight: 450 }}
+            >
+              {bio}
+            </p>
+          </motion.div>
+
+          {sectionOrder.map((id) => (isSectionVisible(id) ? sectionComponents[id] : null))}
+
+          <motion.div variants={itemVariants} className="custom-dashed-t"></motion.div>
+
+          {/* Contact Section — using MonoContactSection */}
+          <MonoContactSection isEditing={isEditing} hasWallpaper={hasWallpaper} />
+
+          <motion.div variants={itemVariants} className="custom-dashed-t"></motion.div>
+
+          {/* Dino Game Section */}
+          <motion.div
+            variants={itemVariants}
+            className={cn(
+              "relative flex flex-col items-center justify-center overflow-hidden border-b",
+              !hasWallpaper && "border-[#E5D7C4]/50 dark:border-[#3A352E]",
+              hasWallpaper && "border-black/10 bg-white dark:border-[#3A352E] dark:bg-[#1A1A1A]"
+            )}
+          >
+            <div className="font-dm-mono text-scaled-10 pointer-events-none absolute top-6 right-8 left-8 z-10 flex justify-between tracking-widest text-[#1A1A1A] uppercase dark:text-[#C4B5A0]">
+              <span>{isGameOver ? "Game Over" : isPlaying ? "Playing" : "Tap to play"}</span>
+              <div className="flex gap-4">
+                <span>HI {String(highScore).padStart(5, "0")}</span>
+                <span>{String(Math.floor(score / 10)).padStart(5, "0")}</span>
+              </div>
+            </div>
+
+            <div
+              ref={gameRef}
+              onClick={jump}
+              className="relative flex h-48 w-full cursor-pointer items-end overflow-hidden bg-black/[0.015] transition-colors select-none hover:bg-black/[0.025] dark:bg-white/[0.03] dark:hover:bg-white/[0.05]"
+            >
+              {/* Ground Line */}
+              <div className="absolute bottom-12 left-0 h-px w-full bg-[#E5D7C4] dark:bg-[#3A352E]"></div>
+
+              {/* Dino */}
+              <motion.div
+                animate={{ y: -dinoY - 48 }}
+                transition={{ type: "just" }}
+                className="dino-game absolute bottom-0 left-12 z-20 mb-[-2px]"
+              >
+                <svg
+                  width="40"
+                  height="40"
+                  viewBox="0 0 54 54"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="drop-shadow-sm"
+                >
+                  <path
+                    d="M45.4502 6.75024V8.55005H47.25V18.7317H35.1006V20.2502H40.5V21.5999H35.1006V25.6497H39.1504V29.7004H37.3506V27.8997H35.1006V34.6497H33.2998V37.8H31.0498V40.05H29.25V48.1497H31.0498V49.9504H27.4502L27 43.6497H25.6504V41.8499H23.4004V43.6497H21.1504V45.8997H18.9004V48.1497H21.1504V49.9504H17.1006V41.8499H14.8506V40.05H13.0498V37.8H10.7998V35.55H9V33.3H7.2002V22.05H9V25.6497H10.7998V27.8997H13.0498V29.7004H17.1006V27.8997H19.3506V25.6497H22.0498V23.8499H25.2002V21.5999H27.1689L27.4502 8.55005H29.25V6.30005L45.4502 6.75024ZM31.0498 10.3499V14.8499H35.5498V10.3499H31.0498ZM34.6504 11.2502V13.9504H31.9502V11.2502H34.6504Z"
+                    className="dino-color"
+                  />
+                  {isPlaying && dinoY === 0 && (
+                    <motion.path
+                      animate={{ opacity: [1, 0, 1] }}
+                      transition={{ duration: 0.2, repeat: Infinity }}
+                      d="M18.9004 48.1497H21.1504V49.9504H17.1006V41.8499M29.25 48.1497H31.0498V49.9504H27.4502L27 43.6497"
+                      fill="#F0EDE7"
+                    />
+                  )}
+                </svg>
+              </motion.div>
+
+              {/* Obstacles */}
+              {obstacles.map((obs) => (
+                <div
+                  key={obs.id}
+                  className="dino-game absolute bottom-12 z-10 mb-[-2px]"
+                  style={{ left: `${obs.x}px` }}
+                >
+                  <svg
+                    width="24"
+                    height="36"
+                    viewBox="0 0 20 30"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M8 30H12V0H8V30Z" className="dino-color" />
+                    <path d="M4 10H8V14H4V10Z" className="dino-color" />
+                    <path d="M12 5H16V9H12V5Z" className="dino-color" />
+                  </svg>
+                </div>
+              ))}
+
+              {/* Decorative Background Elements */}
+              <div className="absolute top-1/2 left-0 h-px w-full -translate-y-12 bg-linear-to-r from-transparent via-[#E5D7C4]/30 to-transparent dark:via-[#3A352E]/40"></div>
+
+              {isGameOver && (
+                <div className="absolute inset-0 z-30 flex items-center justify-center bg-[#F0EDE7]/40 backdrop-blur-[2px] dark:bg-[#1A1A1A]/60">
+                  <motion.div
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    className="flex flex-col items-center gap-2 rounded-2xl border border-black/5 bg-white/80 px-8 py-4 shadow-xl backdrop-blur-md dark:border-white/10 dark:bg-[#2A2520]/90"
+                  >
+                    <span className="font-dm-mono text-scaled-11 font-bold tracking-[0.2em] text-[#1A1A1A] uppercase dark:text-[#D4C9BC]">
+                      Game Over
+                    </span>
+                    <div className="group flex flex-col items-center">
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className="mb-1 text-[#535353] transition-transform duration-500 group-hover:rotate-180 dark:text-[#9E9893]"
+                      >
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                        <path d="M3 3v5h5" />
+                      </svg>
+                      <span className="text-scaled-9 font-medium tracking-widest text-[#7A736C] uppercase dark:text-[#9E9893]">
+                        Tap to Restart
+                      </span>
+                    </div>
+                  </motion.div>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        </div>
       </motion.div>
 
       {/* Image Lightbox */}

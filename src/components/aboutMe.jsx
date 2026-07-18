@@ -48,7 +48,7 @@ export function AboutMeContent({
     <div className={cn("space-y-4", className)}>
       <div className={cn("space-y-4 leading-relaxed", textClassName)}>
         <p
-          className="text-foreground-landing/80 leading-relaxed whitespace-pre-wrap"
+          className="text-scaled-16 text-foreground-landing/80 leading-relaxed whitespace-pre-wrap"
           data-testid="text-about-description-1"
         >
           {hasDescription ? description : edit ? "Write something about yourself here..." : ""}

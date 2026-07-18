@@ -64,13 +64,13 @@ export default function ChatToolsSection({
             <div className="min-w-0 overflow-hidden rounded-2xl rounded-tl-sm rounded-bl-sm border border-black/5 bg-[#E5E2DB] px-4 py-4 transition-colors duration-100 dark:border-white/5 dark:bg-[#2A2520]">
               {tools.length === 0 ? (
                 <div className="flex flex-col items-center justify-center px-4 py-8 text-center">
-                  <p className="mb-3 text-[13px] text-[#7A736C] dark:text-[#9E9893]">
+                  <p className="text-scaled-13 mb-3 text-[#7A736C] dark:text-[#9E9893]">
                     No tools added yet.
                   </p>
                   {canEdit && (
                     <Button
                       onClick={() => openSidebar(sidebars.tools)}
-                      className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-4 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
+                      className="text-scaled-13 flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-4 font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
                     >
                       <Plus className="h-3.5 w-3.5" />
                       Add Tools
@@ -79,7 +79,7 @@ export default function ChatToolsSection({
                 </div>
               ) : (
                 <>
-                  <p className="mb-3 text-[15px] text-[#1A1A1A] dark:text-[#F0EDE7]">
+                  <p className="text-scaled-15 mb-3 text-[#1A1A1A] dark:text-[#F0EDE7]">
                     This is my toolbox:
                   </p>
                   {tools.length > 6 ? (

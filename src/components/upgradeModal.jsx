@@ -20,9 +20,8 @@ import { Button } from "@/components/ui/button";
 const PLAN_LABELS = { mthly: "Monthly", qtrly: "Quarterly", yrly: "Yearly", lifetime: "Lifetime" };
 
 const PLAN_HEADING = {
-  title: "Career OS for Job Seekers",
-  subtitle:
-    "Build your portfolio, tailor every application, find jobs, and prepare for interviews—all in one place.",
+  title: "Upgrade to Designfolio PRO",
+  subtitle: "Everything you need to build your portfolio and get hired.",
 };
 
 const JOB_TOOL_CONFIG = {
@@ -269,23 +268,29 @@ export default function UpgradeModal() {
       ? { title: jobToolConfig.title, subtitle: jobToolConfig.subtitle }
       : upgradeModalSource === "pro-template"
         ? {
-            title: "Upgrade to publish",
+            title: "Upgrade Designfolio PRO",
             subtitle:
-              "You're using a Pro template. Upgrade to publish your portfolio and unlock all Pro features.",
+              "Publish your portfolio, get discovered by recruiters, and land your next design job.",
           }
-        : upgradeModalSource === "write-ai"
+        : upgradeModalSource === "password-protect"
           ? {
-              title: "Unlock AI Case Study Writing",
+              title: "Unlock password protection",
               subtitle:
-                "You've used all your free credits. Upgrade to Pro for unlimited AI-written case studies.",
+                "Protect your projects with a password. Upgrade to Pro to unlock this and all Pro features.",
             }
-          : upgradeModalSource === "analyze"
+          : upgradeModalSource === "write-ai"
             ? {
-                title: "Unlock AI Case Study Analysis",
+                title: "Unlock AI Case Study Writing",
                 subtitle:
-                  "You've used all your free analysis credits. Upgrade to Pro for unlimited AI feedback on your work.",
+                  "You've used all your free credits. Upgrade to Pro for unlimited AI-written case studies.",
               }
-            : PLAN_HEADING;
+            : upgradeModalSource === "analyze"
+              ? {
+                  title: "Unlock AI Case Study Analysis",
+                  subtitle:
+                    "You've used all your free analysis credits. Upgrade to Pro for unlimited AI feedback on your work.",
+                }
+              : PLAN_HEADING;
 
   const isPremiumPlan = selectedPlan?.plan === "yrly" || selectedPlan?.plan === "lifetime";
 
@@ -310,28 +315,43 @@ export default function UpgradeModal() {
             onClick={handleCloseModal}
           />
 
-          {/* Modal card */}
+          {/* Modal card — centered dialog on desktop, bottom sheet on mobile */}
           <motion.div
             key="upgrade-card"
-            transformTemplate={centeredTransform}
+            transformTemplate={sideBySide ? centeredTransform : undefined}
             className={`${styles.modal} ${plansReady && sideBySide ? styles.modalFMRow : ""} ${plansReady && sideBySide && showFaq ? styles.modalFaqOpen : ""}`}
-            initial={{ opacity: 0, y: 12, scale: 0.97, ...(sideBySide ? { width: 440 } : {}) }}
-            animate={{
-              opacity: 1,
-              y: 0,
-              scale: 1,
-              ...(plansReady && cardWidth !== undefined ? { width: cardWidth } : {}),
-            }}
-            exit={{ opacity: 0, y: 6, scale: 0.97 }}
+            initial={sideBySide ? { opacity: 0, y: 12, scale: 0.97, width: 440 } : { y: "100%" }}
+            animate={
+              sideBySide
+                ? {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    ...(plansReady && cardWidth !== undefined ? { width: cardWidth } : {}),
+                  }
+                : { y: 0 }
+            }
+            exit={sideBySide ? { opacity: 0, y: 6, scale: 0.97 } : { y: "100%" }}
             transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
-            style={{
-              position: "fixed",
-              top: "50%",
-              left: "50%",
-              zIndex: 10002,
-              animation: "none",
-              ...(plansReady && sideBySide ? { maxWidth: "none", overflow: "hidden" } : {}),
-            }}
+            style={
+              sideBySide
+                ? {
+                    position: "fixed",
+                    top: "50%",
+                    left: "50%",
+                    zIndex: 10002,
+                    animation: "none",
+                    ...(plansReady ? { maxWidth: "none", overflow: "hidden" } : {}),
+                  }
+                : {
+                    position: "fixed",
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    zIndex: 10002,
+                    animation: "none",
+                  }
+            }
             onClick={(e) => e.stopPropagation()}
           >
             {!plansReady ? (
@@ -496,7 +516,7 @@ export default function UpgradeModal() {
                         exit={{ opacity: 0, y: -4 }}
                         transition={{ duration: 0.14 }}
                       >
-                        <PlanQuote plan={selectedPlan?.plan} />
+                        {/* <PlanQuote plan={selectedPlan?.plan} /> */}
                       </motion.div>
                     </AnimatePresence>
 
@@ -627,8 +647,8 @@ function PlanQuote({ plan }) {
 }
 
 function FeaturesList({ showAll, onToggle }) {
-  const visible = ALL_FEATURES.slice(0, 2);
-  const hidden = ALL_FEATURES.slice(2);
+  const visible = ALL_FEATURES.slice(0, 3);
+  const hidden = ALL_FEATURES.slice(3);
   return (
     <div className={styles.featuresList}>
       {visible.map((f) => (

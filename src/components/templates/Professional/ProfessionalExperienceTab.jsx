@@ -20,7 +20,7 @@ function ExperienceDescription({ desc }) {
       }}
       initial="hidden"
       animate="show"
-      className="font-jetbrains max-w-xl text-[15px] leading-relaxed break-words whitespace-normal"
+      className="font-jetbrains text-scaled-15 max-w-xl leading-relaxed break-words whitespace-normal"
       style={{ color: "var(--tiptap-work-paragraph, #7a736c)" }}
     >
       {words.map((word, wordIndex) => {
@@ -92,16 +92,16 @@ function ExperienceItem({ exp, isExpanded, onToggle, isEditing, onEdit }) {
         <div className="flex items-center gap-4">
           <motion.span
             animate={{ rotate: isExpanded ? 45 : 0 }}
-            className="flex h-4 w-4 shrink-0 items-center justify-center text-lg leading-none font-light text-[#1A1A1A] transition-colors dark:text-[#F0EDE7]"
+            className="text-scaled-18 flex h-4 w-4 shrink-0 items-center justify-center leading-none font-light text-[#1A1A1A] transition-colors dark:text-[#F0EDE7]"
           >
             +
           </motion.span>
-          <span className="font-jetbrains text-[14px] font-medium tracking-wide text-[#1A1A1A] uppercase dark:text-[#F0EDE7]">
+          <span className="font-jetbrains text-scaled-14 font-medium tracking-wide text-[#1A1A1A] uppercase dark:text-[#F0EDE7]">
             <span className="mr-2 text-[#7A736C] dark:text-[#9E9893]">{exp.startYear} /</span>
             {exp.company}
           </span>
         </div>
-        <span className="font-jetbrains ml-8 text-[14px] tracking-wider text-[#7A736C] uppercase transition-colors group-hover:text-[#1A1A1A] sm:ml-0 dark:text-[#9E9893] dark:group-hover:text-[#F0EDE7]">
+        <span className="font-jetbrains text-scaled-14 ml-8 tracking-wider text-[#7A736C] uppercase transition-colors group-hover:text-[#1A1A1A] sm:ml-0 dark:text-[#9E9893] dark:group-hover:text-[#F0EDE7]">
           {exp.role}
         </span>
       </button>
@@ -166,7 +166,7 @@ function ProfessionalExperienceTab({ isEditing, experiences, onEditExperience, o
               className="flex w-full items-center justify-center gap-2 rounded-lg border border-dashed border-[#D5D0C6] bg-black/[0.02] py-4 text-[#7A736C] transition-all hover:border-[#1A1A1A] hover:bg-black/[0.04] hover:text-[#1A1A1A] dark:border-[#3A352E] dark:bg-white/[0.02] dark:text-[#9E9893] dark:hover:border-[#F0EDE7] dark:hover:bg-white/[0.04] dark:hover:text-[#F0EDE7]"
             >
               <Plus className="h-4 w-4" />
-              <span className="font-jetbrains text-[13px] font-medium tracking-wider uppercase">
+              <span className="font-jetbrains text-scaled-13 font-medium tracking-wider uppercase">
                 Add New Experience
               </span>
             </button>

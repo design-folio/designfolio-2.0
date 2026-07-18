@@ -108,7 +108,7 @@ function ProfessionalProjectsTab({
                 className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
               />
               {project.hidden && (
-                <div className="absolute top-2 left-2 z-40 flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700 dark:bg-amber-950/30 dark:text-amber-400">
+                <div className="text-scaled-12 absolute top-2 left-2 z-40 flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 font-medium text-amber-700 dark:bg-amber-950/30 dark:text-amber-400">
                   <EyeOff className="h-3 w-3" /> Hidden from live site
                 </div>
               )}
@@ -116,10 +116,10 @@ function ProfessionalProjectsTab({
           </div>
 
           <div className="relative z-20 flex-1 border-t border-[#D5D0C6] bg-white p-4 md:p-5 dark:border-[#3A352E] dark:bg-[#1A1A1A]">
-            <h3 className="font-jetbrains mb-2 text-[15px] font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
+            <h3 className="font-jetbrains text-scaled-15 mb-2 font-medium text-[#1A1A1A] dark:text-[#F0EDE7]">
               {project.title}
             </h3>
-            <p className="font-jetbrains text-[15px] leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]">
+            <p className="font-jetbrains text-scaled-15 leading-relaxed text-[#7A736C] dark:text-[#B5AFA5]">
               {project.description}
             </p>
           </div>
@@ -131,7 +131,7 @@ function ProfessionalProjectsTab({
           <div className="relative flex min-h-[140px] flex-1 flex-col items-center justify-center gap-3 overflow-hidden bg-white/50 p-6 md:min-h-[180px] md:p-8 dark:bg-[#1A1A1A]/50">
             <FrameScrews />
             <Button
-              className="font-jetbrains flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
+              className="font-jetbrains text-scaled-13 flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 font-medium text-white shadow-sm transition-colors hover:bg-black/80 dark:bg-white dark:text-black dark:hover:bg-white/90"
               onClick={(e) => {
                 e.stopPropagation();
                 onAddProject();
@@ -142,7 +142,7 @@ function ProfessionalProjectsTab({
             </Button>
             <Button
               variant="outline"
-              className="font-jetbrains flex h-9 items-center gap-2 rounded-full border-[#D5D0C6] bg-[#EFECE6] px-5 text-[13px] font-medium text-[#7A736C] transition-colors hover:bg-[#E5E0D8] hover:text-[#1A1A1A] dark:border-[#3A352E] dark:bg-[#1A1A1A] dark:text-[#9E9893] dark:hover:bg-[#2A2520] dark:hover:text-[#F0EDE7]"
+              className="font-jetbrains text-scaled-13 flex h-9 items-center gap-2 rounded-full border-[#D5D0C6] bg-[#EFECE6] px-5 font-medium text-[#7A736C] transition-colors hover:bg-[#E5E0D8] hover:text-[#1A1A1A] dark:border-[#3A352E] dark:bg-[#1A1A1A] dark:text-[#9E9893] dark:hover:bg-[#2A2520] dark:hover:text-[#F0EDE7]"
               onClick={(e) => {
                 e.stopPropagation();
                 openModal(modals.aiProject);

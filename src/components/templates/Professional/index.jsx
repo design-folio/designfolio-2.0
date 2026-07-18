@@ -34,6 +34,7 @@ export default function Professional({ isEditing, preview = false, publicView = 
     updateCache,
     setShowUpgradeModal,
     setUpgradeModalUnhideProject,
+    containerMaxWidth,
   } = useGlobalContext();
   const router = useRouter();
 
@@ -304,9 +305,14 @@ export default function Professional({ isEditing, preview = false, publicView = 
   };
 
   return (
-    <div className="font-inter custom-solid-x relative mx-auto flex min-h-screen w-full max-w-[700px] flex-1 flex-col gap-3 bg-[#EFECE6] transition-colors duration-700 dark:bg-[#1A1A1A]">
+    <div
+      className="font-inter custom-solid-x relative mx-auto flex min-h-screen w-full flex-1 flex-col transition-colors duration-700"
+      style={{ maxWidth: containerMaxWidth ?? 700 }}
+    >
       {!isEditing && <SmoothCursor type="professional" />}
-      <div className="flex w-full flex-1 flex-col overflow-hidden pt-12">
+      {/* Frosted header card — always on (matches Mono: 83% opacity + blur reads as solid
+          when there's nothing behind to blur, so it looks the same with or without a wallpaper). */}
+      <div className="rounded-t-2xl bg-[#EFECE6]/83 pt-12 backdrop-blur-md dark:bg-[#1A1A1A]/75">
         <ProfessionalProfileHeader
           isEditing={isEditing}
           persistTheme={isEditing && !preview}
@@ -317,6 +323,8 @@ export default function Professional({ isEditing, preview = false, publicView = 
           onEditProfile={handleEditProfile}
           onEditPersona={handleEditPersona}
         />
+      </div>
+      <div className="flex w-full flex-1 flex-col overflow-hidden bg-[#EFECE6] dark:bg-[#1A1A1A]">
         <ProfessionalNavTabs
           activeTab={activeTab}
           setActiveTab={setUserSelectedTab}

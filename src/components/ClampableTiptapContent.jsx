@@ -70,7 +70,7 @@ export default function ClampableTiptapContent({
   if (!content) return null;
 
   return (
-    <div className={cn("text-df-description-color text-base leading-relaxed", className)}>
+    <div className={cn("text-df-description-color text-scaled-16 leading-relaxed", className)}>
       <div ref={containerRef} className={cn("relative", isCollapsed && "line-clamp-3")}>
         <SimpleTiptapRenderer
           content={content}

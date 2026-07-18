@@ -222,7 +222,7 @@ const FooterSettingsPanel = () => {
                       <Trash2 />
                     </Button>
                   ) : null}
-                  <div className="from-primary/[0.04] pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-br via-transparent to-transparent opacity-0 transition-opacity duration-200 group-hover/resume:opacity-100" />
+                  <div className="from-primary/[0.04] pointer-events-none absolute inset-0 rounded-2xl bg-linear-to-br via-transparent to-transparent opacity-0 transition-opacity duration-200 group-hover/resume:opacity-100" />
                   <div className="relative flex flex-col items-center gap-4 text-center">
                     <div
                       className={cn(

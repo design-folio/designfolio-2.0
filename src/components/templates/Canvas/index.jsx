@@ -12,7 +12,7 @@ import { DEFAULT_SECTION_ORDER, normalizeSectionOrder } from "@/lib/constant";
 import { usePersistableThemeToggle } from "@/hooks/usePersistableThemeToggle";
 
 export default function Canvas({ isEditing, preview = false, publicView = false }) {
-  const { userDetails } = useGlobalContext();
+  const { userDetails, containerMaxWidth } = useGlobalContext();
   const { skills = [] } = userDetails || {};
 
   const sectionOrder = normalizeSectionOrder(userDetails?.sectionOrder, DEFAULT_SECTION_ORDER);
@@ -39,7 +39,10 @@ export default function Canvas({ isEditing, preview = false, publicView = false 
   };
 
   return (
-    <div className="mx-auto flex w-full max-w-[848px] flex-1 flex-col gap-3 px-4 pt-0 pb-20 md:px-0">
+    <div
+      className="mx-auto flex w-full flex-1 flex-col gap-3 px-4 pt-0 pb-20 md:px-0"
+      style={{ maxWidth: containerMaxWidth ?? 848 }}
+    >
       {/* <CanvasHeader persistTheme={isEditing && !preview} /> */}
       <CanvasProfileCard
         isEditing={isEditing}

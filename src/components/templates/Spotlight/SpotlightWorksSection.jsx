@@ -141,9 +141,9 @@ export const SpotlightWorksSection = ({ userDetails, edit, headerActions }) => {
           <div className="relative z-10">
             <div className="flex flex-col gap-1">
               <div className="flex flex-col items-start justify-between gap-2 lg:flex-row">
-                <h3 className="text-lg font-semibold">{experience.role}</h3>
+                <h3 className="text-scaled-18 font-semibold">{experience.role}</h3>
                 <div className="flex w-full flex-1 items-center gap-2 lg:justify-end">
-                  <span className="text-sm text-gray-600 dark:text-gray-400">
+                  <span className="text-scaled-14 text-gray-600 dark:text-gray-400">
                     {`${experience?.startMonth} ${experience?.startYear} - ${
                       experience?.currentlyWorking
                         ? "Present"
@@ -170,9 +170,11 @@ export const SpotlightWorksSection = ({ userDetails, edit, headerActions }) => {
                   )}
                 </div>
               </div>
-              <div className="text-base text-gray-600 dark:text-gray-400">{experience.company}</div>
+              <div className="text-scaled-16 text-gray-600 dark:text-gray-400">
+                {experience.company}
+              </div>
               {descriptionLength > 0 && (
-                <div className="relative text-sm text-gray-600 dark:text-gray-400">
+                <div className="text-scaled-14 relative text-gray-600 dark:text-gray-400">
                   <ClampableTiptapContent
                     content={experience.description}
                     mode="work"
@@ -195,7 +197,7 @@ export const SpotlightWorksSection = ({ userDetails, edit, headerActions }) => {
   return (
     <section className="py-12">
       <div className="mb-8 flex items-center justify-between">
-        <h2 className="text-2xl font-bold">Work Experience</h2>
+        <h2 className="text-scaled-24 font-bold">Work Experience</h2>
         {headerActions && <div className="shrink-0">{headerActions}</div>}
       </div>
       <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>

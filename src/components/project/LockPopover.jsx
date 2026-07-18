@@ -57,11 +57,19 @@ export default function LockPopover({ project, dark, open, onOpenChange }) {
   const [saving, setSaving] = useState(false);
   const [showPwd, setShowPwd] = useState(false);
 
+  const [seededId, setSeededId] = useState(project?._id);
+  if (project?._id !== seededId) {
+    setSeededId(project?._id);
+    setEnabled(!!project?.protected);
+    setPwd(project?.password ?? "");
+  }
+
   const popoverRef = useRef(null);
 
   useClickAway(popoverRef, () => {
     if (open) onOpenChange?.(false);
   });
+  const canManage = isPro || enabled;
 
   const save = useCallback(
     async (newEnabled, newPwd) => {
@@ -117,7 +125,7 @@ export default function LockPopover({ project, dark, open, onOpenChange }) {
             }}
             className="absolute top-full right-0 z-50 mt-2 w-72 overflow-hidden rounded-2xl border border-black/[0.08] bg-white p-0 outline-none dark:border-white/[0.08] dark:bg-[#2A2520]"
           >
-            {isPro ? (
+            {canManage ? (
               <div className="p-4">
                 <motion.div
                   variants={rowVariants}

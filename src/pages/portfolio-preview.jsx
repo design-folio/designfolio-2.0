@@ -4,7 +4,7 @@ import Template2 from "@/components/template2";
 import Minimal from "@/components/templates/Spotlight";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/router";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, X } from "lucide-react";
 import MacOSTemplate from "@/components/comp/MacOSTemplate";
 import WallpaperBackground from "@/components/WallpaperBackground";
 import Canvas from "@/components/templates/Canvas";
@@ -30,6 +30,8 @@ export default function Index() {
     wallpaperEffects,
     wallpaper,
     backgroundMode,
+    setShowUpgradeModal,
+    setUpgradeModalSource,
   } = useGlobalContext();
   const router = useRouter();
 
@@ -45,11 +47,29 @@ export default function Index() {
   }, [userDetails?.wallpaper, setWallpaper, setWallpaperEffects]);
 
   const ProBadge = !userDetails?.pro && (
-    <div
-      className="relative mb-[120px] flex cursor-pointer justify-center text-center lg:fixed lg:right-[36px] lg:bottom-[10px] lg:m-0 xl:block"
-      onClick={() => window.open("https://www.designfolio.me", "_blank")}
-    >
-      <MemoMadewithdesignfolio />
+    <div className="relative mb-[120px] flex justify-center text-center lg:fixed lg:right-[36px] lg:bottom-[10px] lg:m-0 xl:block">
+      <div className="relative inline-block">
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          aria-label="Remove Designfolio badge"
+          onClick={(e) => {
+            e.stopPropagation();
+            setUpgradeModalSource("remove-badge");
+            setShowUpgradeModal(true);
+          }}
+          className="absolute -top-2 -right-2 z-10 h-6 w-6 rounded-full border border-[#E5D7C4] bg-white p-0 text-gray-500 shadow-sm transition-colors hover:bg-gray-50 hover:text-gray-700 dark:border-white/10 dark:bg-[#2A2520] dark:text-white/70 dark:hover:bg-[#35302A]"
+        >
+          <X />
+        </Button>
+        <div
+          className="cursor-pointer"
+          onClick={() => window.open("https://www.designfolio.me", "_blank")}
+        >
+          <MemoMadewithdesignfolio />
+        </div>
+      </div>
     </div>
   );
 
@@ -70,6 +90,7 @@ export default function Index() {
               </Button>
             </div>
             <Canvas isEditing={false} preview />
+            {ProBadge}
           </>
         );
       case TEMPLATE_IDS.CHATFOLIO:
@@ -93,6 +114,7 @@ export default function Index() {
             </div>
             <div aria-hidden="true" style={{ height: 64 }} />
             <Chat preview />
+            {ProBadge}
           </div>
         );
       case TEMPLATE_IDS.SPOTLIGHT:

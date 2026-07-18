@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Link2, Pencil, Globe, Lock, Copy, Check, X } from "lucide-react";
+import { Link2, Pencil, Globe, Lock, Copy, Check } from "lucide-react";
 import { ZapIcon } from "lucide-animated";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence, MotionConfig } from "motion/react";
@@ -61,8 +61,15 @@ const sanitizeSlug = (raw) =>
     .join("")
     .replace(/\s+/g, "-");
 
-export function PublishDropdown({ onClose }) {
-  const [isOpen, setIsOpen] = useState(false);
+export function PublishDropdown({ onClose, open: openProp, onOpenChange }) {
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
+  const isControlled = openProp !== undefined;
+  const isOpen = isControlled ? openProp : uncontrolledOpen;
+  const setIsOpen = (next) => {
+    const value = typeof next === "function" ? next(isOpen) : next;
+    if (!isControlled) setUncontrolledOpen(value);
+    onOpenChange?.(value);
+  };
   const [copied, setCopied] = useState(false);
   const [isPublishing, setIsPublishing] = useState(false);
   const [isEditingSlug, setIsEditingSlug] = useState(false);
@@ -96,6 +103,26 @@ export function PublishDropdown({ onClose }) {
   } = useUsernameAvailability(unchanged ? "" : trimmedSlug);
   const canSaveSlug =
     !!trimmedSlug && !unchanged && slugAvailable && !slugChecking && !slugError && !isSavingSlug;
+
+  // Single derived state drives the row's border, icon, and status copy so the
+  // availability signal lives in the field itself rather than a floating tick.
+  const slugState =
+    !isEditingSlug || !trimmedSlug || unchanged
+      ? "idle"
+      : slugChecking
+        ? "checking"
+        : slugError
+          ? "error"
+          : slugAvailable
+            ? "available"
+            : "idle";
+
+  const slugRowStyle =
+    slugState === "available"
+      ? { background: "rgba(16,185,129,0.07)", border: "1px solid rgba(52,211,153,0.5)" }
+      : slugState === "error"
+        ? { background: "rgba(239,68,68,0.06)", border: "1px solid rgba(248,113,113,0.5)" }
+        : { background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.09)" };
 
   useClickAway(dropdownRef, () => {
     setIsOpen(false);
@@ -196,7 +223,7 @@ export function PublishDropdown({ onClose }) {
               initial="hidden"
               animate="visible"
               exit="exit"
-              className="absolute top-full right-0 z-50 mt-2.5 w-[360px]"
+              className="absolute top-full right-0 z-50 mt-2.5 w-[400px]"
               onKeyDown={(e) => e.key === "Escape" && setIsOpen(false)}
               style={{ transformOrigin: "top right" }}
             >
@@ -222,11 +249,26 @@ export function PublishDropdown({ onClose }) {
                     variants={rowVariants}
                     className="flex items-center gap-2.5 rounded-[13px] px-3.5 py-2.5"
                     style={{
-                      background: "rgba(255,255,255,0.06)",
-                      border: "1px solid rgba(255,255,255,0.09)",
+                      ...slugRowStyle,
+                      transition: "background-color 200ms ease, border-color 200ms ease",
                     }}
                   >
-                    <Link2 size={14} strokeWidth={2} className="shrink-0 text-white/35" />
+                    {slugState === "checking" ? (
+                      <Spinner className="size-3.5 shrink-0 text-white/45" />
+                    ) : (
+                      <Link2
+                        size={14}
+                        strokeWidth={2}
+                        className={cn(
+                          "shrink-0 transition-colors",
+                          slugState === "available"
+                            ? "text-emerald-400"
+                            : slugState === "error"
+                              ? "text-red-400/80"
+                              : "text-white/35"
+                        )}
+                      />
+                    )}
 
                     {isEditingSlug ? (
                       <div className="flex min-w-0 flex-1 items-center">
@@ -257,37 +299,26 @@ export function PublishDropdown({ onClose }) {
                     )}
 
                     {isEditingSlug ? (
-                      <div className="flex shrink-0 items-center gap-1">
-                        {slugChecking && <Spinner className="size-3.5 text-white/40" />}
-                        {!slugChecking && trimmedSlug && !unchanged && slugAvailable && (
-                          <Check size={13} strokeWidth={2.5} className="text-emerald-400" />
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="icon"
+                        onClick={handleSaveSlug}
+                        disabled={!canSaveSlug}
+                        aria-label="Confirm URL"
+                        className={cn(
+                          "size-7 shrink-0 rounded-[9px] transition-[background-color,color,transform,box-shadow] duration-150 active:scale-[0.96]",
+                          canSaveSlug
+                            ? "bg-white/10 text-white/80 shadow-[0_1px_2px_rgba(0,0,0,0.18)] hover:bg-white/16 hover:text-white hover:shadow-[0_2px_5px_rgba(0,0,0,0.22)]"
+                            : "bg-white/5 text-white/25"
                         )}
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={handleSaveSlug}
-                          disabled={!canSaveSlug}
-                          aria-label="Save URL"
-                          className="size-7 rounded-[9px] text-white/70 hover:bg-white/10 hover:text-white"
-                        >
-                          {isSavingSlug ? (
-                            <Spinner className="size-3.5" />
-                          ) : (
-                            <Check strokeWidth={2.5} />
-                          )}
-                        </Button>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => setIsEditingSlug(false)}
-                          aria-label="Cancel"
-                          className="size-7 rounded-[9px] text-white/60 hover:bg-white/10 hover:text-white"
-                        >
-                          <X strokeWidth={2.5} />
-                        </Button>
-                      </div>
+                      >
+                        {isSavingSlug ? (
+                          <Spinner className="size-3.5" />
+                        ) : (
+                          <Check strokeWidth={2.5} />
+                        )}
+                      </Button>
                     ) : (
                       <div className="flex shrink-0 items-center gap-1">
                         <Button
@@ -338,19 +369,19 @@ export function PublishDropdown({ onClose }) {
                     )}
                   </motion.div>
 
-                  {/* Slug editor status line */}
+                  {/* Slug editor status line — availability lives here + in the border */}
                   <AnimatePresence>
-                    {isEditingSlug && (slugError || (slugChecking && !unchanged)) && (
+                    {(slugState === "available" || slugState === "error") && (
                       <motion.p
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
                         className={cn(
                           "-mt-1.5 text-[12px] font-medium",
-                          slugError ? "text-red-400" : "text-white/40"
+                          slugState === "error" ? "text-red-400" : "text-emerald-400"
                         )}
                       >
-                        {slugChecking ? "Checking availability…" : slugError}
+                        {slugState === "error" ? slugError : "This URL is available."}
                       </motion.p>
                     )}
                   </AnimatePresence>
@@ -377,9 +408,9 @@ export function PublishDropdown({ onClose }) {
                   variants={rowVariants}
                   className="flex items-center justify-between gap-3 px-5 py-3.5"
                 >
-                  <div className="flex min-w-0 items-center gap-2">
+                  <div className="flex shrink-0 items-center gap-2">
                     <Globe size={15} strokeWidth={1.75} className="shrink-0 text-white/30" />
-                    <span className="truncate text-[13px] font-medium text-white/35">
+                    <span className="text-[13px] font-medium whitespace-nowrap text-white/35">
                       Connect custom domain
                     </span>
                   </div>

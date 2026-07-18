@@ -125,6 +125,7 @@ export function PublishDropdown({ onClose, open: openProp, onOpenChange }) {
         : { background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.09)" };
 
   useClickAway(dropdownRef, () => {
+    if (!isOpen) return;
     setIsOpen(false);
     setIsEditingSlug(false);
   });
@@ -431,11 +432,11 @@ export function PublishDropdown({ onClose, open: openProp, onOpenChange }) {
                   ) : (
                     <Button
                       type="button"
-                      variant="tertiary"
+                      variant="ghost"
                       size="sm"
                       onClick={openUpgrade}
                       aria-label="Upgrade to unlock custom domain"
-                      className="shrink-0 rounded-full"
+                      className="shrink-0 gap-1.5 rounded-full border border-[rgba(255,90,54,0.2)] bg-[rgba(255,90,54,0.12)] px-3 text-[12px] font-semibold text-[#FF5A36] transition-all duration-150 hover:border-[rgba(255,90,54,0.35)] hover:bg-[rgba(255,90,54,0.22)] hover:text-[#FF5A36] [&_svg]:size-[11px]"
                     >
                       <Lock strokeWidth={2.5} />
                       Upgrade to unlock

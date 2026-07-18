@@ -94,7 +94,9 @@
 [data-template="professional"] .custom-solid-x::after {
   content: "";
   position: absolute;
-  top: 0;
+  /* Inset past the header card's rounded-t-2xl (16px) corners so the rails don't
+     poke above the card's rounded shoulder and show as stray lines over a wallpaper. */
+  top: 1rem;
   bottom: 0;
   width: 1px;
   background-color: #d5d0c6;

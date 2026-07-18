@@ -1053,14 +1053,14 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
                     key={i}
                     whileHover={{ y: -5, scale: 1.05, rotate: i % 2 === 0 ? 2 : -2 }}
                     transition={{ type: "spring", stiffness: 350, damping: 18 }}
-                    className="group/tool relative flex cursor-pointer flex-col items-center gap-1.5"
+                    className="group/tool relative flex cursor-pointer flex-col items-center"
                   >
                     <img
                       src={tool.icon}
                       alt={tool.name}
                       className="h-10 w-10 cursor-pointer object-contain transition-[filter] duration-300 group-hover/tool:[filter:drop-shadow(0_4px_8px_rgba(0,0,0,0.18))]"
                     />
-                    <span className="text-scaled-10 leading-none font-medium whitespace-nowrap text-[#7A736C] opacity-0 transition-opacity duration-200 group-hover/tool:opacity-100 dark:text-[#9E9893]">
+                    <span className="text-scaled-10 absolute top-full left-1/2 mt-1.5 -translate-x-1/2 leading-none font-medium whitespace-nowrap text-[#7A736C] opacity-0 transition-opacity duration-200 group-hover/tool:opacity-100 dark:text-[#9E9893]">
                       {tool.name}
                     </span>
                   </motion.div>

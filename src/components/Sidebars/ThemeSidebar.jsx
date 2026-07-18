@@ -616,46 +616,6 @@ const ThemePanel = ({
         data-testid={isMobile ? "content-background-mobile" : "content-background"}
       >
         <div className="space-y-4">
-          {!isMacOSTemplate && (
-            <div className="border-border mb-4 flex items-center justify-between rounded-[16px] border bg-black/[0.02] p-4 dark:bg-white/[0.02]">
-              <span className="text-foreground text-[13px] font-medium">Appearance</span>
-              <div className="inline-flex items-center gap-2">
-                <span
-                  className={twMerge(
-                    "cursor-pointer transition-colors",
-                    theme === "dark" || theme === 1 ? "text-muted-foreground" : "text-foreground"
-                  )}
-                  onClick={() => changeTheme(0)}
-                >
-                  <Sun className="size-4" />
-                </span>
-                <div ref={appearanceSwitchRefBackground} className="inline-flex">
-                  <Switch
-                    checked={theme === "dark" || theme === 1}
-                    onCheckedChange={(checked) =>
-                      applyThemeChange(checked, appearanceSwitchRefBackground.current)
-                    }
-                    className="data-[state=checked]:!bg-df-orange-color"
-                    data-testid={
-                      isMobile ? "switch-wallpaper-mode-mobile" : "switch-wallpaper-mode"
-                    }
-                  />
-                </div>
-                <span
-                  className={twMerge(
-                    "cursor-pointer transition-colors",
-                    !(theme === "dark" || theme === 1) ? "text-muted-foreground" : "text-foreground"
-                  )}
-                  onClick={() => changeTheme(1)}
-                >
-                  <Moon className="size-4" />
-                </span>
-              </div>
-            </div>
-          )}
-
-          {/* Display mode — header only vs full page (wallpaper-capable templates, not MacOS).
-              Meaningless without a background, so only show once one is set. */}
           {!isMacOSTemplate && Boolean(wallpaperColor || wallpaper) && (
             <div className="mb-4 space-y-2">
               <p className="text-muted-foreground px-1 text-[12px] font-medium">Display mode</p>

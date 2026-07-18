@@ -31,6 +31,7 @@ import { useTheme } from "next-themes";
 import Modal from "./modal";
 import AnalyzeCaseStudy from "./analyzeCaseStudy";
 import { useGlobalContext } from "@/context/globalContext";
+import { useProGate } from "@/hooks/useProGate";
 import AnimatedLoading from "./AnimatedLoading";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
@@ -49,6 +50,7 @@ export default function ProjectInfo({
   const { title, thumbnail, description, password, _id, template } = projectDetails;
 
   const [isPassword, setPassword] = useState(projectDetails?.protected);
+  const requirePro = useProGate();
   const [passwordInput, setPasswordInput] = useState(password || "");
   const [showEye, setShowEye] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
@@ -238,6 +240,8 @@ export default function ProjectInfo({
   };
 
   const handlePasswordRadio = async () => {
+    // Enabling protection is Pro-only; disabling stays free.
+    if (!isPassword && requirePro("password-protect")) return;
     await _updateProject(projectId, { protected: !isPassword }).then((res) => {
       updateProjectCache("protected", res?.data?.project?.protected);
       setPassword((prev) => !prev);

@@ -6,8 +6,15 @@ import { Switch } from "@/components/ui/switch";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { _updateProject } from "@/network/post-request";
+import { useGlobalContext } from "@/context/globalContext";
+import { useProGate } from "@/hooks/useProGate";
+import { Button } from "../ui/button";
 
 export default function LockPopover({ project, dark }) {
+  const { userDetails } = useGlobalContext();
+  const requirePro = useProGate();
+  const isPro = !!userDetails?.pro;
+
   const [enabled, setEnabled] = useState(!!project?.protected);
   const [pwd, setPwd] = useState(project?.password ?? "");
   const [saving, setSaving] = useState(false);
@@ -51,7 +58,7 @@ export default function LockPopover({ project, dark }) {
         </button>
       </PopoverTrigger>
       <PopoverContent
-        className="w-72 rounded-2xl border border-black/[0.08] bg-white p-4 dark:border-white/[0.08] dark:bg-[#2A2520]"
+        className="w-72 overflow-hidden rounded-2xl border border-black/[0.08] bg-white p-0 dark:border-white/[0.08] dark:bg-[#2A2520]"
         style={{
           boxShadow:
             "0 4px 6px -1px rgba(0,0,0,0.07), 0 10px 24px -4px rgba(0,0,0,0.12), 0 0 0 0.5px rgba(0,0,0,0.04)",
@@ -59,56 +66,91 @@ export default function LockPopover({ project, dark }) {
         align="end"
         sideOffset={8}
       >
-        <div className="mb-3 flex items-start justify-between px-1">
-          <div className="space-y-0.5">
-            <p className="text-sm font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
-              Protect Project
-            </p>
-            <p className="max-w-[160px] text-[13px] leading-snug text-[#7A736C] dark:text-[#9E9893]">
-              Require a password to view this project (e.g., for NDAs).
-            </p>
-          </div>
-          <Switch
-            checked={enabled}
-            onCheckedChange={handleToggle}
-            className="mt-0.5 data-[state=checked]:bg-[#1A1A1A] data-[state=unchecked]:bg-black/15 dark:data-[state=checked]:bg-[#F0EDE7] dark:data-[state=unchecked]:bg-white/15"
-          />
-        </div>
-        <AnimatePresence>
-          {enabled && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2 }}
-              className="overflow-hidden"
-            >
-              <div className="p-1">
-                <div className="relative">
-                  <Input
-                    type={showPwd ? "text" : "password"}
-                    placeholder="Enter password"
-                    value={pwd}
-                    onChange={(e) => setPwd(e.target.value)}
-                    onBlur={() => save(enabled, pwd)}
-                    className="h-9 pr-9 text-sm"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPwd((v) => !v)}
-                    className="absolute top-1/2 right-3 -translate-y-1/2 text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#9E9893] dark:hover:text-[#F0EDE7]"
-                  >
-                    {showPwd ? (
-                      <EyeOff size={14} strokeWidth={2} />
-                    ) : (
-                      <Eye size={14} strokeWidth={2} />
-                    )}
-                  </button>
-                </div>
+        {isPro ? (
+          <div className="p-4">
+            <div className="mb-3 flex items-start justify-between px-1">
+              <div className="space-y-0.5">
+                <p className="text-sm font-semibold text-[#1A1A1A] dark:text-[#F0EDE7]">
+                  Protect Project
+                </p>
+                <p className="max-w-[160px] text-[13px] leading-snug text-[#7A736C] dark:text-[#9E9893]">
+                  Require a password to view this project (e.g., for NDAs).
+                </p>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              <Switch
+                checked={enabled}
+                onCheckedChange={handleToggle}
+                className="mt-0.5 data-[state=checked]:bg-[#1A1A1A] data-[state=unchecked]:bg-black/15 dark:data-[state=checked]:bg-[#F0EDE7] dark:data-[state=unchecked]:bg-white/15"
+              />
+            </div>
+            <AnimatePresence>
+              {enabled && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="overflow-hidden"
+                >
+                  <div className="p-1">
+                    <div className="relative">
+                      <Input
+                        type={showPwd ? "text" : "password"}
+                        placeholder="Enter password"
+                        value={pwd}
+                        onChange={(e) => setPwd(e.target.value)}
+                        onBlur={() => save(enabled, pwd)}
+                        className="h-9 pr-9 text-sm"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPwd((v) => !v)}
+                        className="absolute top-1/2 right-3 -translate-y-1/2 text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#9E9893] dark:hover:text-[#F0EDE7]"
+                      >
+                        {showPwd ? (
+                          <EyeOff size={14} strokeWidth={2} />
+                        ) : (
+                          <Eye size={14} strokeWidth={2} />
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        ) : (
+          <div className="flex flex-col">
+            {/* Optional preview image — hidden gracefully if the asset is absent */}
+            <img
+              src="/assets/png/custompassword.png"
+              alt="password-protect"
+              draggable={false}
+              className="block w-full"
+              onError={(e) => {
+                e.currentTarget.style.display = "none";
+              }}
+            />
+            <div className="flex flex-col gap-1 px-4 pt-4">
+              <p className="text-[15px] font-semibold tracking-[-0.2px] text-[#1A1A1A] dark:text-[#F0EDE7]">
+                Unlock password protection
+              </p>
+              <p className="text-[13px] leading-snug text-[#7A736C] dark:text-[#9E9893]">
+                Protect your projects with a password (e.g., for NDAs).
+              </p>
+            </div>
+            <div className="p-4">
+              <Button
+                size="lg"
+                variant="tertiary"
+                onClick={() => requirePro("password-protect")}
+                className="h-[46px] w-full rounded-xl"
+              >
+                Upgrade to unlock
+              </Button>
+            </div>
+          </div>
+        )}
       </PopoverContent>
     </Popover>
   );

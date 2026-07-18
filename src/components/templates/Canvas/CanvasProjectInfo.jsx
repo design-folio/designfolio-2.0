@@ -19,6 +19,7 @@ import { useTheme } from "next-themes";
 import Modal from "@/components/modal";
 import AnalyzeCaseStudy from "@/components/analyzeCaseStudy";
 import { useGlobalContext } from "@/context/globalContext";
+import { useProGate } from "@/hooks/useProGate";
 import { TEMPLATE_IDS } from "@/lib/templates";
 import { cn } from "@/lib/utils";
 import { getMetaLabel, getMetaValue } from "@/lib/constant";
@@ -122,6 +123,7 @@ export default function CanvasProjectInfo({ projectDetails, userDetails, edit, o
   const [descIsPlaceholder, setDescIsPlaceholder] = useState(!description);
 
   const [isPassword, setIsPassword] = useState(projectDetails?.protected);
+  const requirePro = useProGate();
   const [passwordInput, setPasswordInput] = useState(password || "");
   const [imageLoaded, setImageLoaded] = useState(false);
   const projectImageRef = useRef(null);
@@ -291,6 +293,8 @@ export default function CanvasProjectInfo({ projectDetails, userDetails, edit, o
   };
 
   const handlePasswordToggle = async () => {
+    // Enabling protection is Pro-only; disabling stays free.
+    if (!isPassword && requirePro("password-protect")) return;
     await _updateProject(projectId, { protected: !isPassword }).then((res) => {
       updateProjectCache("protected", res?.data?.project?.protected);
       setIsPassword((prev) => !prev);

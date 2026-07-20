@@ -461,6 +461,7 @@ export default function ProjectDetail({ project, mode, onBack, onWorkClick, resu
         isAnalyzeDisabled={isAnalyzeDisabled}
         isAnalyzing={isAnalyzing}
         onAnalyze={handleAnalyzeClick}
+        owner={owner}
       />
 
       <motion.div variants={containerVariants} initial="hidden" animate="visible">

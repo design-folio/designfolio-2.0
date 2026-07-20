@@ -112,18 +112,11 @@ export default function ImmersiveHero({
         {/* Upload overlay (editor only) */}
         {isEditable && <HeroUploadOverlay inputRef={inputRef} onFile={handleFile} />}
 
-        {/* Nav */}
-        <div className="pointer-events-none relative z-20 flex justify-center pt-7">
-          <div className="pointer-events-auto w-full" onClick={(e) => e.stopPropagation()}>
-            {/* Editor gets full width so all controls clear the centered builder pill;
-                public/preview stays aligned to the 1100px title column. */}
-            <NavRow
-              dark
-              containerClass={isEditable ? "px-6 md:px-12" : "max-w-[1100px] px-6 md:px-12"}
-              {...navRowProps}
-            />
-          </div>
-        </div>
+        <NavRow
+          dark
+          containerClass={isEditable ? "px-6 md:px-12" : "max-w-[1100px] px-6 md:px-12"}
+          {...navRowProps}
+        />
 
         {/* Title + meta at bottom */}
         <div className="pointer-events-none absolute right-0 bottom-0 left-0 z-20 flex justify-center pb-10">

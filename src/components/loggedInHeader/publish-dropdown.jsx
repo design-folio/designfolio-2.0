@@ -4,7 +4,6 @@ import { Link2, Pencil, Globe, Lock, Copy, Check } from "lucide-react";
 import { ZapIcon } from "lucide-animated";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence, MotionConfig } from "motion/react";
-import { useRouter } from "next/router";
 import { useGlobalContext } from "@/context/globalContext";
 import { _publish, _updateUsername } from "@/network/post-request";
 import { useUsernameAvailability } from "@/hooks/useUsernameAvailability";
@@ -79,10 +78,16 @@ export function PublishDropdown({ onClose, open: openProp, onOpenChange }) {
   const dropdownRef = useRef(null);
   const zapRef = useRef(null);
   const slugInputRef = useRef(null);
-  const router = useRouter();
 
-  const { userDetails, setUserDetails, updateCache, setShowUpgradeModal, setUpgradeModalSource } =
-    useGlobalContext();
+  const {
+    userDetails,
+    setUserDetails,
+    updateCache,
+    setShowUpgradeModal,
+    setUpgradeModalSource,
+    setShowSettingsModal,
+    setSettingsModalTab,
+  } = useGlobalContext();
   const phEvent = usePostHogEvent();
 
   const { username, latestPublishDate, email } = userDetails || {};
@@ -164,14 +169,20 @@ export function PublishDropdown({ onClose, open: openProp, onOpenChange }) {
       .finally(() => setIsSavingSlug(false));
   };
 
-  const openUpgrade = () => {
-    setUpgradeModalSource("pro-template");
+  const openUpgrade = (source) => {
+    phEvent(POSTHOG_EVENT_NAMES.UPGRADE_PRO_CLICKED, {
+      premium_user: isPro,
+      user_email: email,
+      username,
+      source,
+    });
+    setUpgradeModalSource(source);
     setShowUpgradeModal(true);
   };
 
   const handlePublish = () => {
     if (!isPro) {
-      openUpgrade();
+      openUpgrade("publish-cta");
       return;
     }
     const isFirstPublish = !latestPublishDate;
@@ -397,7 +408,7 @@ export function PublishDropdown({ onClose, open: openProp, onOpenChange }) {
                   <motion.div variants={rowVariants}>
                     <Button
                       variant="tertiary"
-                      onClick={isPro ? handlePublish : openUpgrade}
+                      onClick={isPro ? handlePublish : () => openUpgrade("publish-cta")}
                       disabled={isPublishing}
                       className="h-[50px] w-full rounded-[13px] text-[14px] font-semibold"
                     >
@@ -429,7 +440,8 @@ export function PublishDropdown({ onClose, open: openProp, onOpenChange }) {
                       size="sm"
                       onClick={() => {
                         setIsOpen(false);
-                        router.push("/domains");
+                        setSettingsModalTab("domains");
+                        setShowSettingsModal(true);
                       }}
                       className="shrink-0 rounded-full text-white/60 hover:bg-white/10 hover:text-white"
                     >
@@ -440,7 +452,7 @@ export function PublishDropdown({ onClose, open: openProp, onOpenChange }) {
                       type="button"
                       variant="ghost"
                       size="sm"
-                      onClick={openUpgrade}
+                      onClick={() => openUpgrade("custom-domain")}
                       aria-label="Upgrade to unlock custom domain"
                       className="shrink-0 gap-1.5 rounded-full border border-[rgba(255,90,54,0.2)] bg-[rgba(255,90,54,0.12)] px-3 text-[12px] font-semibold text-[#FF5A36] transition-all duration-150 hover:border-[rgba(255,90,54,0.35)] hover:bg-[rgba(255,90,54,0.22)] hover:text-[#FF5A36] [&_svg]:size-[11px]"
                     >

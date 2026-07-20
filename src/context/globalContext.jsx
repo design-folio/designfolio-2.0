@@ -142,6 +142,7 @@ export const GlobalProvider = ({ children }) => {
   const [viewerThemeOverride, setViewerThemeOverride] = useState(false);
   const [isLoadingTemplate, setIsLoadingTemplate] = useState(false);
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const [settingsModalTab, setSettingsModalTab] = useState("account");
   const [activeSidebar, setActiveSidebar] = useState(null);
   const [showUnsavedWarning, setShowUnsavedWarning] = useState(false);
   const [pendingSidebarAction, setPendingSidebarAction] = useState(null);
@@ -1051,6 +1052,8 @@ export const GlobalProvider = ({ children }) => {
         discardPendingPortfolio,
         showSettingsModal,
         setShowSettingsModal,
+        settingsModalTab,
+        setSettingsModalTab,
       }}
     >
       {children}

@@ -68,6 +68,20 @@ export const extractWallpaperValue = (wallpaper) => {
   return wallpaper && typeof wallpaper === "object" ? wallpaper.url || wallpaper.value : wallpaper;
 };
 
+const WALLPAPER_PAYLOAD_FIELDS = ["value", "key", "originalName", "__isNew__", "effects", "color"];
+
+export const pickWallpaperFields = (wallpaper) => {
+  const payload = {};
+  if (wallpaper && typeof wallpaper === "object") {
+    WALLPAPER_PAYLOAD_FIELDS.forEach((field) => {
+      if (wallpaper[field] !== undefined) payload[field] = wallpaper[field];
+    });
+  } else if (wallpaper != null) {
+    payload.value = wallpaper;
+  }
+  return payload;
+};
+
 /**
  * Solid background colour presets (stored inside `wallpaper.color`). Each pastel carries a
  * light `color` (the value we persist) and a `darkColor` shown when the portfolio is in dark

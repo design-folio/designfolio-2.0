@@ -257,7 +257,7 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
     !!dfToken &&
     (router.pathname === "/builder" ||
       router.pathname === "/jobs" ||
-      router.pathname.startsWith("/jobs/") ||
+      (router.pathname.startsWith("/jobs/") && !router.pathname.startsWith("/jobs/share")) ||
       router.pathname === "/analytics" ||
       router.pathname === "/settings" ||
       router.pathname === "/domains" ||

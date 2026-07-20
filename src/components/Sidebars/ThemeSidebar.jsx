@@ -231,7 +231,7 @@ const ThemePanel = ({
   const isMobileOrTablet = useIsMobile();
   const isDarkWallpapers = theme === "dark" || theme === 1;
 
-  const isMacOSTemplate = template === 4;
+  const isMacOSTemplate = template === TEMPLATE_IDS.RETRO_OS;
   const isChatfolioTemplate = template === 1;
   const useThemeSwitchEffect = hasThemeSwitchEffect(template);
   const appearanceSwitchRefLayouts = useRef(null);

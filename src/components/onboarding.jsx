@@ -275,7 +275,7 @@ export default function Onboarding() {
       aria-describedby="onboarding-description"
     >
       <div className="flex min-h-full w-full items-center justify-center p-4 md:p-6">
-        <div className="w-full max-w-2xl md:py-8">
+        <div className="w-full max-w-3xl md:py-8">
           <Stepper current={currentStep} />
 
           <AnimatePresence mode="wait">

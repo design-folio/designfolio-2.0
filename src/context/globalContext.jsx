@@ -30,6 +30,7 @@ import {
   resolveContainerWidth,
 } from "@/lib/constant";
 import { TEMPLATES_BY_ID } from "@/lib/templates";
+import { TEMPLATE_DEFAULTS, buildTemplateWallpaperPayload } from "@/lib/templateDefaults";
 import { DEFAULT_TYPOGRAPHY, normalizeTypography } from "@/lib/typography";
 import { useDebouncedCallback } from "use-debounce";
 import React, {
@@ -519,8 +520,10 @@ export const GlobalProvider = ({ children }) => {
   };
 
   const changeTemplate = (newTemplate) => {
-    if (newTemplate === 4) {
-      setTheme("light");
+    const templateDefaults = TEMPLATE_DEFAULTS[newTemplate];
+
+    if (templateDefaults?.theme !== undefined) {
+      setTheme(templateDefaults.theme === 1 ? "dark" : "light");
     }
     setIsLoadingTemplate(true);
 
@@ -531,24 +534,10 @@ export const GlobalProvider = ({ children }) => {
     setTemplate(newTemplate);
 
     const payload = { template: newTemplate };
-    if (newTemplate === 4) {
-      payload.theme = 0;
-      // Retro OS is always full-page (like it's always light) — force + persist the mode.
-      setBackgroundMode(BACKGROUND_MODE.FULL_PAGE); // optimistic
-      const currentWp = userDetailsRef.current?.wallpaper ?? userDetails?.wallpaper;
-      const wpPayload = { mode: BACKGROUND_MODE.FULL_PAGE };
-      if (currentWp && typeof currentWp === "object") {
-        if (currentWp.value !== undefined) wpPayload.value = currentWp.value;
-        if (currentWp.key !== undefined) wpPayload.key = currentWp.key;
-        if (currentWp.originalName !== undefined) wpPayload.originalName = currentWp.originalName;
-        if (currentWp.__isNew__ !== undefined) wpPayload.__isNew__ = currentWp.__isNew__;
-        if (currentWp.effects !== undefined) wpPayload.effects = currentWp.effects;
-        if (currentWp.color !== undefined) wpPayload.color = currentWp.color;
-      } else if (currentWp != null) {
-        wpPayload.value = currentWp;
-      }
-      payload.wallpaper = wpPayload;
+    if (templateDefaults?.theme !== undefined) {
+      payload.theme = templateDefaults.theme;
     }
+
     // Legacy cleanup: if user has 8 stored and is leaving Retro OS, reset to 0 in DB
     if (isSwitchingFromMacOS) {
       const currentWpValue = extractWallpaperValue(userDetails?.wallpaper);
@@ -558,12 +547,26 @@ export const GlobalProvider = ({ children }) => {
       }
     }
 
+    // Apply the new template's forced background defaults, if any (see TEMPLATE_DEFAULTS).
+    if (templateDefaults?.backgroundMode !== undefined) {
+      setBackgroundMode(templateDefaults.backgroundMode); // optimistic
+      const currentWp = userDetailsRef.current?.wallpaper ?? userDetails?.wallpaper;
+      const wpPayload = buildTemplateWallpaperPayload(newTemplate, currentWp, payload.wallpaper);
+      if (
+        templateDefaults.fallbackWallpaperValue !== undefined &&
+        wpPayload.value === templateDefaults.fallbackWallpaperValue
+      ) {
+        setWallpaper(wpPayload.value); // optimistic
+      }
+      payload.wallpaper = wpPayload;
+    }
+
     _updateUser(payload)
       .then((res) => {
         const updatedUser = res?.data?.user;
         updateCache("userDetails", updatedUser);
         const merge = { template: newTemplate };
-        if (newTemplate === 4) merge.theme = 0;
+        if (templateDefaults?.theme !== undefined) merge.theme = templateDefaults.theme;
         if (updatedUser?.wallpaper) merge.wallpaper = updatedUser.wallpaper;
         setUserDetails((prev) => ({ ...prev, ...merge }));
       })

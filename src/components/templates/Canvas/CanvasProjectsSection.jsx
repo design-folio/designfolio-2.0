@@ -168,8 +168,6 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
     openModal,
     openSidebar,
     updateCache,
-    setShowUpgradeModal,
-    setUpgradeModalUnhideProject,
     changeProjectsColumns,
   } = useGlobalContext();
   const router = useRouter();
@@ -199,14 +197,7 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
   const handleToggleProjectVisibility = useCallback(
     (projectId) => {
       const project = (projects || []).find((p) => p._id === projectId);
-      const visibleCount = (projects || []).filter((p) => !p.hidden).length;
-      const isUnhiding = project?.hidden === true;
-
-      if (!userDetails?.pro && isUnhiding && visibleCount >= 2) {
-        setUpgradeModalUnhideProject({ projectId, title: project?.title || "Project" });
-        setShowUpgradeModal(true);
-        return;
-      }
+      if (!project) return;
 
       const updatedProjects = (projects || []).map((p) =>
         p._id === projectId ? { ...p, hidden: !p.hidden } : p
@@ -215,14 +206,7 @@ function CanvasProjectsSection({ isEditing, preview, publicView = false }) {
       setUserDetails((prev) => ({ ...prev, projects: updatedProjects }));
       updateCache("userDetails", (prev) => ({ ...prev, projects: updatedProjects }));
     },
-    [
-      projects,
-      userDetails,
-      setUserDetails,
-      updateCache,
-      setShowUpgradeModal,
-      setUpgradeModalUnhideProject,
-    ]
+    [projects, setUserDetails, updateCache]
   );
 
   if (preview && !isEditing && visibleProjects.length === 0) {

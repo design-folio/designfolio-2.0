@@ -32,8 +32,6 @@ export default function Professional({ isEditing, preview = false, publicView = 
     setSelectedReview,
     setSelectedWork,
     updateCache,
-    setShowUpgradeModal,
-    setUpgradeModalUnhideProject,
     containerMaxWidth,
   } = useGlobalContext();
   const router = useRouter();
@@ -111,14 +109,7 @@ export default function Professional({ isEditing, preview = false, publicView = 
   const handleToggleProjectVisibility = useCallback(
     (projectId) => {
       const project = (projects || []).find((p) => p._id === projectId);
-      const visibleCount = (projects || []).filter((p) => !p.hidden).length;
-      const isUnhiding = project?.hidden === true;
-
-      if (!userDetails?.pro && isUnhiding && visibleCount >= 2) {
-        setUpgradeModalUnhideProject({ projectId, title: project?.title || "Project" });
-        setShowUpgradeModal(true);
-        return;
-      }
+      if (!project) return;
 
       const updatedProjects = (projects || []).map((p) =>
         p._id === projectId ? { ...p, hidden: !p.hidden } : p
@@ -127,14 +118,7 @@ export default function Professional({ isEditing, preview = false, publicView = 
       setUserDetails((prev) => ({ ...prev, projects: updatedProjects }));
       updateCache("userDetails", (prev) => ({ ...prev, projects: updatedProjects }));
     },
-    [
-      projects,
-      userDetails,
-      setUserDetails,
-      updateCache,
-      setShowUpgradeModal,
-      setUpgradeModalUnhideProject,
-    ]
+    [projects, setUserDetails, updateCache]
   );
 
   const socialLinks = useMemo(() => {

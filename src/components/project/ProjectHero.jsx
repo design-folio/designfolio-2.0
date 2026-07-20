@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import { AnimatePresence } from "motion/react";
+import { TEMPLATE_IDS } from "@/lib/templates";
 import ImmersiveHero from "./ImmersiveHero";
 import EditorialHero from "./EditorialHero";
 
@@ -19,9 +20,11 @@ export default function ProjectHero({
   analyzeTooltipMessage,
   isAnalyzeDisabled,
   isAnalyzing,
+  owner,
 }) {
   const router = useRouter();
   const heroView = project?.heroView ?? "editorial";
+  const isRetroOS = owner?.template === TEMPLATE_IDS.RETRO_OS;
 
   // Lifted so switching immersive↔editorial doesn't replay the title blur-in.
   const [titleAnimDone, setTitleAnimDone] = useState(false);
@@ -43,6 +46,7 @@ export default function ProjectHero({
     analyzeTooltipMessage,
     isAnalyzeDisabled,
     isAnalyzing,
+    isRetroOS,
   };
 
   const heroProps = {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ChevronLeft, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
@@ -21,6 +21,7 @@ export default function NavRow({
   analyzeTooltipMessage,
   isAnalyzeDisabled,
   containerClass,
+  isRetroOS,
 }) {
   const isEditor = mode === "editor";
   const [openPopover, setOpenPopover] = useState(null);
@@ -28,7 +29,44 @@ export default function NavRow({
     ? "text-white/80 hover:text-white"
     : "text-[#7A736C] dark:text-[#9E9893] hover:text-[#1A1A1A] dark:hover:text-[#F0EDE7]";
 
-  return (
+  const [isVisible, setIsVisible] = useState(true);
+  const lastScrollY = useRef(0);
+  const navRef = useRef(null);
+  useEffect(() => {
+    const getScrollContainer = () => {
+      const root = navRef.current?.closest("[data-scroll-root]");
+      if (root) {
+        const { overflowY } = window.getComputedStyle(root);
+        if (/(auto|scroll)/.test(overflowY)) return root;
+      }
+      return window;
+    };
+    const scrollEl = getScrollContainer();
+    const isWindowScroll = scrollEl === window;
+    const handleScroll = () => {
+      const currentY = isWindowScroll ? window.scrollY : scrollEl.scrollTop;
+      setIsVisible(currentY < lastScrollY.current || currentY <= 150);
+      lastScrollY.current = currentY;
+    };
+    scrollEl.addEventListener("scroll", handleScroll, { passive: true });
+    return () => scrollEl.removeEventListener("scroll", handleScroll);
+  }, []);
+  const hideStyle = { transform: isVisible ? "translateY(0)" : "translateY(-120%)" };
+
+  // Editorial only: `fixed` takes the bar out of flow, so the title below it
+  // needs the reserved space back. Measured (not hardcoded) since the row's
+  // height differs between editor/preview/public.
+  const barRef = useRef(null);
+  const [barHeight, setBarHeight] = useState(64);
+  useEffect(() => {
+    if (dark || isRetroOS || !barRef.current) return;
+    const el = barRef.current;
+    const observer = new ResizeObserver(([entry]) => setBarHeight(entry.contentRect.height));
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [dark, isRetroOS]);
+
+  const row = (
     // Contained to the title's width so the nav's left/right edges align with
     // the content in each view (editorial 880, immersive 1100). Buttons are
     // split by mode — Work/Resume in public+preview, editor controls in the
@@ -130,5 +168,57 @@ export default function NavRow({
         )}
       </div>
     </div>
+  );
+
+  // Retro OS windowed template: it scrolls inside its own container rather
+  // than the window, so `fixed` would break out of the simulated window
+  // shell — keep each view's original in-flow positioning untouched.
+  if (isRetroOS) {
+    return dark ? (
+      <div className="pointer-events-none relative z-20 flex justify-center pt-7">
+        <div className="pointer-events-auto w-full" onClick={(e) => e.stopPropagation()}>
+          {row}
+        </div>
+      </div>
+    ) : (
+      <div className="sticky top-0 z-50 flex justify-center border-b border-black/5 bg-white/90 backdrop-blur-md dark:border-white/5 dark:bg-[#1A1A1A]/90">
+        <div className="w-full py-4">{row}</div>
+      </div>
+    );
+  }
+
+  // Immersive: fully transparent, pointer-events split so clicks pass
+  // through to the hero underneath except on the nav content itself.
+  if (dark) {
+    return (
+      <div
+        ref={navRef}
+        className="pointer-events-none fixed top-0 right-0 left-0 z-50 flex justify-center pt-7 transition-transform duration-300 ease-out"
+        style={hideStyle}
+      >
+        <div className="pointer-events-auto w-full" onClick={(e) => e.stopPropagation()}>
+          {row}
+        </div>
+      </div>
+    );
+  }
+
+  // Editorial: `fixed` (not `sticky`) so it stays pinned across every
+  // section of the page, not just while scrolling within EditorialHero's
+  // own container.
+  return (
+    <>
+      <div style={{ height: barHeight }} aria-hidden="true" />
+      <div
+        ref={(el) => {
+          barRef.current = el;
+          navRef.current = el;
+        }}
+        className="fixed top-0 right-0 left-0 z-50 flex justify-center border-b border-black/5 bg-white/90 backdrop-blur-md transition-transform duration-300 ease-out dark:border-white/5 dark:bg-[#1A1A1A]/90"
+        style={hideStyle}
+      >
+        <div className="w-full py-4">{row}</div>
+      </div>
+    </>
   );
 }

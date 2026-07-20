@@ -19,16 +19,8 @@ export default function ChatProjectsSection({
   preview,
   isEditing,
 }) {
-  const {
-    userDetails,
-    setUserDetails,
-    openModal,
-    openSidebar,
-    setSelectedProject,
-    updateCache,
-    setShowUpgradeModal,
-    setUpgradeModalUnhideProject,
-  } = useGlobalContext();
+  const { userDetails, setUserDetails, openModal, openSidebar, setSelectedProject, updateCache } =
+    useGlobalContext();
   const router = useRouter();
   const { projects = [] } = userDetails || {};
   const avatarSrc = useMemo(() => getUserAvatarImage(userDetails), [userDetails]);
@@ -40,14 +32,7 @@ export default function ChatProjectsSection({
   const handleToggleProjectVisibility = useCallback(
     (projectId) => {
       const project = (projects || []).find((p) => p._id === projectId);
-      const visibleCount = (projects || []).filter((p) => !p.hidden).length;
-      const isUnhiding = project?.hidden === true;
-
-      if (!userDetails?.pro && isUnhiding && visibleCount >= 2) {
-        setUpgradeModalUnhideProject({ projectId, title: project?.title || "Project" });
-        setShowUpgradeModal(true);
-        return;
-      }
+      if (!project) return;
 
       const updatedProjects = (projects || []).map((p) =>
         p._id === projectId ? { ...p, hidden: !p.hidden } : p
@@ -56,14 +41,7 @@ export default function ChatProjectsSection({
       setUserDetails((prev) => ({ ...prev, projects: updatedProjects }));
       updateCache("userDetails", (prev) => ({ ...prev, projects: updatedProjects }));
     },
-    [
-      projects,
-      userDetails,
-      setUserDetails,
-      updateCache,
-      setShowUpgradeModal,
-      setUpgradeModalUnhideProject,
-    ]
+    [projects, setUserDetails, updateCache]
   );
   const getProjectHref = useCallback(
     (id) => (isEditing ? `/project/${id}/editor` : `/project/${id}`),

@@ -94,8 +94,6 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
     openSidebar,
     setSelectedProject,
     updateCache,
-    setShowUpgradeModal,
-    setUpgradeModalUnhideProject,
     containerMaxWidth,
     hasWallpaper,
     changeProjectsColumns,
@@ -212,14 +210,6 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
       const allProjects = userDetails?.projects || [];
       const project = allProjects.find((p) => p._id === projectId);
       if (!project) return;
-      const visibleCount = allProjects.filter((p) => !p.hidden).length;
-      const isUnhiding = project.hidden === true;
-
-      if (!userDetails?.pro && isUnhiding && visibleCount >= 2) {
-        setUpgradeModalUnhideProject({ projectId, title: project.title || "Project" });
-        setShowUpgradeModal(true);
-        return;
-      }
 
       const updatedProjects = allProjects.map((p) =>
         p._id === projectId ? { ...p, hidden: !p.hidden } : p
@@ -228,7 +218,7 @@ const Mono = ({ isEditing, preview = false, publicView = false }) => {
       setUserDetails((prev) => ({ ...prev, projects: updatedProjects }));
       updateCache("userDetails", (prev) => ({ ...prev, projects: updatedProjects }));
     },
-    [userDetails, setUserDetails, updateCache, setShowUpgradeModal, setUpgradeModalUnhideProject]
+    [userDetails, setUserDetails, updateCache]
   );
 
   useEffect(() => {

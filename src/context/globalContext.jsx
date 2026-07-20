@@ -6,6 +6,7 @@ import {
   extractWallpaperColor,
   resolveBackgroundColor,
   hasNoWallpaper,
+  pickWallpaperFields,
   BACKGROUND_MODE,
 } from "@/lib/wallpaper";
 import { useRouter } from "next/router";
@@ -29,7 +30,7 @@ import {
   modals,
   resolveContainerWidth,
 } from "@/lib/constant";
-import { TEMPLATES_BY_ID } from "@/lib/templates";
+import { TEMPLATES_BY_ID, TEMPLATE_IDS } from "@/lib/templates";
 import { TEMPLATE_DEFAULTS, buildTemplateWallpaperPayload } from "@/lib/templateDefaults";
 import { DEFAULT_TYPOGRAPHY, normalizeTypography } from "@/lib/typography";
 import { useDebouncedCallback } from "use-debounce";
@@ -77,24 +78,27 @@ export const GlobalProvider = ({ children }) => {
   const [cursor, setCursor] = useState(0);
   const [template, setTemplate] = useState(0);
 
+  const applyDataTemplateAttr = useCallback(() => {
+    const templateValue = TEMPLATES_BY_ID[template]?.value ?? "canvas";
+    document.documentElement.dataset.template = templateValue;
+  }, [template]);
+
   // Sync data-template attribute on <html> for theme.css accent overrides
   useEffect(() => {
     if (router.pathname === "/project/[id]") return;
-    const templateValue = TEMPLATES_BY_ID[template]?.value ?? "canvas";
-    document.documentElement.dataset.template = templateValue;
-  }, [template, router.pathname]);
+    applyDataTemplateAttr();
+  }, [applyDataTemplateAttr, router.pathname]);
 
   // Re-set data-template after every client-side navigation. Public pages (project/[id]/index)
   // clean up the attribute on unmount; this ensures globalContext restores it for the next page.
   useEffect(() => {
     const handleRouteChangeComplete = (url) => {
       if (url.startsWith("/project/")) return;
-      const templateValue = TEMPLATES_BY_ID[template]?.value ?? "canvas";
-      document.documentElement.dataset.template = templateValue;
+      applyDataTemplateAttr();
     };
     router.events.on("routeChangeComplete", handleRouteChangeComplete);
     return () => router.events.off("routeChangeComplete", handleRouteChangeComplete);
-  }, [router.events, template]);
+  }, [router.events, applyDataTemplateAttr]);
 
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   /** When set, upgrade modal shows "Unhide [title]?" and message about 2 visible projects limit */
@@ -152,7 +156,6 @@ export const GlobalProvider = ({ children }) => {
     useState(false);
   const unsavedChangesCheckers = useRef({});
   const userDetailsRef = useRef(userDetails);
-  const isUpdatingEffectsFromAPI = useRef(false);
   const effectsInitializedRef = useRef(false);
   const pendingPrefillAppliedRef = useRef(false);
   const { setTheme, theme, resolvedTheme } = useTheme();
@@ -221,11 +224,10 @@ export const GlobalProvider = ({ children }) => {
 
       if (sameIdsDifferentOrder) return;
 
-      // Template 4 (macOS) is always light mode
-      const isTemplate4 = userData?.template === 4;
+      const forcedTheme = TEMPLATE_DEFAULTS[userData?.template]?.theme;
 
       const wp = userData?.wallpaper;
-      const wpValue = wp && typeof wp === "object" ? wp.url || wp.value : wp;
+      const wpValue = extractWallpaperValue(wp);
       const wpEffects = userData?.wallpaper?.effects;
       const wpMode = extractWallpaperMode(wp);
       const wpColor = extractWallpaperColor(wp);
@@ -241,7 +243,6 @@ export const GlobalProvider = ({ children }) => {
 
       let newWallpaperEffects = null;
       if (!effectsInitializedRef.current) {
-        isUpdatingEffectsFromAPI.current = true;
         if (hasValidEffects) {
           const sanitizedEffects = Object.fromEntries(
             Object.entries(wpEffects).filter(([key, v]) => {
@@ -280,8 +281,8 @@ export const GlobalProvider = ({ children }) => {
       }
 
       startTransition(() => {
-        if (isTemplate4) {
-          setTheme("light");
+        if (forcedTheme !== undefined) {
+          setTheme(forcedTheme === 1 ? "dark" : "light");
         } else if (userData?.theme != null && !viewerThemeOverride) {
           setTheme(userData.theme == 1 ? "dark" : "light");
         }
@@ -337,8 +338,7 @@ export const GlobalProvider = ({ children }) => {
 
   // Compute wallpaper URL centrally - handles object and primitive values
   const wallpaperUrl = useMemo(() => {
-    const wp = wallpaper;
-    const wpValue = wp && typeof wp === "object" ? wp.url || wp.value : wp;
+    const wpValue = extractWallpaperValue(wallpaper);
     const currentTheme = resolvedTheme || theme;
     return getWallpaperUrl(wpValue ?? 0, currentTheme, template);
   }, [wallpaper, resolvedTheme, theme, template]);
@@ -360,6 +360,22 @@ export const GlobalProvider = ({ children }) => {
       return { user: newUser };
     });
   }, []);
+
+  // Merges `payload` into userDetails + the query cache, then fires the backend update
+  // (log-and-ignore on failure). Callers apply their own optimistic local state (e.g.
+  // setTypography) before calling this. Doesn't fit callers that sync state from the
+  // response instead of optimistically (changeCursor, changeWallpaper, saveWallpaperEffects)
+  // or that need custom rollback (changeTemplate) — those persist directly via _updateUser.
+  const persistUserField = useCallback(
+    (payload, errorMessage) => {
+      setUserDetails((prev) => ({ ...prev, ...payload }));
+      updateCache("userDetails", (prev) => ({ ...prev, ...payload }));
+      return _updateUser(payload).catch((err) => {
+        console.error(errorMessage, err);
+      });
+    },
+    [updateCache]
+  );
 
   const applyPendingPortfolio = useCallback(() => {
     if (pendingPrefillAppliedRef.current || typeof window === "undefined") return;
@@ -429,11 +445,15 @@ export const GlobalProvider = ({ children }) => {
   }, [userDetails, applyPendingPortfolio]);
 
   const changeCursor = (cursor) => {
-    _updateUser({ cursor: cursor }).then((res) => {
-      setCursor(cursor);
-      updateCache("userDetails", res?.data?.user);
-      setUserDetails(() => ({ ...userDetails, cursor: cursor }));
-    });
+    _updateUser({ cursor: cursor })
+      .then((res) => {
+        setCursor(cursor);
+        updateCache("userDetails", res?.data?.user);
+        setUserDetails(() => ({ ...userDetails, cursor: cursor }));
+      })
+      .catch((err) => {
+        console.error("Error updating cursor:", err);
+      });
   };
 
   const changeWallpaper = (wallpaper, filename) => {
@@ -504,7 +524,7 @@ export const GlobalProvider = ({ children }) => {
 
       // Extract authoritative wallpaper value from response
       const wp = updatedUser?.wallpaper;
-      const wpValue = wp && typeof wp === "object" ? wp.url || wp.value : wp;
+      const wpValue = extractWallpaperValue(wp);
 
       // Update local state and context - only update wallpaper field to prevent signed URL changes
       setWallpaper(wpValue || wallpaper);
@@ -527,7 +547,8 @@ export const GlobalProvider = ({ children }) => {
     }
     setIsLoadingTemplate(true);
 
-    const isSwitchingFromMacOS = userDetails?.template === 4 && newTemplate !== 4;
+    const isSwitchingFromMacOS =
+      userDetails?.template === TEMPLATE_IDS.RETRO_OS && newTemplate !== TEMPLATE_IDS.RETRO_OS;
     const previousTemplate = template;
 
     // Optimistic update — template state drives wallpaperUrl immediately
@@ -581,21 +602,16 @@ export const GlobalProvider = ({ children }) => {
   };
 
   const changeTheme = (themeValue) => {
-    // Template 4 (macOS) is always light mode — ignore dark mode requests
-    if (userDetails?.template === 4) {
-      setTheme("light");
+    // Templates with a forced theme (see TEMPLATE_DEFAULTS) ignore manual theme changes
+    const forcedTheme = TEMPLATE_DEFAULTS[userDetails?.template]?.theme;
+    if (forcedTheme !== undefined) {
+      setTheme(forcedTheme === 1 ? "dark" : "light");
       return;
     }
 
-    // Optimistic update: UI and cache first to prevent flicker and keep ThemePanel switch in sync
+    // Optimistic update: UI first to prevent flicker and keep ThemePanel switch in sync
     setTheme(themeValue == 1 ? "dark" : "light");
-    setUserDetails((prev) => ({ ...prev, theme: themeValue }));
-    updateCache("userDetails", (prev) => ({ ...prev, theme: themeValue }));
-
-    // Fire and forget backend update
-    _updateUser({ theme: themeValue }).catch((err) => {
-      console.error("Error updating theme:", err);
-    });
+    persistUserField({ theme: themeValue }, "Error updating theme:");
   };
 
   // Function to save effects to backend (used by debounced and immediate calls)
@@ -604,33 +620,11 @@ export const GlobalProvider = ({ children }) => {
       // Get current wallpaper object from ref (always has latest value)
       const currentWallpaper = userDetailsRef.current?.wallpaper || {};
 
-      // Build wallpaper payload - exclude 'type' field, only include relevant fields
-      const wallpaperPayload = {};
-
-      // For preset wallpapers, only include 'value'
-      if (currentWallpaper.value !== undefined) {
-        wallpaperPayload.value = currentWallpaper.value;
-      }
-
-      // For custom wallpapers, include key, originalName, __isNew__
-      if (currentWallpaper.key !== undefined) {
-        wallpaperPayload.key = currentWallpaper.key;
-      }
-      if (currentWallpaper.originalName !== undefined) {
-        wallpaperPayload.originalName = currentWallpaper.originalName;
-      }
-      if (currentWallpaper.__isNew__ !== undefined) {
-        wallpaperPayload.__isNew__ = currentWallpaper.__isNew__;
-      }
-
-      // Preserve the background mode (backend rebuilds the wallpaper object on write)
+      // Build wallpaper payload — reuses the same field set as changeBackgroundMode / template
+      // defaults, plus mode preserved as-is (this call only updates effects, not mode).
+      const wallpaperPayload = pickWallpaperFields(currentWallpaper);
       if (currentWallpaper.mode !== undefined && currentWallpaper.mode !== null) {
         wallpaperPayload.mode = currentWallpaper.mode;
-      }
-
-      // Preserve the solid background colour (grain can apply on a colour background too)
-      if (currentWallpaper.color !== undefined) {
-        wallpaperPayload.color = currentWallpaper.color;
       }
 
       // Only save if we have a valid wallpaper (value, key, or a colour background)
@@ -667,8 +661,6 @@ export const GlobalProvider = ({ children }) => {
 
                 // Only update if effects have actually changed
                 if (effectsChanged) {
-                  // Set flag to prevent updateWallpaperEffects useEffect from triggering
-                  isUpdatingEffectsFromAPI.current = true;
                   setWallpaperEffects(newEffects);
                 }
               }
@@ -713,29 +705,9 @@ export const GlobalProvider = ({ children }) => {
     setBackgroundMode(mode); // optimistic
 
     const currentWallpaper = userDetailsRef.current?.wallpaper;
-    const wallpaperPayload = { mode };
+    const wallpaperPayload = { ...pickWallpaperFields(currentWallpaper), mode };
 
-    if (currentWallpaper && typeof currentWallpaper === "object") {
-      if (currentWallpaper.value !== undefined) wallpaperPayload.value = currentWallpaper.value;
-      if (currentWallpaper.key !== undefined) wallpaperPayload.key = currentWallpaper.key;
-      if (currentWallpaper.originalName !== undefined)
-        wallpaperPayload.originalName = currentWallpaper.originalName;
-      if (currentWallpaper.__isNew__ !== undefined)
-        wallpaperPayload.__isNew__ = currentWallpaper.__isNew__;
-      if (currentWallpaper.effects !== undefined)
-        wallpaperPayload.effects = currentWallpaper.effects;
-      if (currentWallpaper.color !== undefined) wallpaperPayload.color = currentWallpaper.color;
-    } else if (currentWallpaper !== undefined && currentWallpaper !== null) {
-      // Legacy bare-number wallpaper — normalize to an object so mode can be carried.
-      wallpaperPayload.value = currentWallpaper;
-    }
-
-    setUserDetails((prev) => ({ ...prev, wallpaper: wallpaperPayload }));
-    updateCache("userDetails", (prev) => ({ ...prev, wallpaper: wallpaperPayload }));
-
-    _updateUser({ wallpaper: wallpaperPayload }).catch((err) => {
-      console.error("Error updating background mode:", err);
-    });
+    persistUserField({ wallpaper: wallpaperPayload }, "Error updating background mode:");
   };
 
   // Set (or clear) the solid background colour. A colour is mutually exclusive with an image
@@ -755,12 +727,7 @@ export const GlobalProvider = ({ children }) => {
       wallpaperPayload.effects = currentWallpaper.effects;
     }
 
-    setUserDetails((prev) => ({ ...prev, wallpaper: wallpaperPayload }));
-    updateCache("userDetails", (prev) => ({ ...prev, wallpaper: wallpaperPayload }));
-
-    _updateUser({ wallpaper: wallpaperPayload }).catch((err) => {
-      console.error("Error updating background colour:", err);
-    });
+    persistUserField({ wallpaper: wallpaperPayload }, "Error updating background colour:");
   };
 
   // Change the content container width (px). Debounced during drag; commits immediately
@@ -770,21 +737,12 @@ export const GlobalProvider = ({ children }) => {
     setContainerWidth(px);
 
     if (containerWidthSaveTimer.current) clearTimeout(containerWidthSaveTimer.current);
+    const commit = () =>
+      persistUserField({ containerWidth: px }, "Error updating container width:");
     if (immediate) {
-      // Commit: sync userDetails + cache and persist to backend.
-      setUserDetails((prev) => ({ ...prev, containerWidth: px }));
-      updateCache("userDetails", (prev) => ({ ...prev, containerWidth: px }));
-      _updateUser({ containerWidth: px }).catch((err) => {
-        console.error("Error updating container width:", err);
-      });
+      commit();
     } else {
-      containerWidthSaveTimer.current = setTimeout(() => {
-        setUserDetails((prev) => ({ ...prev, containerWidth: px }));
-        updateCache("userDetails", (prev) => ({ ...prev, containerWidth: px }));
-        _updateUser({ containerWidth: px }).catch((err) => {
-          console.error("Error updating container width:", err);
-        });
-      }, 500);
+      containerWidthSaveTimer.current = setTimeout(commit, 500);
     }
   };
 
@@ -792,21 +750,11 @@ export const GlobalProvider = ({ children }) => {
   const changeTypography = (level) => {
     const value = normalizeTypography(level);
     setTypography(value); // optimistic
-    setUserDetails((prev) => ({ ...prev, typography: value }));
-    updateCache("userDetails", (prev) => ({ ...prev, typography: value }));
-
-    _updateUser({ typography: value }).catch((err) => {
-      console.error("Error updating typography:", err);
-    });
+    persistUserField({ typography: value }, "Error updating typography:");
   };
   const changeProjectsColumns = (cols) => {
     const value = cols === 1 ? 1 : 2;
-    setUserDetails((prev) => ({ ...prev, projectsColumns: value }));
-    updateCache("userDetails", (prev) => ({ ...prev, projectsColumns: value }));
-
-    _updateUser({ projectsColumns: value }).catch((err) => {
-      console.error("Error updating projects columns:", err);
-    });
+    persistUserField({ projectsColumns: value }, "Error updating projects columns:");
   };
 
   const openModal = (type = null) => {

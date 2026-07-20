@@ -148,7 +148,7 @@ export default function Index() {
                 Exit Preview
               </Button>
             </div>
-            <div aria-hidden="true" style={{ height: 64 }} />
+            {hasBackground && <div aria-hidden="true" style={{ height: 64 }} />}
             <Mono preview />
             {ProBadge}
           </>

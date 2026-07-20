@@ -4,6 +4,7 @@ import { Lock, Eye, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
+import { Spinner } from "@/components/ui/spinner";
 import { _updateProject } from "@/network/post-request";
 import { useGlobalContext } from "@/context/globalContext";
 import { useProGate } from "@/hooks/useProGate";
@@ -54,6 +55,7 @@ export default function LockPopover({ project, dark, open, onOpenChange }) {
 
   const [enabled, setEnabled] = useState(!!project?.protected);
   const [pwd, setPwd] = useState(project?.password ?? "");
+  const [savedPwd, setSavedPwd] = useState(project?.password ?? "");
   const [saving, setSaving] = useState(false);
   const [showPwd, setShowPwd] = useState(false);
 
@@ -62,6 +64,7 @@ export default function LockPopover({ project, dark, open, onOpenChange }) {
     setSeededId(project?._id);
     setEnabled(!!project?.protected);
     setPwd(project?.password ?? "");
+    setSavedPwd(project?.password ?? "");
   }
 
   const popoverRef = useRef(null);
@@ -89,7 +92,14 @@ export default function LockPopover({ project, dark, open, onOpenChange }) {
 
   const handleToggle = (val) => {
     setEnabled(val);
-    save(val, pwd);
+    save(val, pwd).then(() => setSavedPwd(val ? pwd : ""));
+  };
+
+  const canSavePwd = enabled && pwd.trim().length > 0 && pwd !== savedPwd && !saving;
+
+  const handleSavePwd = () => {
+    if (!canSavePwd) return;
+    save(enabled, pwd).then(() => setSavedPwd(pwd));
   };
 
   return (
@@ -161,7 +171,7 @@ export default function LockPopover({ project, dark, open, onOpenChange }) {
                             placeholder="Enter password"
                             value={pwd}
                             onChange={(e) => setPwd(e.target.value)}
-                            onBlur={() => save(enabled, pwd)}
+                            onKeyDown={(e) => e.key === "Enter" && handleSavePwd()}
                             className="h-9 pr-9 text-sm"
                           />
                           <button
@@ -176,6 +186,15 @@ export default function LockPopover({ project, dark, open, onOpenChange }) {
                             )}
                           </button>
                         </div>
+                        <Button
+                          type="button"
+                          onClick={handleSavePwd}
+                          disabled={!canSavePwd}
+                          className="mt-2 h-9 w-full rounded-xl text-[13px] font-semibold"
+                        >
+                          {saving && <Spinner className="size-3.5" />}
+                          Save
+                        </Button>
                       </div>
                     </motion.div>
                   )}

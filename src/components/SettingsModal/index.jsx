@@ -272,6 +272,7 @@ export default function SettingsModal() {
   const {
     showSettingsModal,
     setShowSettingsModal,
+    settingsModalTab,
     userDetails,
     setUserDetails,
     domainDetails,
@@ -281,6 +282,16 @@ export default function SettingsModal() {
   const [activeTab, setActiveTab] = useState("account");
   const isMobile = useIsMobile();
   const router = useRouter();
+
+  // Jump to the requested tab whenever the modal transitions to open
+  // (e.g. "Setup domain" should land on Domains, not whatever tab was last open).
+  // Adjusted during render (React's recommended alternative to an effect here)
+  // so it takes effect before paint instead of causing an extra render pass.
+  const [wasOpen, setWasOpen] = useState(showSettingsModal);
+  if (showSettingsModal !== wasOpen) {
+    setWasOpen(showSettingsModal);
+    if (showSettingsModal) setActiveTab(settingsModalTab || "account");
+  }
 
   const handleSignOut = () => {
     setUserDetails(null);

@@ -71,13 +71,7 @@ export default function EditorialHero({
       exit={{ opacity: 0 }}
       transition={{ duration: 0.35 }}
     >
-      {/* Sticky header */}
-      <div className="sticky top-0 z-50 flex justify-center border-b border-black/5 bg-white/90 backdrop-blur-md dark:border-white/5 dark:bg-[#1A1A1A]/90">
-        <div className="w-full py-4">
-          {/* Editor gets full width; public/preview stays at 880px. */}
-          <NavRow dark={false} containerClass="max-w-[880px] px-6 md:px-10" {...navRowProps} />
-        </div>
-      </div>
+      <NavRow dark={false} containerClass="max-w-[880px] px-6 md:px-10" {...navRowProps} />
 
       {/* Title + description */}
       <div className="mx-auto w-full max-w-[880px] px-6 md:px-10">

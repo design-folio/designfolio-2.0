@@ -140,7 +140,7 @@ export default function Index({ initialUserDetails }) {
       case TEMPLATE_IDS.MONO:
         return (
           <>
-            <div aria-hidden="true" style={{ height: 64 }} />
+            {hasBackground && <div aria-hidden="true" style={{ height: 128 }} />}
             <Mono preview publicView />
             {ProBadge}
           </>

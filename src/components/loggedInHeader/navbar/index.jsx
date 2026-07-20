@@ -81,7 +81,7 @@ export default function Navbar() {
 
   const handlePublish = () => {
     if (!userDetails?.pro) {
-      setUpgradeModalSource("pro-template");
+      setUpgradeModalSource("publish-cta");
       setShowUpgradeModal(true);
       return;
     }

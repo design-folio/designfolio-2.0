@@ -1,6 +1,15 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { ChevronsUpDown, Pencil, Plus, Trash2, Play, Square } from "lucide-react";
+import {
+  ChevronsUpDown,
+  ChevronLeft,
+  ChevronRight,
+  Pencil,
+  Plus,
+  Trash2,
+  Play,
+  Square,
+} from "lucide-react";
 import { Button } from "../../ui/button";
 import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
@@ -73,6 +82,28 @@ function CanvasTestimonialsSection({ isEditing, preview = false }) {
       prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
     );
   }, []);
+
+  const goToIndex = useCallback((idx) => {
+    setCurrentIndex(idx);
+    setIsHovering(true);
+    setTimeout(() => setIsHovering(false), 5000);
+  }, []);
+
+  const handlePrev = useCallback(
+    (e) => {
+      e.stopPropagation();
+      goToIndex((currentIndex - 1 + reviews.length) % reviews.length);
+    },
+    [currentIndex, reviews.length, goToIndex]
+  );
+
+  const handleNext = useCallback(
+    (e) => {
+      e.stopPropagation();
+      goToIndex((currentIndex + 1) % reviews.length);
+    },
+    [currentIndex, reviews.length, goToIndex]
+  );
 
   // Auto carousel
   useEffect(() => {
@@ -160,23 +191,37 @@ function CanvasTestimonialsSection({ isEditing, preview = false }) {
         </h2>
         {reviews.length > 1 && (
           <div className="flex items-center gap-1.5">
-            {reviews.map((_, idx) => (
-              <button
-                key={idx}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setCurrentIndex(idx);
-                  setIsHovering(true);
-                  setTimeout(() => setIsHovering(false), 5000);
-                }}
-                className={`h-1.5 cursor-pointer rounded-full transition-all duration-300 ${
-                  idx === currentIndex
-                    ? "w-6 bg-[#1A1A1A] dark:bg-[#F0EDE7]"
-                    : "w-1.5 bg-[#E5D7C4] hover:bg-[#D5D0C6] dark:bg-white/20 dark:hover:bg-white/40"
-                }`}
-                aria-label={`Go to testimonial ${idx + 1}`}
-              />
-            ))}
+            <button
+              onClick={handlePrev}
+              className="flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded-full text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#9E9893] dark:hover:text-[#F0EDE7]"
+              aria-label="Previous testimonial"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <div className="flex items-center gap-1.5">
+              {reviews.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    goToIndex(idx);
+                  }}
+                  className={`h-1.5 cursor-pointer rounded-full transition-all duration-300 ${
+                    idx === currentIndex
+                      ? "w-6 bg-[#1A1A1A] dark:bg-[#F0EDE7]"
+                      : "w-1.5 bg-[#E5D7C4] hover:bg-[#D5D0C6] dark:bg-white/20 dark:hover:bg-white/40"
+                  }`}
+                  aria-label={`Go to testimonial ${idx + 1}`}
+                />
+              ))}
+            </div>
+            <button
+              onClick={handleNext}
+              className="flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded-full text-[#7A736C] transition-colors hover:text-[#1A1A1A] dark:text-[#9E9893] dark:hover:text-[#F0EDE7]"
+              aria-label="Next testimonial"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
           </div>
         )}
       </div>

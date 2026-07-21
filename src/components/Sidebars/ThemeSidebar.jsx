@@ -232,6 +232,10 @@ const ThemePanel = ({
   const isDarkWallpapers = theme === "dark" || theme === 1;
 
   const isMacOSTemplate = template === TEMPLATE_IDS.RETRO_OS;
+  // Designer has a constant, non-configurable sky/birds background baked into the
+  // template itself — no wallpaper picker is offered and WallpaperBackground is
+  // never mounted for it (see pages that render WallpaperBackground).
+  const isDesignerTemplate = template === TEMPLATE_IDS.DESIGNER;
   const isChatfolioTemplate = template === 1;
   const useThemeSwitchEffect = hasThemeSwitchEffect(template);
   const appearanceSwitchRefLayouts = useRef(null);
@@ -493,13 +497,15 @@ const ThemePanel = ({
             >
               Layouts
             </TabsTrigger>
-            <TabsTrigger
-              value="background"
-              className={TAB_TRIGGER_CLASS}
-              data-testid={isMobile ? "tab-background-mobile" : "tab-background"}
-            >
-              Background
-            </TabsTrigger>
+            {!isDesignerTemplate && (
+              <TabsTrigger
+                value="background"
+                className={TAB_TRIGGER_CLASS}
+                data-testid={isMobile ? "tab-background-mobile" : "tab-background"}
+              >
+                Background
+              </TabsTrigger>
+            )}
             {!isMacOSTemplate && (
               <TabsTrigger
                 value="blocks"
@@ -610,579 +616,590 @@ const ThemePanel = ({
         </div>
       </TabsContent>
 
-      <TabsContent
-        value="background"
-        className="m-0 flex-1 overflow-y-auto p-6"
-        data-testid={isMobile ? "content-background-mobile" : "content-background"}
-      >
-        <div className="space-y-4">
-          {!isMacOSTemplate && Boolean(wallpaperColor || wallpaper) && (
-            <div className="mb-4 space-y-2">
-              <p className="text-muted-foreground px-1 text-[12px] font-medium">Display mode</p>
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  {
-                    value: BACKGROUND_MODE.HEADER,
-                    label: "Header only",
-                    description: "Image in top section",
-                  },
-                  {
-                    value: BACKGROUND_MODE.FULL_PAGE,
-                    label: "Full page",
-                    description: "Image behind all sections",
-                  },
-                ].map((opt) => {
-                  const isActive = backgroundMode === opt.value;
-                  return (
-                    <button
-                      key={opt.value}
-                      onClick={() => changeBackgroundMode(opt.value)}
-                      className={twMerge(
-                        "relative flex cursor-pointer flex-col gap-1 rounded-2xl border px-3 py-3 text-left transition-all focus:outline-none",
-                        isActive
-                          ? "border-foreground/20 bg-black/[0.04] dark:bg-white/[0.06]"
-                          : "border-border hover:border-foreground/15 bg-transparent"
-                      )}
-                    >
-                      {/* Mini visual preview */}
-                      <div
-                        className="border-border mb-1 w-full overflow-hidden rounded-lg border"
-                        style={{ aspectRatio: "16/7" }}
-                      >
-                        {opt.value === BACKGROUND_MODE.HEADER ? (
-                          <div className="flex h-full w-full flex-col">
-                            <div className="flex-[0_0_45%] bg-linear-to-br from-amber-200/60 to-orange-200/60 dark:from-amber-900/40 dark:to-orange-900/40" />
-                            <div className="bg-muted flex-1" />
-                          </div>
-                        ) : (
-                          <div className="relative h-full w-full bg-linear-to-br from-amber-200/60 to-orange-200/60 dark:from-amber-900/40 dark:to-orange-900/40">
-                            <div className="absolute inset-x-2 top-2 bottom-2 rounded bg-white/30 backdrop-blur-[1px] dark:bg-black/20" />
-                          </div>
+      {!isDesignerTemplate && (
+        <TabsContent
+          value="background"
+          className="m-0 flex-1 overflow-y-auto p-6"
+          data-testid={isMobile ? "content-background-mobile" : "content-background"}
+        >
+          <div className="space-y-4">
+            {!isMacOSTemplate && Boolean(wallpaperColor || wallpaper) && (
+              <div className="mb-4 space-y-2">
+                <p className="text-muted-foreground px-1 text-[12px] font-medium">Display mode</p>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    {
+                      value: BACKGROUND_MODE.HEADER,
+                      label: "Header only",
+                      description: "Image in top section",
+                    },
+                    {
+                      value: BACKGROUND_MODE.FULL_PAGE,
+                      label: "Full page",
+                      description: "Image behind all sections",
+                    },
+                  ].map((opt) => {
+                    const isActive = backgroundMode === opt.value;
+                    return (
+                      <button
+                        key={opt.value}
+                        onClick={() => changeBackgroundMode(opt.value)}
+                        className={twMerge(
+                          "relative flex cursor-pointer flex-col gap-1 rounded-2xl border px-3 py-3 text-left transition-all focus:outline-none",
+                          isActive
+                            ? "border-foreground/20 bg-black/[0.04] dark:bg-white/[0.06]"
+                            : "border-border hover:border-foreground/15 bg-transparent"
                         )}
-                      </div>
-                      <span className="text-foreground text-[12px] leading-tight font-medium">
-                        {opt.label}
-                      </span>
-                      <span className="text-muted-foreground text-[11px] leading-tight">
-                        {opt.description}
-                      </span>
-                      {isActive && (
-                        <div className="bg-foreground absolute top-2 right-2 flex h-3.5 w-3.5 items-center justify-center rounded-full">
-                          <Check size={8} strokeWidth={3} className="text-background" />
-                        </div>
-                      )}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {
-            <>
-              <AnimatePresence mode="wait">
-                {/* Wallpaper effects (blur/grain/motion) apply in full-page mode for both image and solid color backgrounds */}
-                {Boolean(wallpaperColor || wallpaper) &&
-                  backgroundMode === BACKGROUND_MODE.FULL_PAGE && (
-                    <motion.div
-                      key="bg-effects"
-                      initial={{ height: 0, opacity: 0, marginTop: 0 }}
-                      animate={{ height: "auto", opacity: 1, marginTop: 16 }}
-                      exit={{ height: 0, opacity: 0, marginTop: 0 }}
-                      transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
-                      className="overflow-hidden"
-                    >
-                      <div className="bg-muted/50 mb-4 rounded-xl p-4">
-                        <div className="mb-4 flex items-center justify-between">
-                          <Text size="p-xs-uppercase">Background Texture</Text>
-                        </div>
-                        <div className="bg-muted/50 mb-4 flex gap-1 rounded-lg p-1">
-                          <Button
-                            variant={currentEffects.effectType === "blur" ? "secondary" : "ghost"}
-                            size="sm"
-                            onClick={() => currentUpdateWallpaperEffect("effectType", "blur")}
-                            className="flex-1 rounded-md text-xs"
-                            data-testid={
-                              isMobileOrTablet ? "button-effect-blur-mobile" : "button-effect-blur"
-                            }
-                          >
-                            Soft Blur
-                          </Button>
-                          <Button
-                            variant={currentEffects.effectType === "grain" ? "secondary" : "ghost"}
-                            size="sm"
-                            onClick={() => {
-                              if (
-                                currentEffects.grainIntensity === 0 ||
-                                currentEffects.grainIntensity === undefined ||
-                                currentEffects.grainIntensity === null
-                              ) {
-                                currentUpdateWallpaperEffect("grainIntensity", 25);
-                              }
-                              currentUpdateWallpaperEffect("effectType", "grain");
-                            }}
-                            className="flex-1 rounded-md text-xs"
-                            data-testid={
-                              isMobileOrTablet
-                                ? "button-effect-grain-mobile"
-                                : "button-effect-grain"
-                            }
-                          >
-                            Fine Grain
-                          </Button>
-                        </div>
-
-                        <div className="space-y-4">
-                          {currentEffects.effectType === "blur" ? (
-                            <div className="animate-in fade-in slide-in-from-top-1 duration-300">
-                              <div className="mb-2 flex items-center justify-between">
-                                <span className="text-foreground/60 text-[11px] font-medium">
-                                  Depth
-                                </span>
-                                <span className="text-foreground/40 text-[11px] tabular-nums">
-                                  {currentEffects.blur}px
-                                </span>
-                              </div>
-                              <Slider
-                                value={[currentEffects.blur]}
-                                onValueChange={(value) =>
-                                  currentUpdateWallpaperEffect("blur", value[0])
-                                }
-                                max={20}
-                                step={1}
-                                className="w-full"
-                                data-testid={
-                                  isMobileOrTablet
-                                    ? "slider-background-blur-mobile"
-                                    : "slider-background-blur"
-                                }
-                              />
+                      >
+                        {/* Mini visual preview */}
+                        <div
+                          className="border-border mb-1 w-full overflow-hidden rounded-lg border"
+                          style={{ aspectRatio: "16/7" }}
+                        >
+                          {opt.value === BACKGROUND_MODE.HEADER ? (
+                            <div className="flex h-full w-full flex-col">
+                              <div className="flex-[0_0_45%] bg-linear-to-br from-amber-200/60 to-orange-200/60 dark:from-amber-900/40 dark:to-orange-900/40" />
+                              <div className="bg-muted flex-1" />
                             </div>
                           ) : (
-                            <div className="animate-in fade-in slide-in-from-top-1 duration-300">
-                              <div className="mb-2 flex items-center justify-between">
-                                <span className="text-foreground/60 text-[11px] font-medium">
-                                  Opacity
-                                </span>
-                                <span className="text-foreground/40 text-[11px] tabular-nums">
-                                  {currentEffects.grainIntensity}%
-                                </span>
-                              </div>
-                              <Slider
-                                value={[currentEffects.grainIntensity]}
-                                onValueChange={(value) =>
-                                  currentUpdateWallpaperEffect("grainIntensity", value[0])
-                                }
-                                max={100}
-                                step={5}
-                                className="w-full"
-                                data-testid={
-                                  isMobileOrTablet
-                                    ? "slider-grain-intensity-mobile"
-                                    : "slider-grain-intensity"
-                                }
-                              />
+                            <div className="relative h-full w-full bg-linear-to-br from-amber-200/60 to-orange-200/60 dark:from-amber-900/40 dark:to-orange-900/40">
+                              <div className="absolute inset-x-2 top-2 bottom-2 rounded bg-white/30 backdrop-blur-[1px] dark:bg-black/20" />
                             </div>
                           )}
                         </div>
-                      </div>
-
-                      <div className="bg-muted/50 mb-4 flex items-center justify-between rounded-xl p-4">
-                        <div>
-                          <Text size="p-xs-uppercase" className="text-df-heading-color">
-                            Dynamic Motion
-                          </Text>
-                          <p className="text-df-description-color mt-0.5 text-[11px] font-medium">
-                            Parallax zoom interaction
-                          </p>
-                        </div>
-                        <Switch
-                          checked={currentEffects.motion}
-                          onCheckedChange={(checked) =>
-                            currentUpdateWallpaperEffect("motion", checked)
-                          }
-                          data-testid={
-                            isMobileOrTablet
-                              ? "switch-background-motion-mobile"
-                              : "switch-background-motion"
-                          }
-                          className="scale-90"
-                        />
-                      </div>
-                    </motion.div>
-                  )}
-              </AnimatePresence>
-              <div className="border-border bg-card/50 mb-4 rounded-md border p-4">
-                <div className="mb-3 flex items-start gap-3">
-                  <Upload className="text-df-heading-color mt-0.5 h-5 w-5" />
-                  <div className="flex-1">
-                    <h4 className="mb-1 text-sm font-semibold">Upload Custom Background</h4>
-                    <p className="text-df-description-color mb-2 text-xs">
-                      Upload your own image. Minimum: 500x300. Maximum file size: 5MB. Image will be
-                      resized to 1920x1080.
-                    </p>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleFileUpload}
-                      className="hidden"
-                      id={isMobile ? "custom-wallpaper-upload-mobile" : "custom-wallpaper-upload"}
-                      data-testid={
-                        isMobile ? "input-custom-wallpaper-mobile" : "input-custom-wallpaper"
-                      }
-                    />
-                    <label
-                      htmlFor={
-                        isMobile ? "custom-wallpaper-upload-mobile" : "custom-wallpaper-upload"
-                      }
-                    >
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        className="cursor-pointer"
-                        disabled={isCompressing}
-                        onClick={() =>
-                          document
-                            .getElementById(
-                              isMobile
-                                ? "custom-wallpaper-upload-mobile"
-                                : "custom-wallpaper-upload"
-                            )
-                            ?.click()
-                        }
-                        data-testid={
-                          isMobile ? "button-upload-wallpaper-mobile" : "button-upload-wallpaper"
-                        }
-                      >
-                        <Upload className="h-4 w-4" />
-                        {"Choose File"}
-                      </Button>
-                    </label>
-                  </div>
+                        <span className="text-foreground text-[12px] leading-tight font-medium">
+                          {opt.label}
+                        </span>
+                        <span className="text-muted-foreground text-[11px] leading-tight">
+                          {opt.description}
+                        </span>
+                        {isActive && (
+                          <div className="bg-foreground absolute top-2 right-2 flex h-3.5 w-3.5 items-center justify-center rounded-full">
+                            <Check size={8} strokeWidth={3} className="text-background" />
+                          </div>
+                        )}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
+            )}
 
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                <button
-                  onClick={() => changeWallpaper(0)}
-                  className={twMerge(
-                    "group/card relative cursor-pointer rounded-[14px] border-[2.5px] transition-colors focus:outline-none",
-                    wallpaper === 0 && !wallpaperColor
-                      ? "border-df-orange-color"
-                      : "border-transparent hover:bg-black/5 dark:hover:bg-white/5"
-                  )}
-                  data-testid={isMobile ? "button-wallpaper-none-mobile" : "button-wallpaper-none"}
-                >
-                  <div
-                    className={twMerge(
-                      "pointer-events-none relative aspect-video w-full overflow-hidden rounded-[14px] border border-black/5 shadow-sm dark:border-white/5",
-                      "transition-[box-shadow,background-color] duration-200 ease-out",
-                      wallpaper === 0 && !wallpaperColor ? "bg-accent" : "bg-card"
+            {
+              <>
+                <AnimatePresence mode="wait">
+                  {/* Wallpaper effects (blur/grain/motion) apply in full-page mode for both image and solid color backgrounds */}
+                  {Boolean(wallpaperColor || wallpaper) &&
+                    backgroundMode === BACKGROUND_MODE.FULL_PAGE && (
+                      <motion.div
+                        key="bg-effects"
+                        initial={{ height: 0, opacity: 0, marginTop: 0 }}
+                        animate={{ height: "auto", opacity: 1, marginTop: 16 }}
+                        exit={{ height: 0, opacity: 0, marginTop: 0 }}
+                        transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+                        className="overflow-hidden"
+                      >
+                        <div className="bg-muted/50 mb-4 rounded-xl p-4">
+                          <div className="mb-4 flex items-center justify-between">
+                            <Text size="p-xs-uppercase">Background Texture</Text>
+                          </div>
+                          <div className="bg-muted/50 mb-4 flex gap-1 rounded-lg p-1">
+                            <Button
+                              variant={currentEffects.effectType === "blur" ? "secondary" : "ghost"}
+                              size="sm"
+                              onClick={() => currentUpdateWallpaperEffect("effectType", "blur")}
+                              className="flex-1 rounded-md text-xs"
+                              data-testid={
+                                isMobileOrTablet
+                                  ? "button-effect-blur-mobile"
+                                  : "button-effect-blur"
+                              }
+                            >
+                              Soft Blur
+                            </Button>
+                            <Button
+                              variant={
+                                currentEffects.effectType === "grain" ? "secondary" : "ghost"
+                              }
+                              size="sm"
+                              onClick={() => {
+                                if (
+                                  currentEffects.grainIntensity === 0 ||
+                                  currentEffects.grainIntensity === undefined ||
+                                  currentEffects.grainIntensity === null
+                                ) {
+                                  currentUpdateWallpaperEffect("grainIntensity", 25);
+                                }
+                                currentUpdateWallpaperEffect("effectType", "grain");
+                              }}
+                              className="flex-1 rounded-md text-xs"
+                              data-testid={
+                                isMobileOrTablet
+                                  ? "button-effect-grain-mobile"
+                                  : "button-effect-grain"
+                              }
+                            >
+                              Fine Grain
+                            </Button>
+                          </div>
+
+                          <div className="space-y-4">
+                            {currentEffects.effectType === "blur" ? (
+                              <div className="animate-in fade-in slide-in-from-top-1 duration-300">
+                                <div className="mb-2 flex items-center justify-between">
+                                  <span className="text-foreground/60 text-[11px] font-medium">
+                                    Depth
+                                  </span>
+                                  <span className="text-foreground/40 text-[11px] tabular-nums">
+                                    {currentEffects.blur}px
+                                  </span>
+                                </div>
+                                <Slider
+                                  value={[currentEffects.blur]}
+                                  onValueChange={(value) =>
+                                    currentUpdateWallpaperEffect("blur", value[0])
+                                  }
+                                  max={20}
+                                  step={1}
+                                  className="w-full"
+                                  data-testid={
+                                    isMobileOrTablet
+                                      ? "slider-background-blur-mobile"
+                                      : "slider-background-blur"
+                                  }
+                                />
+                              </div>
+                            ) : (
+                              <div className="animate-in fade-in slide-in-from-top-1 duration-300">
+                                <div className="mb-2 flex items-center justify-between">
+                                  <span className="text-foreground/60 text-[11px] font-medium">
+                                    Opacity
+                                  </span>
+                                  <span className="text-foreground/40 text-[11px] tabular-nums">
+                                    {currentEffects.grainIntensity}%
+                                  </span>
+                                </div>
+                                <Slider
+                                  value={[currentEffects.grainIntensity]}
+                                  onValueChange={(value) =>
+                                    currentUpdateWallpaperEffect("grainIntensity", value[0])
+                                  }
+                                  max={100}
+                                  step={5}
+                                  className="w-full"
+                                  data-testid={
+                                    isMobileOrTablet
+                                      ? "slider-grain-intensity-mobile"
+                                      : "slider-grain-intensity"
+                                  }
+                                />
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="bg-muted/50 mb-4 flex items-center justify-between rounded-xl p-4">
+                          <div>
+                            <Text size="p-xs-uppercase" className="text-df-heading-color">
+                              Dynamic Motion
+                            </Text>
+                            <p className="text-df-description-color mt-0.5 text-[11px] font-medium">
+                              Parallax zoom interaction
+                            </p>
+                          </div>
+                          <Switch
+                            checked={currentEffects.motion}
+                            onCheckedChange={(checked) =>
+                              currentUpdateWallpaperEffect("motion", checked)
+                            }
+                            data-testid={
+                              isMobileOrTablet
+                                ? "switch-background-motion-mobile"
+                                : "switch-background-motion"
+                            }
+                            className="scale-90"
+                          />
+                        </div>
+                      </motion.div>
                     )}
-                  >
-                    {isMacOSTemplate ? (
-                      <img
-                        src={
-                          isDarkWallpapers ? "/wallpaper/darkui/wall8.png" : "/wallpaper/wall8.png"
+                </AnimatePresence>
+                <div className="border-border bg-card/50 mb-4 rounded-md border p-4">
+                  <div className="mb-3 flex items-start gap-3">
+                    <Upload className="text-df-heading-color mt-0.5 h-5 w-5" />
+                    <div className="flex-1">
+                      <h4 className="mb-1 text-sm font-semibold">Upload Custom Background</h4>
+                      <p className="text-df-description-color mb-2 text-xs">
+                        Upload your own image. Minimum: 500x300. Maximum file size: 5MB. Image will
+                        be resized to 1920x1080.
+                      </p>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileUpload}
+                        className="hidden"
+                        id={isMobile ? "custom-wallpaper-upload-mobile" : "custom-wallpaper-upload"}
+                        data-testid={
+                          isMobile ? "input-custom-wallpaper-mobile" : "input-custom-wallpaper"
                         }
-                        alt="Default"
-                        className="pointer-events-none h-full w-full object-cover"
                       />
-                    ) : (
-                      <div className="from-background to-muted flex h-full w-full items-center justify-center bg-linear-to-br">
-                        <span className="text-foreground/60 text-sm font-medium">None</span>
-                      </div>
-                    )}
-                  </div>
-                  {wallpaper === 0 && !wallpaperColor && (
-                    <div className="bg-df-orange-color border-sidebar pointer-events-none absolute -bottom-1 -left-1 z-10 flex items-center justify-center rounded-full border-2 p-1.5 shadow-sm">
-                      <Check size={14} strokeWidth={3.5} className="text-primary-foreground" />
+                      <label
+                        htmlFor={
+                          isMobile ? "custom-wallpaper-upload-mobile" : "custom-wallpaper-upload"
+                        }
+                      >
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="cursor-pointer"
+                          disabled={isCompressing}
+                          onClick={() =>
+                            document
+                              .getElementById(
+                                isMobile
+                                  ? "custom-wallpaper-upload-mobile"
+                                  : "custom-wallpaper-upload"
+                              )
+                              ?.click()
+                          }
+                          data-testid={
+                            isMobile ? "button-upload-wallpaper-mobile" : "button-upload-wallpaper"
+                          }
+                        >
+                          <Upload className="h-4 w-4" />
+                          {"Choose File"}
+                        </Button>
+                      </label>
                     </div>
-                  )}
-                </button>
+                  </div>
+                </div>
 
-                {customWallpaper && (
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <button
-                    onClick={() => changeWallpaper(customWallpaper)}
+                    onClick={() => changeWallpaper(0)}
                     className={twMerge(
                       "group/card relative cursor-pointer rounded-[14px] border-[2.5px] transition-colors focus:outline-none",
-                      wallpaper === customWallpaper
+                      wallpaper === 0 && !wallpaperColor
                         ? "border-df-orange-color"
                         : "border-transparent hover:bg-black/5 dark:hover:bg-white/5"
                     )}
                     data-testid={
-                      isMobile ? "button-wallpaper-custom-mobile" : "button-wallpaper-custom"
+                      isMobile ? "button-wallpaper-none-mobile" : "button-wallpaper-none"
                     }
                   >
                     <div
                       className={twMerge(
                         "pointer-events-none relative aspect-video w-full overflow-hidden rounded-[14px] border border-black/5 shadow-sm dark:border-white/5",
                         "transition-[box-shadow,background-color] duration-200 ease-out",
-                        wallpaper === customWallpaper ? "bg-accent" : "bg-card"
+                        wallpaper === 0 && !wallpaperColor ? "bg-accent" : "bg-card"
                       )}
                     >
-                      <img
-                        src={customWallpaper}
-                        alt="Custom wallpaper"
-                        className="pointer-events-none h-full w-full object-cover"
-                      />
-                      <div className="pointer-events-none absolute bottom-2 left-2">
-                        <Badge variant="secondary" className="text-xs">
-                          Custom
-                        </Badge>
-                      </div>
+                      {isMacOSTemplate ? (
+                        <img
+                          src={
+                            isDarkWallpapers
+                              ? "/wallpaper/darkui/wall8.png"
+                              : "/wallpaper/wall8.png"
+                          }
+                          alt="Default"
+                          className="pointer-events-none h-full w-full object-cover"
+                        />
+                      ) : (
+                        <div className="from-background to-muted flex h-full w-full items-center justify-center bg-linear-to-br">
+                          <span className="text-foreground/60 text-sm font-medium">None</span>
+                        </div>
+                      )}
                     </div>
-                    {wallpaper === customWallpaper && (
+                    {wallpaper === 0 && !wallpaperColor && (
                       <div className="bg-df-orange-color border-sidebar pointer-events-none absolute -bottom-1 -left-1 z-10 flex items-center justify-center rounded-full border-2 p-1.5 shadow-sm">
                         <Check size={14} strokeWidth={3.5} className="text-primary-foreground" />
                       </div>
                     )}
                   </button>
-                )}
 
-                {(() => {
-                  const presetWallpapers = wallpapers.filter(
-                    (wp) => wp.value !== 0 && !(isMacOSTemplate && wp.value === 8)
-                  );
-                  const visibleWallpapers = showMoreWallpapers
-                    ? presetWallpapers
-                    : presetWallpapers.slice(0, DEFAULT_VISIBLE_WALLPAPERS);
-                  const remainingCount = presetWallpapers.length - DEFAULT_VISIBLE_WALLPAPERS;
+                  {customWallpaper && (
+                    <button
+                      onClick={() => changeWallpaper(customWallpaper)}
+                      className={twMerge(
+                        "group/card relative cursor-pointer rounded-[14px] border-[2.5px] transition-colors focus:outline-none",
+                        wallpaper === customWallpaper
+                          ? "border-df-orange-color"
+                          : "border-transparent hover:bg-black/5 dark:hover:bg-white/5"
+                      )}
+                      data-testid={
+                        isMobile ? "button-wallpaper-custom-mobile" : "button-wallpaper-custom"
+                      }
+                    >
+                      <div
+                        className={twMerge(
+                          "pointer-events-none relative aspect-video w-full overflow-hidden rounded-[14px] border border-black/5 shadow-sm dark:border-white/5",
+                          "transition-[box-shadow,background-color] duration-200 ease-out",
+                          wallpaper === customWallpaper ? "bg-accent" : "bg-card"
+                        )}
+                      >
+                        <img
+                          src={customWallpaper}
+                          alt="Custom wallpaper"
+                          className="pointer-events-none h-full w-full object-cover"
+                        />
+                        <div className="pointer-events-none absolute bottom-2 left-2">
+                          <Badge variant="secondary" className="text-xs">
+                            Custom
+                          </Badge>
+                        </div>
+                      </div>
+                      {wallpaper === customWallpaper && (
+                        <div className="bg-df-orange-color border-sidebar pointer-events-none absolute -bottom-1 -left-1 z-10 flex items-center justify-center rounded-full border-2 p-1.5 shadow-sm">
+                          <Check size={14} strokeWidth={3.5} className="text-primary-foreground" />
+                        </div>
+                      )}
+                    </button>
+                  )}
 
-                  return (
-                    <>
-                      {visibleWallpapers.map((wp, index) => {
-                        const isRevealed = index >= DEFAULT_VISIBLE_WALLPAPERS;
-                        return (
-                          <motion.div
-                            key={wp.id}
-                            layout
-                            initial={isRevealed ? { opacity: 0, y: 6, scale: 0.96 } : false}
-                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                            transition={{
-                              duration: 0.3,
-                              delay: isRevealed ? (index - DEFAULT_VISIBLE_WALLPAPERS) * 0.05 : 0,
-                              ease: [0.32, 0.72, 0, 1],
-                            }}
-                          >
-                            <button
-                              onClick={() => changeWallpaper(wp.value)}
-                              className={twMerge(
-                                "group/card relative w-full cursor-pointer rounded-[14px] border-[2.5px] transition-colors focus:outline-none",
-                                wallpaper === wp.value
-                                  ? "border-df-orange-color"
-                                  : "border-transparent hover:bg-black/5 dark:hover:bg-white/5"
-                              )}
-                              data-testid={
-                                isMobile
-                                  ? `button-wallpaper-${wp.id}-mobile`
-                                  : `button-wallpaper-${wp.id}`
-                              }
+                  {(() => {
+                    const presetWallpapers = wallpapers.filter(
+                      (wp) => wp.value !== 0 && !(isMacOSTemplate && wp.value === 8)
+                    );
+                    const visibleWallpapers = showMoreWallpapers
+                      ? presetWallpapers
+                      : presetWallpapers.slice(0, DEFAULT_VISIBLE_WALLPAPERS);
+                    const remainingCount = presetWallpapers.length - DEFAULT_VISIBLE_WALLPAPERS;
+
+                    return (
+                      <>
+                        {visibleWallpapers.map((wp, index) => {
+                          const isRevealed = index >= DEFAULT_VISIBLE_WALLPAPERS;
+                          return (
+                            <motion.div
+                              key={wp.id}
+                              layout
+                              initial={isRevealed ? { opacity: 0, y: 6, scale: 0.96 } : false}
+                              animate={{ opacity: 1, y: 0, scale: 1 }}
+                              transition={{
+                                duration: 0.3,
+                                delay: isRevealed ? (index - DEFAULT_VISIBLE_WALLPAPERS) * 0.05 : 0,
+                                ease: [0.32, 0.72, 0, 1],
+                              }}
                             >
-                              <div
+                              <button
+                                onClick={() => changeWallpaper(wp.value)}
                                 className={twMerge(
-                                  "pointer-events-none relative aspect-video w-full overflow-hidden rounded-[14px] border border-black/5 shadow-sm dark:border-white/5",
-                                  "transition-[box-shadow,background-color] duration-200 ease-out",
-                                  wallpaper === wp.value ? "bg-accent" : "bg-card"
+                                  "group/card relative w-full cursor-pointer rounded-[14px] border-[2.5px] transition-colors focus:outline-none",
+                                  wallpaper === wp.value
+                                    ? "border-df-orange-color"
+                                    : "border-transparent hover:bg-black/5 dark:hover:bg-white/5"
                                 )}
+                                data-testid={
+                                  isMobile
+                                    ? `button-wallpaper-${wp.id}-mobile`
+                                    : `button-wallpaper-${wp.id}`
+                                }
                               >
-                                <div className="pointer-events-none h-full w-full [&>div]:h-full! [&>div]:rounded-none!">
-                                  {wp.item}
+                                <div
+                                  className={twMerge(
+                                    "pointer-events-none relative aspect-video w-full overflow-hidden rounded-[14px] border border-black/5 shadow-sm dark:border-white/5",
+                                    "transition-[box-shadow,background-color] duration-200 ease-out",
+                                    wallpaper === wp.value ? "bg-accent" : "bg-card"
+                                  )}
+                                >
+                                  <div className="pointer-events-none h-full w-full [&>div]:h-full! [&>div]:rounded-none!">
+                                    {wp.item}
+                                  </div>
                                 </div>
-                              </div>
-                              {wallpaper === wp.value && (
-                                <div className="bg-df-orange-color border-sidebar pointer-events-none absolute -bottom-1 -left-1 z-10 flex items-center justify-center rounded-full border-2 p-1.5 shadow-sm">
+                                {wallpaper === wp.value && (
+                                  <div className="bg-df-orange-color border-sidebar pointer-events-none absolute -bottom-1 -left-1 z-10 flex items-center justify-center rounded-full border-2 p-1.5 shadow-sm">
+                                    <Check
+                                      size={14}
+                                      strokeWidth={3.5}
+                                      className="text-primary-foreground"
+                                    />
+                                  </div>
+                                )}
+                              </button>
+                            </motion.div>
+                          );
+                        })}
+
+                        {remainingCount > 0 && (
+                          <AnimatePresence mode="popLayout" initial={false}>
+                            {!showMoreWallpapers && (
+                              <motion.button
+                                key="view-more-wallpapers"
+                                layout
+                                type="button"
+                                initial={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.9 }}
+                                transition={{ duration: 0.2, ease: [0.32, 0.72, 0, 1] }}
+                                onClick={() => setShowMoreWallpapers(true)}
+                                className={twMerge(
+                                  "group/card relative flex aspect-video w-full cursor-pointer flex-col items-center justify-center gap-1 overflow-hidden rounded-[14px] border border-dashed border-black/10 bg-transparent transition-all focus:outline-none",
+                                  "hover:border-black/20 dark:border-white/10 dark:hover:border-white/20"
+                                )}
+                                data-testid={
+                                  isMobile
+                                    ? "button-wallpapers-view-more-mobile"
+                                    : "button-wallpapers-view-more"
+                                }
+                              >
+                                <ChevronDown className="text-foreground h-4 w-4" />
+                                <span className="text-foreground text-[11px] font-medium">
+                                  View {remainingCount} more
+                                </span>
+                              </motion.button>
+                            )}
+                          </AnimatePresence>
+                        )}
+                      </>
+                    );
+                  })()}
+                </div>
+
+                {/* Colors — a solid background colour, an alternative to an image wallpaper.
+                  Picking one clears the image; blur/motion don't apply to a flat colour, so
+                  only grain is offered. Hidden for MacOS (full-screen desktop wallpaper only).
+                  No "None" swatch here — Backgrounds already has one and clears the colour too. */}
+                {!isMacOSTemplate && (
+                  <div className="mt-6 space-y-3">
+                    <p className="text-muted-foreground px-1 text-[12px] font-medium">Colors</p>
+                    <div className="grid grid-cols-5 gap-2">
+                      {BACKGROUND_COLORS.map((p) => {
+                        const isSelected = wallpaperColor === p.color;
+                        return (
+                          <div key={p.id} className="flex flex-col items-center gap-1.5">
+                            <div className="relative">
+                              <button
+                                type="button"
+                                onClick={() => changeWallpaperColor(p.color)}
+                                title={p.label}
+                                className={twMerge(
+                                  "relative h-10 w-10 overflow-hidden rounded-full border-2 transition-all focus:outline-none",
+                                  isSelected
+                                    ? "border-df-orange-color scale-110 shadow-md"
+                                    : "border-border hover:scale-105"
+                                )}
+                                data-testid={
+                                  isMobile
+                                    ? `button-bg-color-${p.id}-mobile`
+                                    : `button-bg-color-${p.id}`
+                                }
+                              >
+                                {/* Light half (top-left) + dark half (bottom-right) */}
+                                <div
+                                  className="absolute inset-0"
+                                  style={{
+                                    backgroundColor: p.color,
+                                    clipPath: "polygon(0 0, 100% 0, 0 100%)",
+                                  }}
+                                />
+                                <div
+                                  className="absolute inset-0"
+                                  style={{
+                                    backgroundColor: p.darkColor,
+                                    clipPath: "polygon(100% 0, 100% 100%, 0 100%)",
+                                  }}
+                                />
+                              </button>
+                              {isSelected && (
+                                <div className="bg-df-orange-color border-sidebar absolute -right-1 -bottom-1 flex h-4 w-4 items-center justify-center rounded-full border-2 text-white shadow-sm">
                                   <Check
-                                    size={14}
+                                    size={8}
                                     strokeWidth={3.5}
                                     className="text-primary-foreground"
                                   />
                                 </div>
                               )}
-                            </button>
-                          </motion.div>
+                            </div>
+                            <span
+                              className={twMerge(
+                                "text-[10px] leading-tight font-medium",
+                                isSelected ? "text-df-orange-color" : "text-muted-foreground"
+                              )}
+                            >
+                              {p.label}
+                            </span>
+                          </div>
                         );
                       })}
 
-                      {remainingCount > 0 && (
-                        <AnimatePresence mode="popLayout" initial={false}>
-                          {!showMoreWallpapers && (
-                            <motion.button
-                              key="view-more-wallpapers"
-                              layout
-                              type="button"
-                              initial={{ opacity: 1, scale: 1 }}
-                              exit={{ opacity: 0, scale: 0.9 }}
-                              transition={{ duration: 0.2, ease: [0.32, 0.72, 0, 1] }}
-                              onClick={() => setShowMoreWallpapers(true)}
-                              className={twMerge(
-                                "group/card relative flex aspect-video w-full cursor-pointer flex-col items-center justify-center gap-1 overflow-hidden rounded-[14px] border border-dashed border-black/10 bg-transparent transition-all focus:outline-none",
-                                "hover:border-black/20 dark:border-white/10 dark:hover:border-white/20"
+                      {/* Custom colour picker (native OS picker — no shadcn equivalent) */}
+                      {(() => {
+                        const presetColors = new Set(BACKGROUND_COLORS.map((p) => p.color));
+                        const isCustomActive =
+                          !!wallpaperColor && !presetColors.has(wallpaperColor);
+                        return (
+                          <div className="flex flex-col items-center gap-1.5">
+                            <div className="relative">
+                              <button
+                                type="button"
+                                onClick={() => colorInputRef.current?.click()}
+                                title="Custom color"
+                                className={twMerge(
+                                  "relative h-10 w-10 overflow-hidden rounded-full border-2 transition-all focus:outline-none",
+                                  isCustomActive
+                                    ? "border-df-orange-color scale-110 shadow-md"
+                                    : "border-border hover:scale-105"
+                                )}
+                                data-testid={
+                                  isMobile
+                                    ? "button-bg-color-custom-mobile"
+                                    : "button-bg-color-custom"
+                                }
+                              >
+                                {isCustomActive ? (
+                                  <div
+                                    className="absolute inset-0"
+                                    style={{ backgroundColor: wallpaperColor }}
+                                  />
+                                ) : (
+                                  <div
+                                    className="absolute inset-0"
+                                    style={{
+                                      background:
+                                        "conic-gradient(from 0deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff, #c77dff, #ff6b6b)",
+                                    }}
+                                  />
+                                )}
+                              </button>
+                              {isCustomActive && (
+                                <div className="bg-df-orange-color border-sidebar absolute -right-1 -bottom-1 flex h-4 w-4 items-center justify-center rounded-full border-2 text-white shadow-sm">
+                                  <Check
+                                    size={8}
+                                    strokeWidth={3.5}
+                                    className="text-primary-foreground"
+                                  />
+                                </div>
                               )}
-                              data-testid={
-                                isMobile
-                                  ? "button-wallpapers-view-more-mobile"
-                                  : "button-wallpapers-view-more"
-                              }
-                            >
-                              <ChevronDown className="text-foreground h-4 w-4" />
-                              <span className="text-foreground text-[11px] font-medium">
-                                View {remainingCount} more
-                              </span>
-                            </motion.button>
-                          )}
-                        </AnimatePresence>
-                      )}
-                    </>
-                  );
-                })()}
-              </div>
-
-              {/* Colors — a solid background colour, an alternative to an image wallpaper.
-                  Picking one clears the image; blur/motion don't apply to a flat colour, so
-                  only grain is offered. Hidden for MacOS (full-screen desktop wallpaper only).
-                  No "None" swatch here — Backgrounds already has one and clears the colour too. */}
-              {!isMacOSTemplate && (
-                <div className="mt-6 space-y-3">
-                  <p className="text-muted-foreground px-1 text-[12px] font-medium">Colors</p>
-                  <div className="grid grid-cols-5 gap-2">
-                    {BACKGROUND_COLORS.map((p) => {
-                      const isSelected = wallpaperColor === p.color;
-                      return (
-                        <div key={p.id} className="flex flex-col items-center gap-1.5">
-                          <div className="relative">
-                            <button
-                              type="button"
-                              onClick={() => changeWallpaperColor(p.color)}
-                              title={p.label}
-                              className={twMerge(
-                                "relative h-10 w-10 overflow-hidden rounded-full border-2 transition-all focus:outline-none",
-                                isSelected
-                                  ? "border-df-orange-color scale-110 shadow-md"
-                                  : "border-border hover:scale-105"
-                              )}
-                              data-testid={
-                                isMobile
-                                  ? `button-bg-color-${p.id}-mobile`
-                                  : `button-bg-color-${p.id}`
-                              }
-                            >
-                              {/* Light half (top-left) + dark half (bottom-right) */}
-                              <div
-                                className="absolute inset-0"
-                                style={{
-                                  backgroundColor: p.color,
-                                  clipPath: "polygon(0 0, 100% 0, 0 100%)",
+                              <input
+                                ref={colorInputRef}
+                                type="color"
+                                value={isCustomActive ? wallpaperColor : customColor}
+                                onChange={(e) => {
+                                  setCustomColor(e.target.value);
+                                  changeWallpaperColor(e.target.value);
                                 }}
+                                className="sr-only"
+                                aria-label="Pick a custom background color"
                               />
-                              <div
-                                className="absolute inset-0"
-                                style={{
-                                  backgroundColor: p.darkColor,
-                                  clipPath: "polygon(100% 0, 100% 100%, 0 100%)",
-                                }}
-                              />
-                            </button>
-                            {isSelected && (
-                              <div className="bg-df-orange-color border-sidebar absolute -right-1 -bottom-1 flex h-4 w-4 items-center justify-center rounded-full border-2 text-white shadow-sm">
-                                <Check
-                                  size={8}
-                                  strokeWidth={3.5}
-                                  className="text-primary-foreground"
-                                />
-                              </div>
-                            )}
-                          </div>
-                          <span
-                            className={twMerge(
-                              "text-[10px] leading-tight font-medium",
-                              isSelected ? "text-df-orange-color" : "text-muted-foreground"
-                            )}
-                          >
-                            {p.label}
-                          </span>
-                        </div>
-                      );
-                    })}
-
-                    {/* Custom colour picker (native OS picker — no shadcn equivalent) */}
-                    {(() => {
-                      const presetColors = new Set(BACKGROUND_COLORS.map((p) => p.color));
-                      const isCustomActive = !!wallpaperColor && !presetColors.has(wallpaperColor);
-                      return (
-                        <div className="flex flex-col items-center gap-1.5">
-                          <div className="relative">
-                            <button
-                              type="button"
-                              onClick={() => colorInputRef.current?.click()}
-                              title="Custom color"
+                            </div>
+                            <span
                               className={twMerge(
-                                "relative h-10 w-10 overflow-hidden rounded-full border-2 transition-all focus:outline-none",
-                                isCustomActive
-                                  ? "border-df-orange-color scale-110 shadow-md"
-                                  : "border-border hover:scale-105"
+                                "text-[10px] leading-tight font-medium",
+                                isCustomActive ? "text-df-orange-color" : "text-muted-foreground"
                               )}
-                              data-testid={
-                                isMobile
-                                  ? "button-bg-color-custom-mobile"
-                                  : "button-bg-color-custom"
-                              }
                             >
-                              {isCustomActive ? (
-                                <div
-                                  className="absolute inset-0"
-                                  style={{ backgroundColor: wallpaperColor }}
-                                />
-                              ) : (
-                                <div
-                                  className="absolute inset-0"
-                                  style={{
-                                    background:
-                                      "conic-gradient(from 0deg, #ff6b6b, #ffd93d, #6bcb77, #4d96ff, #c77dff, #ff6b6b)",
-                                  }}
-                                />
-                              )}
-                            </button>
-                            {isCustomActive && (
-                              <div className="bg-df-orange-color border-sidebar absolute -right-1 -bottom-1 flex h-4 w-4 items-center justify-center rounded-full border-2 text-white shadow-sm">
-                                <Check
-                                  size={8}
-                                  strokeWidth={3.5}
-                                  className="text-primary-foreground"
-                                />
-                              </div>
-                            )}
-                            <input
-                              ref={colorInputRef}
-                              type="color"
-                              value={isCustomActive ? wallpaperColor : customColor}
-                              onChange={(e) => {
-                                setCustomColor(e.target.value);
-                                changeWallpaperColor(e.target.value);
-                              }}
-                              className="sr-only"
-                              aria-label="Pick a custom background color"
-                            />
+                              Custom
+                            </span>
                           </div>
-                          <span
-                            className={twMerge(
-                              "text-[10px] leading-tight font-medium",
-                              isCustomActive ? "text-df-orange-color" : "text-muted-foreground"
-                            )}
-                          >
-                            Custom
-                          </span>
-                        </div>
-                      );
-                    })()}
+                        );
+                      })()}
+                    </div>
                   </div>
-                </div>
-              )}
-            </>
-          }
-        </div>
-      </TabsContent>
+                )}
+              </>
+            }
+          </div>
+        </TabsContent>
+      )}
 
       {!isMacOSTemplate && (
         <TabsContent

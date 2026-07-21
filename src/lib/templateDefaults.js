@@ -10,6 +10,9 @@ export const TEMPLATE_DEFAULTS = {
     backgroundMode: BACKGROUND_MODE.HEADER,
     fallbackWallpaperValue: 9,
   },
+  [TEMPLATE_IDS.DESIGNER]: {
+    theme: 0,
+  },
 };
 
 export function buildTemplateWallpaperPayload(templateId, currentWallpaper, basePayload) {

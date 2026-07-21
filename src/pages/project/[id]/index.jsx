@@ -238,7 +238,9 @@ export default function Index({ data, ownerTemplate, ownerWallpaper, ownerUser }
         }
         url={`https://${project?.username || data?.project?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
       />
-      <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={effects} />
+      {effectiveTemplate !== TEMPLATE_IDS.DESIGNER && (
+        <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={effects} />
+      )}
 
       {isMacOS ? (
         <>

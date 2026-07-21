@@ -11,6 +11,7 @@ import {
   JetBrains_Mono,
   Manrope,
   Caveat,
+  Poppins,
 } from "next/font/google";
 import Header from "@/components/header";
 import { useEffect } from "react";
@@ -55,6 +56,13 @@ const caveat = Caveat({
   subsets: ["latin"],
   variable: "--font-caveat",
   weight: ["400", "500", "600", "700"],
+});
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  variable: "--font-poppins",
+  weight: ["400", "500", "600", "700"],
+  preload: false, // only used in Designer template
 });
 
 const dmMono = DM_Mono({
@@ -335,7 +343,7 @@ function MyApp({ Component, pageProps, dfToken, hideHeader }) {
                     <CursorPill />
                     <ShellClassManager isSidebarRoute={isSidebarRoute} />
                     <main
-                      className={`${satoshi.variable} ${sfpro.variable} ${inter.variable} ${kalam.variable} ${gsans.variable} ${eudoxus.variable} ${dmMono.variable} ${cedarvilleCursive.variable} ${pixelifySans.variable} ${jetbrainsMono.variable} ${manrope.variable} ${caveat.variable}`}
+                      className={`${satoshi.variable} ${sfpro.variable} ${inter.variable} ${kalam.variable} ${gsans.variable} ${eudoxus.variable} ${dmMono.variable} ${cedarvilleCursive.variable} ${pixelifySans.variable} ${jetbrainsMono.variable} ${manrope.variable} ${caveat.variable} ${poppins.variable}`}
                     >
                       <ConditionalHeader
                         dfToken={dfToken}

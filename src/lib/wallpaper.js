@@ -143,6 +143,9 @@ export const hexToRgbString = (hex) => {
 };
 
 export const hasNoWallpaper = (value, templateId) => {
+  // Designer has a constant, non-configurable sky/birds background baked into the
+  // template — it never has a user wallpaper, regardless of any stored value.
+  if (templateId === TEMPLATE_IDS.DESIGNER) return true;
   const isRetroOS = templateId === TEMPLATE_IDS.RETRO_OS;
   // MacOS default (0) resolves to wall8 — not "no wallpaper"
   if (isRetroOS && (!value || value === 0)) return false;

@@ -154,6 +154,7 @@ export const TEMPLATE_CONTAINER_WIDTHS = {
   2: { default: 848, min: CONTAINER_WIDTH_MIN, max: CONTAINER_WIDTH_MAX }, // Spotlight
   3: { default: 848, min: CONTAINER_WIDTH_MIN, max: CONTAINER_WIDTH_MAX }, // Mono
   5: { default: 700, min: CONTAINER_WIDTH_MIN, max: CONTAINER_WIDTH_MAX }, // Professional
+  6: { default: 880, min: CONTAINER_WIDTH_MIN, max: CONTAINER_WIDTH_MAX }, // Designer
 };
 
 // Resolve the effective content max-width (px) for a template given the stored value.

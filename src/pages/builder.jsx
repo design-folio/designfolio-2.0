@@ -42,6 +42,7 @@ import Canvas from "@/components/templates/Canvas";
 import Mono from "@/components/templates/Mono";
 import Chat from "@/components/templates/Chat";
 import Professional from "@/components/templates/Professional";
+import Designer from "@/components/templates/Designer";
 
 export default function Index() {
   const {
@@ -231,6 +232,8 @@ export default function Index() {
         return <MacOSTemplate userDetails={userDetails} edit />;
       case 5:
         return <Professional isEditing={true} />;
+      case 6:
+        return <Designer isEditing={true} />;
 
       default:
         return <Builder1 />;
@@ -298,7 +301,10 @@ export default function Index() {
 
   const isHeaderMode = backgroundMode === BACKGROUND_MODE.HEADER;
   // A visible background is either an image wallpaper or a solid colour.
-  const hasBackground = !hasNoWallpaper(wallpaper, template) || !!wallpaperColorResolved;
+  // Designer's sky background is constant and non-configurable — never treat it as transparent.
+  const hasBackground =
+    t !== TEMPLATE_IDS.DESIGNER &&
+    (!hasNoWallpaper(wallpaper, template) || !!wallpaperColorResolved);
   // Page shows the full-page background (transparent) only when a background exists AND full-page mode.
   // Header mode + no background both keep the page background solid.
   const transparentForWallpaper = hasBackground && !isHeaderMode;
@@ -306,16 +312,18 @@ export default function Index() {
   return (
     <SidebarProvider {...sidebarProviderProps}>
       <div className="relative min-w-0 flex-1">
-        <WallpaperBackground
-          wallpaperUrl={wallpaperUrl}
-          backgroundColor={wallpaperColorResolved}
-          mode={backgroundMode}
-          effects={
-            t === TEMPLATE_IDS.RETRO_OS
-              ? { ...(wallpaperEffects || {}), motion: false }
-              : wallpaperEffects
-          }
-        />
+        {t !== TEMPLATE_IDS.DESIGNER && (
+          <WallpaperBackground
+            wallpaperUrl={wallpaperUrl}
+            backgroundColor={wallpaperColorResolved}
+            mode={backgroundMode}
+            effects={
+              t === TEMPLATE_IDS.RETRO_OS
+                ? { ...(wallpaperEffects || {}), motion: false }
+                : wallpaperEffects
+            }
+          />
+        )}
         <main
           className={cn(
             "flex min-h-screen justify-center transition-colors duration-700",
@@ -335,6 +343,7 @@ export default function Index() {
                 [TEMPLATE_IDS.SPOTLIGHT]: "pt-24",
                 [TEMPLATE_IDS.PROFESSIONAL]: "pt-24",
                 [TEMPLATE_IDS.RETRO_OS]: "",
+                [TEMPLATE_IDS.DESIGNER]: "",
               }[t] ?? "px-2 pt-24 pb-0 md:px-4 lg:px-0"
             )}
             contentClassName={

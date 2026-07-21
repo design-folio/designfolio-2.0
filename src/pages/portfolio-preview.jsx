@@ -12,6 +12,7 @@ import Mono from "@/components/templates/Mono";
 import { TEMPLATE_IDS } from "@/lib/templates";
 import Chat from "@/components/templates/Chat";
 import Professional from "@/components/templates/Professional";
+import Designer from "@/components/templates/Designer";
 import MemoMadewithdesignfolio from "@/components/icons/Madewithdesignfolio";
 import { BACKGROUND_MODE, hasNoWallpaper } from "@/lib/wallpaper";
 import { cn } from "@/lib/utils";
@@ -172,6 +173,24 @@ export default function Index() {
             {ProBadge}
           </>
         );
+      case TEMPLATE_IDS.DESIGNER:
+        return (
+          <>
+            {/* top-20 (below Designer's own fixed nav at top-6) so the two never overlap;
+                fixed (not absolute) so it stays reachable while scrolling, matching the nav. */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => router.push("/builder")}
+              className="fixed top-20 left-6 z-40 rounded-full border-white/30 bg-white/15 text-white backdrop-blur-md hover:bg-white/25 hover:text-white"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Exit Preview
+            </Button>
+            <Designer isEditing={false} preview />
+            {ProBadge}
+          </>
+        );
       case TEMPLATE_IDS.RETRO_OS:
         return (
           <>
@@ -219,20 +238,26 @@ export default function Index() {
     template === TEMPLATE_IDS.RETRO_OS ||
     template === TEMPLATE_IDS.CANVAS ||
     template === TEMPLATE_IDS.PROFESSIONAL ||
-    template === TEMPLATE_IDS.CHATFOLIO;
+    template === TEMPLATE_IDS.CHATFOLIO ||
+    template === TEMPLATE_IDS.DESIGNER;
 
   const isHeaderMode = backgroundMode === BACKGROUND_MODE.HEADER;
-  const hasBackground = !hasNoWallpaper(wallpaper, template) || !!wallpaperColorResolved;
+  // Designer's sky background is constant and non-configurable — never treat it as transparent.
+  const hasBackground =
+    template !== TEMPLATE_IDS.DESIGNER &&
+    (!hasNoWallpaper(wallpaper, template) || !!wallpaperColorResolved);
   const transparentForWallpaper = hasBackground && !isHeaderMode;
 
   return (
     <div className="relative">
-      <WallpaperBackground
-        wallpaperUrl={wallpaperUrl}
-        backgroundColor={wallpaperColorResolved}
-        mode={backgroundMode}
-        effects={wallpaperEffects}
-      />
+      {template !== TEMPLATE_IDS.DESIGNER && (
+        <WallpaperBackground
+          wallpaperUrl={wallpaperUrl}
+          backgroundColor={wallpaperColorResolved}
+          mode={backgroundMode}
+          effects={wallpaperEffects}
+        />
+      )}
       <main
         className={cn(
           "min-h-screen transition-colors duration-700",

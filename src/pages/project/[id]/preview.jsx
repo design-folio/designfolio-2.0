@@ -162,6 +162,8 @@ export default function Index() {
         return "max-w-[848px] mx-auto px-2 md:px-4 lg:px-0";
       case TEMPLATE_IDS.SPOTLIGHT:
         return "max-w-[848px] mx-auto flex flex-col gap-3 pb-20 pt-[40px] px-4 md:px-0";
+      case TEMPLATE_IDS.DESIGNER:
+        return "max-w-[880px] mx-auto flex flex-col gap-3 pb-20 pt-[40px] px-4 md:px-0";
       default:
         return "max-w-[700px] mx-auto flex flex-col gap-3 pb-20 pt-[40px] px-4 md:px-0";
     }
@@ -224,7 +226,9 @@ export default function Index() {
 
   return (
     <>
-      <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
+      {template !== TEMPLATE_IDS.DESIGNER && (
+        <WallpaperBackground wallpaperUrl={wallpaperUrl} effects={wallpaperEffects} />
+      )}
 
       {isMacOS ? (
         <>

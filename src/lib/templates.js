@@ -5,6 +5,7 @@ export const TEMPLATE_IDS = {
   MONO: 3,
   RETRO_OS: 4,
   PROFESSIONAL: 5,
+  DESIGNER: 6,
 };
 
 export const TEMPLATES_BY_ID = {
@@ -50,10 +51,18 @@ export const TEMPLATES_BY_ID = {
     isNew: false,
     isPro: false,
   },
+  [TEMPLATE_IDS.DESIGNER]: {
+    id: TEMPLATE_IDS.DESIGNER,
+    value: "designer",
+    item: "Designer",
+    isNew: true,
+    isPro: false,
+  },
 };
 
 export const TEMPLATE_DISPLAY_ORDER = [
   TEMPLATE_IDS.CANVAS, // 0 – 1st
+  TEMPLATE_IDS.DESIGNER, // 6 – new
   TEMPLATE_IDS.MONO, // 3
   TEMPLATE_IDS.PROFESSIONAL, // 5 – last
   TEMPLATE_IDS.RETRO_OS, // 4 – 2nd

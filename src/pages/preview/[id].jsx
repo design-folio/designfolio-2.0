@@ -27,6 +27,7 @@ const Minimal = dynamic(() => import("@/components/templates/Spotlight"), { ssr:
 const Mono = dynamic(() => import("@/components/templates/Mono"), { ssr: false });
 const Professional = dynamic(() => import("@/components/templates/Professional"), { ssr: false });
 const MacOSTemplate = dynamic(() => import("@/components/comp/MacOSTemplate"), { ssr: false });
+const Designer = dynamic(() => import("@/components/templates/Designer"), { ssr: false });
 
 export default function Index({ initialUserDetails }) {
   const { setTheme, theme, resolvedTheme } = useTheme();
@@ -99,7 +100,9 @@ export default function Index({ initialUserDetails }) {
   const backgroundColor = resolveBackgroundColor(extractWallpaperColor(wp), currentTheme);
   const backgroundMode = extractWallpaperMode(wp);
   const isHeaderMode = backgroundMode === BACKGROUND_MODE.HEADER;
-  const hasBackground = !!wallpaperUrl || !!backgroundColor;
+  const isDesignerTemplate = finalUserDetails?.template === TEMPLATE_IDS.DESIGNER;
+  // Designer's sky background is constant and non-configurable — never treat it as transparent.
+  const hasBackground = !isDesignerTemplate && (!!wallpaperUrl || !!backgroundColor);
   // Show the full-page background (transparent page) only with a background AND full-page mode.
   // Width is applied by each template's own container via context (containerMaxWidth).
   const transparentForWallpaper = hasBackground && !isHeaderMode;
@@ -160,6 +163,13 @@ export default function Index({ initialUserDetails }) {
             {ProBadge}
           </>
         );
+      case TEMPLATE_IDS.DESIGNER:
+        return (
+          <>
+            <Designer preview publicView />
+            {ProBadge}
+          </>
+        );
       default:
         return (
           <>
@@ -185,12 +195,14 @@ export default function Index({ initialUserDetails }) {
         url={`https://${finalUserDetails?.username}.${process.env.NEXT_PUBLIC_BASE_DOMAIN}`}
       />
       <div className="relative">
-        <WallpaperBackground
-          wallpaperUrl={wallpaperUrl}
-          backgroundColor={backgroundColor}
-          mode={backgroundMode}
-          effects={wallpaperEffects}
-        />
+        {!isDesignerTemplate && (
+          <WallpaperBackground
+            wallpaperUrl={wallpaperUrl}
+            backgroundColor={backgroundColor}
+            mode={backgroundMode}
+            effects={wallpaperEffects}
+          />
+        )}
         <main
           className={cn(
             "flex min-h-screen justify-center transition-colors duration-700",
@@ -212,6 +224,8 @@ export default function Index({ initialUserDetails }) {
                   case TEMPLATE_IDS.RETRO_OS:
                     return "mx-auto px-2 md:px-4 lg:px-0";
                   case TEMPLATE_IDS.PROFESSIONAL:
+                    return "";
+                  case TEMPLATE_IDS.DESIGNER:
                     return "";
                   default:
                     return "py-10";

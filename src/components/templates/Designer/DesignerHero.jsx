@@ -74,9 +74,9 @@ export default function DesignerHero({ isEditing }) {
         </div>
         <DesignerBirds />
         <div
-          className="absolute right-0 bottom-0 left-0 h-[160px]"
+          className="absolute right-0 bottom-0 left-0 h-[220px]"
           style={{
-            background: "linear-gradient(to bottom, transparent 0%, hsl(var(--background)) 100%)",
+            background: "linear-gradient(to bottom, transparent 0%, var(--background) 100%)",
           }}
         />
       </div>

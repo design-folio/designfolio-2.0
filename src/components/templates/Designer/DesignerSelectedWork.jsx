@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion, useScroll, useTransform } from "motion/react";
 import { useRouter } from "next/router";
 import { Pencil, Trash2, Plus, Sparkles, ArrowUpRight, ChevronsUpDown } from "lucide-react";
@@ -16,6 +16,9 @@ const CARD_CLIP =
   "0% 3%, 4.17% 0%, 8.33% 3%, 12.5% 0%, 16.67% 3%, 20.83% 0%, 25% 3%, 29.17% 0%, 33.33% 3%, 37.5% 0%, 41.67% 3%, 45.83% 0%, 50% 3%, 54.17% 0%, 58.33% 3%, 62.5% 0%, 66.67% 3%, 70.83% 0%, 75% 3%, 79.17% 0%, 83.33% 3%, 87.5% 0%, 91.67% 3%, 95.83% 0%, 100% 3%," +
   "100% 97%, 95.83% 100%, 91.67% 97%, 87.5% 100%, 83.33% 97%, 79.17% 100%, 75% 97%, 70.83% 100%, 66.67% 97%, 62.5% 100%, 58.33% 97%, 54.17% 100%, 50% 97%, 45.83% 100%, 41.67% 97%, 37.5% 100%, 33.33% 97%, 29.17% 100%, 25% 97%, 20.83% 100%, 16.67% 97%, 12.5% 100%, 8.33% 97%, 4.17% 100%, 0% 97%" +
   ")";
+
+const NAV_OFFSET = 72;
+const TITLE_GAP = 20;
 
 function getHref(id, isEditing, isPreview, publicView) {
   if (isEditing) return `/project/${id}/editor`;
@@ -53,6 +56,7 @@ function DesignerWorkCard({
   scrollYProgress,
   isEditing,
   isMobile,
+  headerOffset,
   onNavigate,
   onEdit,
   onDelete,
@@ -82,16 +86,17 @@ function DesignerWorkCard({
     // alignItems (the cross-axis, i.e. vertical for a row-direction flex box) was
     // "center", vertically centering each card inside its own 100vh sticky slot — for
     // card 0 that reads as a huge empty gap above it before any scrolling has happened.
-    // flex-start + a fixed paddingTop keeps a consistent, modest offset instead.
+    // flex-start + headerOffset (measured title height + gap) keeps every card pinned a
+    // constant TITLE_GAP below the sticky header, so the two never collide as cards stack.
     <div
       style={{
         position: "sticky",
-        top: 72,
+        top: NAV_OFFSET,
         height: "100vh",
         display: "flex",
         alignItems: "flex-start",
         justifyContent: "center",
-        paddingTop: 96,
+        paddingTop: headerOffset,
         zIndex: index + 1,
       }}
     >
@@ -148,7 +153,8 @@ function DesignerWorkCard({
             backgroundImage: "url('/assets/backgrounds/bgcard.avif')",
             backgroundSize: "cover",
             backgroundPosition: "center",
-            boxShadow: "0 4px 16px rgba(15,23,42,0.14), 0 16px 48px rgba(15,23,42,0.18)",
+            filter:
+              "drop-shadow(0 4px 16px rgba(15,23,42,0.14)) drop-shadow(0 16px 48px rgba(15,23,42,0.18))",
           }}
         >
           <div
@@ -220,6 +226,8 @@ export default function DesignerSelectedWork({ isEditing, preview = false, publi
     useGlobalContext();
   const { projects = [] } = userDetails || {};
   const containerRef = useRef(null);
+  const titleRef = useRef(null);
+  const [titleHeight, setTitleHeight] = useState(112);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -265,60 +273,114 @@ export default function DesignerSelectedWork({ isEditing, preview = false, publi
 
   const n = visibleProjects.length;
 
+  // Measure the live header height so cards can pin exactly TITLE_GAP below it. The title
+  // font is clamp()-responsive and wraps on mobile, so a hardcoded offset would drift —
+  // ResizeObserver keeps headerOffset honest across breakpoints and content changes.
+  useEffect(() => {
+    const el = titleRef.current;
+    if (!el) return;
+    const measure = () => setTitleHeight(el.offsetHeight);
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [n]);
+
   if (!isEditing && n === 0) return null;
+
+  const header = (
+    <>
+      <div className="mb-4 flex items-center gap-3">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="flex-shrink-0">
+          <path d="M7 0L8.4 5.6L14 7L8.4 8.4L7 14L5.6 8.4L0 7L5.6 5.6L7 0Z" fill="#3B82F6" />
+        </svg>
+        <span className="designer-script text-[22px] font-bold tracking-[0.04em] text-[#439BEA]">
+          Selected work
+        </span>
+        <div className="h-px flex-1 bg-[#E2E8F0]" />
+        {isEditing && n > 0 && (
+          <div className="flex flex-shrink-0 gap-2">
+            {n >= 2 && (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => openSidebar(sidebars.sortProjects)}
+                className="h-8 w-8 rounded-full border-[#E2E8F0] bg-white p-0 shadow-sm hover:bg-gray-50"
+                aria-label="Rearrange projects"
+              >
+                <ChevronsUpDown className="h-3.5 w-3.5" />
+              </Button>
+            )}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => openSidebar(sidebars.project)}
+              className="h-8 gap-1.5 rounded-full border-[#E2E8F0] bg-white px-3 text-[12px] font-medium shadow-sm hover:bg-gray-50"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              Add
+            </Button>
+          </div>
+        )}
+      </div>
+      <h2
+        className="designer-heading text-[#0F172A]"
+        style={{
+          fontSize: "clamp(22px, 3.2vw, 38px)",
+          fontWeight: 600,
+          lineHeight: 1.15,
+          letterSpacing: "-0.025em",
+        }}
+      >
+        check out some of my work
+      </h2>
+    </>
+  );
 
   return (
     <div
       ref={containerRef}
       style={{ height: n > 0 ? `${n * 100}vh` : undefined, position: "relative" }}
-      className="pt-16"
+      className="mt-16"
     >
-      <div className="mb-1 px-6 md:px-0">
-        <div className="mb-4 flex items-center gap-3">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="flex-shrink-0">
-            <path d="M7 0L8.4 5.6L14 7L8.4 8.4L7 14L5.6 8.4L0 7L5.6 5.6L7 0Z" fill="#3B82F6" />
-          </svg>
-          <span className="designer-script text-[22px] font-bold tracking-[0.04em] text-[#439BEA]">
-            Selected work
-          </span>
-          <div className="h-px flex-1 bg-[#E2E8F0]" />
-          {isEditing && n > 0 && (
-            <div className="flex flex-shrink-0 gap-2">
-              {n >= 2 && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => openSidebar(sidebars.sortProjects)}
-                  className="h-8 w-8 rounded-full border-[#E2E8F0] bg-white p-0 shadow-sm hover:bg-gray-50"
-                  aria-label="Rearrange projects"
-                >
-                  <ChevronsUpDown className="h-3.5 w-3.5" />
-                </Button>
-              )}
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => openSidebar(sidebars.project)}
-                className="h-8 gap-1.5 rounded-full border-[#E2E8F0] bg-white px-3 text-[12px] font-medium shadow-sm hover:bg-gray-50"
-              >
-                <Plus className="h-3.5 w-3.5" />
-                Add
-              </Button>
-            </div>
-          )}
-        </div>
-        <h2
-          className="designer-heading text-[#0F172A]"
+      {n > 0 ? (
+        // The header rides in an absolute track that stops one viewport short of the
+        // section's end (height = (n-1) screens). So while cards stack the title stays
+        // pinned above them, but on the final screen the track runs out first — the title
+        // releases and scrolls away, then the last card follows. The track is
+        // pointer-events:none so it never blocks the cards beneath; the header re-enables
+        // them for its own edit buttons.
+        <div
           style={{
-            fontSize: "clamp(22px, 3.2vw, 38px)",
-            fontWeight: 600,
-            lineHeight: 1.15,
-            letterSpacing: "-0.025em",
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: `${Math.max(n - 1, 1) * 100}vh`,
+            zIndex: n + 1,
+            pointerEvents: "none",
           }}
         >
-          check out some of my work
-        </h2>
-      </div>
+          <div
+            ref={titleRef}
+            className="px-6 pb-6 md:px-0"
+            style={{
+              position: "sticky",
+              top: NAV_OFFSET,
+              // Fade the header backing into the page rather than ending on a hard edge, so it
+              // reads as one gradient system with the hero's bottom fade. --background is a hex
+              // token (#f8fdff) — used raw, never hsl()-wrapped (that yields an invalid color).
+              background:
+                "linear-gradient(to bottom, var(--background) 0%, var(--background) 68%, transparent 100%)",
+              pointerEvents: "auto",
+            }}
+          >
+            {header}
+          </div>
+        </div>
+      ) : (
+        <div className="mb-1 px-6 md:px-0">{header}</div>
+      )}
 
       {n === 0 ? (
         <div className="mx-6 mt-6 flex flex-col items-center justify-center rounded-2xl border border-dashed border-black/10 bg-white/60 px-4 py-16 text-center md:mx-0">
@@ -356,6 +418,7 @@ export default function DesignerSelectedWork({ isEditing, preview = false, publi
             scrollYProgress={scrollYProgress}
             isEditing={isEditing}
             isMobile={isMobile}
+            headerOffset={titleHeight + TITLE_GAP}
             onNavigate={handleNavigate}
             onEdit={handleEdit}
             onDelete={handleDelete}

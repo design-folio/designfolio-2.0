@@ -2,6 +2,7 @@ import { Pencil } from "lucide-react";
 import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
 import { SectionVisibilityButton } from "@/components/section";
+import { Button } from "@/components/ui/button";
 import DesignerAboutPegboard from "./DesignerAboutPegboard";
 
 export default function DesignerAbout({ isEditing }) {
@@ -28,13 +29,15 @@ export default function DesignerAbout({ isEditing }) {
               sectionId="about"
               className="h-8 w-8 rounded-full border border-[#E2E8F0] bg-white shadow-sm hover:bg-gray-50"
             />
-            <button
+            <Button
+              variant="outline"
+              size="sm"
               onClick={() => openSidebar(sidebars.about)}
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E2E8F0] bg-white shadow-sm hover:bg-gray-50"
+              className="h-8 w-8 rounded-full border-[#E2E8F0] bg-white p-0 shadow-sm hover:bg-gray-50"
               aria-label="Edit about"
             >
               <Pencil className="h-3.5 w-3.5" />
-            </button>
+            </Button>
           </div>
         )}
       </div>
@@ -63,12 +66,13 @@ export default function DesignerAbout({ isEditing }) {
             </p>
           ) : (
             isEditing && (
-              <button
+              <Button
+                variant="link"
                 onClick={() => openSidebar(sidebars.about)}
-                className="mb-4 text-left text-[13px] text-[#7A736C] hover:text-[#1A1A1A]"
+                className="mb-4 h-auto justify-start p-0 text-[13px] font-normal text-[#7A736C] no-underline hover:text-[#1A1A1A] hover:no-underline"
               >
                 Click here to add your story...
-              </button>
+              </Button>
             )
           )}
 

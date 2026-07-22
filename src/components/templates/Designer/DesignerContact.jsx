@@ -5,6 +5,7 @@ import { sidebars } from "@/lib/constant";
 import { _deleteResume } from "@/network/post-request";
 import AddItem from "@/components/addItem";
 import MemoSocial from "@/components/icons/Social";
+import { Button } from "@/components/ui/button";
 
 function ContactRow({ label, value, href }) {
   return (
@@ -62,13 +63,15 @@ export default function DesignerContact({ isEditing }) {
   return (
     <div className="relative pt-24 pb-16" id="section-contact">
       {isEditing && (
-        <button
+        <Button
+          variant="outline"
+          size="sm"
           onClick={() => openSidebar(sidebars.footer)}
-          className="absolute top-24 right-0 flex h-9 items-center gap-1.5 rounded-full border border-[#E2E8F0] bg-white px-3.5 text-[12px] font-medium shadow-sm hover:bg-gray-50"
+          className="absolute top-24 right-0 h-9 gap-1.5 rounded-full border-[#E2E8F0] bg-white px-3.5 text-[12px] font-medium shadow-sm hover:bg-gray-50"
         >
           <Pencil className="h-3.5 w-3.5" />
           Edit Contact
-        </button>
+        </Button>
       )}
 
       <h2
@@ -109,13 +112,15 @@ export default function DesignerContact({ isEditing }) {
               <ArrowUpRight className="h-3.5 w-3.5 text-[#3B82F6] opacity-50 transition-opacity group-hover:opacity-100" />
             </a>
             {isEditing && (
-              <button
+              <Button
+                variant="ghost"
+                size="icon"
                 onClick={handleDeleteResume}
                 aria-label="Delete resume"
-                className="text-[#94A3B8] hover:text-red-500"
+                className="h-auto w-auto p-0 text-[#94A3B8] hover:bg-transparent hover:text-red-500"
               >
                 <Trash2 className="h-3.5 w-3.5" />
-              </button>
+              </Button>
             )}
           </div>
         </div>

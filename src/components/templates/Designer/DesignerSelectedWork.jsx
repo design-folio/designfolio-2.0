@@ -8,6 +8,7 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { modals, sidebars } from "@/lib/constant";
 import { _updateProject } from "@/network/post-request";
 import { ProjectVisibilityButton } from "@/components/section";
+import { Button } from "@/components/ui/button";
 
 // Subtle zigzag (sawtooth) — 12 small teeth across top and bottom
 const CARD_CLIP =
@@ -105,16 +106,18 @@ function DesignerWorkCard({
       >
         {isEditing && (
           <div className="absolute top-4 right-5 z-20 flex gap-2">
-            <button
+            <Button
+              variant="outline"
+              size="sm"
               onClick={(e) => {
                 e.stopPropagation();
                 onEdit(project);
               }}
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-black/10 bg-white/90 shadow-sm backdrop-blur-sm hover:bg-gray-50"
+              className="h-8 w-8 rounded-full border-black/10 bg-white/90 p-0 shadow-sm backdrop-blur-sm hover:bg-gray-50"
               aria-label="Edit project"
             >
               <Pencil className="h-3.5 w-3.5 text-[#1A1A1A]" />
-            </button>
+            </Button>
             <ProjectVisibilityButton
               isHidden={!!project.hidden}
               onClick={(e) => {
@@ -122,16 +125,18 @@ function DesignerWorkCard({
                 onToggleVisibility(project._id);
               }}
             />
-            <button
+            <Button
+              variant="outline"
+              size="sm"
               onClick={(e) => {
                 e.stopPropagation();
                 onDelete(project);
               }}
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-black/10 bg-white/90 shadow-sm backdrop-blur-sm hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+              className="h-8 w-8 rounded-full border-black/10 bg-white/90 p-0 shadow-sm backdrop-blur-sm hover:border-red-200 hover:bg-red-50 hover:text-red-600"
               aria-label="Delete project"
             >
               <Trash2 className="h-3.5 w-3.5 text-[#1A1A1A]" />
-            </button>
+            </Button>
           </div>
         )}
 
@@ -171,7 +176,8 @@ function DesignerWorkCard({
                 </span>
               )}
 
-              <button
+              <Button
+                variant="ghost"
                 onClick={() => {
                   playCoinSound();
                   setCursorPill(false);
@@ -179,7 +185,7 @@ function DesignerWorkCard({
                 }}
                 onMouseEnter={() => setCursorPill(true, "Read case study")}
                 onMouseLeave={() => setCursorPill(false)}
-                className="inline-flex cursor-pointer items-center gap-1.5 rounded-md border-[3px] border-[#5A2D00] px-5 py-[9px] text-[13px] font-bold tracking-[0.02em] text-[#3D1A00] select-none"
+                className="h-auto gap-1.5 rounded-md border-[3px] border-[#5A2D00] px-5 py-[9px] text-[13px] font-bold tracking-[0.02em] text-[#3D1A00] select-none hover:bg-transparent hover:text-[#3D1A00]"
                 style={{
                   background: "linear-gradient(to bottom, #FFE045 0%, #F5A800 60%, #D48000 100%)",
                   boxShadow:
@@ -188,7 +194,7 @@ function DesignerWorkCard({
               >
                 Read case study
                 <ArrowUpRight className="h-3.5 w-3.5" strokeWidth={2.5} />
-              </button>
+              </Button>
             </div>
 
             <div className="w-full flex-shrink-0 md:w-[56%]">
@@ -279,21 +285,25 @@ export default function DesignerSelectedWork({ isEditing, preview = false, publi
           {isEditing && n > 0 && (
             <div className="flex flex-shrink-0 gap-2">
               {n >= 2 && (
-                <button
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={() => openSidebar(sidebars.sortProjects)}
-                  className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E2E8F0] bg-white shadow-sm hover:bg-gray-50"
+                  className="h-8 w-8 rounded-full border-[#E2E8F0] bg-white p-0 shadow-sm hover:bg-gray-50"
                   aria-label="Rearrange projects"
                 >
                   <ChevronsUpDown className="h-3.5 w-3.5" />
-                </button>
+                </Button>
               )}
-              <button
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() => openSidebar(sidebars.project)}
-                className="flex h-8 items-center gap-1.5 rounded-full border border-[#E2E8F0] bg-white px-3 text-[12px] font-medium shadow-sm hover:bg-gray-50"
+                className="h-8 gap-1.5 rounded-full border-[#E2E8F0] bg-white px-3 text-[12px] font-medium shadow-sm hover:bg-gray-50"
               >
                 <Plus className="h-3.5 w-3.5" />
                 Add
-              </button>
+              </Button>
             </div>
           )}
         </div>
@@ -318,20 +328,21 @@ export default function DesignerSelectedWork({ isEditing, preview = false, publi
           </p>
           {isEditing && (
             <div className="flex flex-col items-center gap-3 sm:flex-row">
-              <button
+              <Button
                 onClick={() => openSidebar(sidebars.project)}
                 className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm hover:bg-black/80"
               >
                 <Plus className="h-3.5 w-3.5" />
                 Add Project
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="outline"
                 onClick={() => openModal(modals.aiProject)}
-                className="flex h-9 items-center gap-2 rounded-full border border-black/10 px-5 text-[13px] font-medium hover:bg-black/5"
+                className="h-9 gap-2 rounded-full border-black/10 bg-transparent px-5 text-[13px] font-medium shadow-none hover:bg-black/5"
               >
                 <Sparkles className="h-3.5 w-3.5" />
                 Write with AI
-              </button>
+              </Button>
             </div>
           )}
         </div>

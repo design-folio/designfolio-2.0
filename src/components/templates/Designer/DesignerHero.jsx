@@ -5,6 +5,7 @@ import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
 import { getUserAvatarImage } from "@/lib/getAvatarUrl";
 import ProfileAvatar from "@/components/templates/ProfileAvatar";
+import { Button } from "@/components/ui/button";
 import DesignerBirds from "./DesignerBirds";
 
 const NAV_ITEMS = [
@@ -128,12 +129,13 @@ export default function DesignerHero({ isEditing }) {
 
           {/* Mobile — MENU pill + animated hamburger + dropdown */}
           <div className="relative md:hidden">
-            <button
+            <Button
+              variant="ghost"
               onClick={() => setMenuOpen((o) => !o)}
               aria-label="Toggle menu"
               aria-expanded={menuOpen}
               aria-controls="designer-mobile-menu"
-              className="flex items-center gap-[6px] rounded-full px-[10px] py-[7px] transition-all duration-300 select-none"
+              className="h-auto gap-[6px] rounded-full px-[10px] py-[7px] transition-all duration-300 select-none hover:bg-transparent"
               style={{
                 background: navScrolled ? "rgba(15,23,42,0.06)" : "rgba(255,255,255,0.18)",
                 backdropFilter: "blur(12px)",
@@ -192,7 +194,7 @@ export default function DesignerHero({ isEditing }) {
               >
                 MENU
               </span>
-            </button>
+            </Button>
 
             {/* Compact dropdown — matches pill glass style */}
             <AnimatePresence>
@@ -305,13 +307,14 @@ export default function DesignerHero({ isEditing }) {
         )}
 
         {isEditing && (
-          <button
+          <Button
+            variant="outline"
             onClick={() => openSidebar(sidebars.profile)}
-            className="mt-5 inline-flex items-center gap-1.5 rounded-full border border-white/30 bg-white/15 px-3.5 py-1.5 text-[12px] font-medium text-white backdrop-blur-md transition-colors hover:bg-white/25"
+            className="mt-5 h-auto gap-1.5 rounded-full border-white/30 bg-white/15 px-3.5 py-1.5 text-[12px] font-medium text-white shadow-none backdrop-blur-md transition-colors hover:bg-white/25 hover:text-white"
           >
             <Pencil className="h-3 w-3" />
             Edit Profile
-          </button>
+          </Button>
         )}
 
         <motion.button

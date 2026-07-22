@@ -3,6 +3,7 @@ import { Pencil } from "lucide-react";
 import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
 import { SectionVisibilityButton } from "@/components/section";
+import { Button } from "@/components/ui/button";
 
 export default function DesignerSkillsTools({ isEditing }) {
   const { userDetails, openSidebar } = useGlobalContext();
@@ -18,22 +19,26 @@ export default function DesignerSkillsTools({ isEditing }) {
       {isEditing && (skills.length > 0 || tools.length > 0) && (
         <div className="mb-4 flex items-center justify-end gap-2 px-6 md:px-0">
           {skills.length > 0 && (
-            <button
+            <Button
+              variant="outline"
+              size="sm"
               onClick={() => openSidebar(sidebars.skills)}
-              className="flex h-8 items-center gap-1.5 rounded-full border border-[#E2E8F0] bg-white px-3 text-[12px] font-medium shadow-sm hover:bg-gray-50"
+              className="h-8 gap-1.5 rounded-full border-[#E2E8F0] bg-white px-3 text-[12px] font-medium shadow-sm hover:bg-gray-50"
             >
               <Pencil className="h-3.5 w-3.5" />
               Skills
-            </button>
+            </Button>
           )}
           {tools.length > 0 && (
-            <button
+            <Button
+              variant="outline"
+              size="sm"
               onClick={() => openSidebar(sidebars.tools)}
-              className="flex h-8 items-center gap-1.5 rounded-full border border-[#E2E8F0] bg-white px-3 text-[12px] font-medium shadow-sm hover:bg-gray-50"
+              className="h-8 gap-1.5 rounded-full border-[#E2E8F0] bg-white px-3 text-[12px] font-medium shadow-sm hover:bg-gray-50"
             >
               <Pencil className="h-3.5 w-3.5" />
               Tools
-            </button>
+            </Button>
           )}
           <SectionVisibilityButton
             sectionId="tools"
@@ -41,25 +46,24 @@ export default function DesignerSkillsTools({ isEditing }) {
           />
         </div>
       )}
-
-      {/* left/marginLeft/width:100vw breaks out to the true viewport edges (for the
-          overflow:hidden clip below); maxWidth+margin:auto then caps how wide the
-          *rotated* bands themselves get. The rotate() tilt shifts the band's far edges
-          vertically by roughly half-width × tan(angle) — at the ~1024px width the
-          reference was tuned at that's a subtle ~22px "sash" tilt, but left uncapped on
-          a real unconstrained desktop width (2000-3000px+) the same 2.5° angle shifts
-          the edges 60-100px+, taller than the band itself, collapsing it into a wedge. */}
       <div
         className="relative"
-        style={{ left: "50%", marginLeft: "-50vw", width: "100vw", overflow: "hidden" }}
+        style={{
+          left: "50%",
+          marginLeft: "-50vw",
+          width: "100vw",
+          overflowX: "clip",
+          overflowY: "visible",
+          padding: "28px 0",
+        }}
       >
         {skills.length > 0 && (
-          <div style={{ maxWidth: 1400, margin: "0 auto 28px", perspective: 700 }}>
+          <div style={{ maxWidth: 1400, margin: "0 auto 28px" }}>
             <div style={{ margin: "0 -80px" }}>
               <div
                 style={{
-                  transform: "rotate(-2.5deg) rotateX(10deg)",
-                  transformOrigin: "center bottom",
+                  transform: "rotate(-2deg)",
+                  transformOrigin: "center center",
                   background: "linear-gradient(180deg, #1e3a5c 0%, #0f172a 45%, #04090f 100%)",
                   padding: "14px 0",
                   overflow: "hidden",
@@ -71,7 +75,7 @@ export default function DesignerSkillsTools({ isEditing }) {
                     display: "flex",
                     gap: 36,
                     width: "max-content",
-                    animation: "designer-skills-ltr 28s linear infinite",
+                    animation: "designer-skills-ltr 55s linear infinite",
                   }}
                 >
                   {[0, 1].map((copy) => (
@@ -119,12 +123,12 @@ export default function DesignerSkillsTools({ isEditing }) {
         )}
 
         {tools.length > 0 && (
-          <div style={{ maxWidth: 1400, margin: "0 auto", perspective: 700 }}>
+          <div style={{ maxWidth: 1400, margin: "0 auto" }}>
             <div style={{ margin: "0 -80px" }}>
               <div
                 style={{
-                  transform: "rotate(2.5deg) rotateX(-10deg)",
-                  transformOrigin: "center top",
+                  transform: "rotate(2deg)",
+                  transformOrigin: "center center",
                   background: "linear-gradient(180deg, #60a5fa 0%, #3b82f6 45%, #1d4ed8 100%)",
                   padding: "14px 0",
                   overflow: "hidden",
@@ -136,7 +140,7 @@ export default function DesignerSkillsTools({ isEditing }) {
                     display: "flex",
                     gap: 40,
                     width: "max-content",
-                    animation: "designer-tools-rtl 32s linear infinite",
+                    animation: "designer-tools-rtl 60s linear infinite",
                   }}
                 >
                   {[0, 1].map((copy) => (
@@ -149,16 +153,29 @@ export default function DesignerSkillsTools({ isEditing }) {
                           key={j}
                           style={{ display: "flex", alignItems: "center", gap: 9, flexShrink: 0 }}
                         >
-                          <img
-                            src={tool?.image || "/assets/svgs/default-tools.svg"}
-                            alt={tool?.label || tool?.name || ""}
+                          {/* White chip keeps every brand logo legible on the blue band —
+                              the old brightness(0) invert(1) flattened colored logos into
+                              indistinguishable white blobs. Sized to the original 22px icon
+                              footprint so the band height matches the skills band. */}
+                          <span
                             style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              justifyContent: "center",
                               width: 22,
                               height: 22,
-                              objectFit: "contain",
-                              filter: "brightness(0) invert(1)",
+                              borderRadius: 5,
+                              background: "#FFFFFF",
+                              flexShrink: 0,
+                              boxShadow: "0 1px 2px rgba(0,0,0,0.15)",
                             }}
-                          />
+                          >
+                            <img
+                              src={tool?.image || "/assets/svgs/default-tools.svg"}
+                              alt={tool?.label || tool?.name || ""}
+                              style={{ width: 14, height: 14, objectFit: "contain" }}
+                            />
+                          </span>
                           <span
                             style={{
                               fontSize: 13,
@@ -197,18 +214,20 @@ export default function DesignerSkillsTools({ isEditing }) {
 
       {isEditing && skills.length === 0 && tools.length === 0 && (
         <div className="flex justify-center gap-3 px-6 text-center">
-          <button
+          <Button
+            variant="outline"
             onClick={() => openSidebar(sidebars.skills)}
-            className="rounded-full border border-dashed border-black/15 px-5 py-2.5 text-[13px] font-medium text-[#7A736C] hover:border-black/25"
+            className="h-auto rounded-full border-dashed border-black/15 bg-transparent px-5 py-2.5 text-[13px] font-medium text-[#7A736C] shadow-none hover:border-black/25 hover:bg-transparent hover:text-[#7A736C]"
           >
             Add skills
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="outline"
             onClick={() => openSidebar(sidebars.tools)}
-            className="rounded-full border border-dashed border-black/15 px-5 py-2.5 text-[13px] font-medium text-[#7A736C] hover:border-black/25"
+            className="h-auto rounded-full border-dashed border-black/15 bg-transparent px-5 py-2.5 text-[13px] font-medium text-[#7A736C] shadow-none hover:border-black/25 hover:bg-transparent hover:text-[#7A736C]"
           >
             Add tools
-          </button>
+          </Button>
         </div>
       )}
     </div>

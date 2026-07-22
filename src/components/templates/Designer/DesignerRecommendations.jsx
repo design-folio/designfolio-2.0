@@ -3,6 +3,7 @@ import { Pencil, Trash2, Plus, ChevronsUpDown } from "lucide-react";
 import { useGlobalContext } from "@/context/globalContext";
 import { sidebars } from "@/lib/constant";
 import SimpleTiptapRenderer from "@/components/SimpleTiptapRenderer";
+import { Button } from "@/components/ui/button";
 
 const PAPER_CLIP_PATH = `polygon(
   0% 3%, 2% 1%, 5% 2%, 9% 0%, 14% 2%, 20% 0%, 27% 2%, 34% 0%,
@@ -36,20 +37,24 @@ function LetterCard({ review, isEditing, onEdit, onDelete }) {
 
       {isEditing && (
         <div className="absolute top-4 right-4 z-20 flex gap-2">
-          <button
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => onEdit(review)}
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-black/10 bg-white/90 shadow-sm backdrop-blur-sm hover:bg-gray-50"
+            className="h-8 w-8 rounded-full border-black/10 bg-white/90 p-0 shadow-sm backdrop-blur-sm hover:bg-gray-50"
             aria-label="Edit recommendation"
           >
             <Pencil className="h-3.5 w-3.5 text-[#1A1A1A]" />
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
             onClick={() => onDelete(review)}
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-black/10 bg-white/90 shadow-sm backdrop-blur-sm hover:border-red-200 hover:bg-red-50 hover:text-red-600"
+            className="h-8 w-8 rounded-full border-black/10 bg-white/90 p-0 shadow-sm backdrop-blur-sm hover:border-red-200 hover:bg-red-50 hover:text-red-600"
             aria-label="Delete recommendation"
           >
             <Trash2 className="h-3.5 w-3.5 text-[#1A1A1A]" />
-          </button>
+          </Button>
         </div>
       )}
 
@@ -150,21 +155,25 @@ export default function DesignerRecommendations({ isEditing }) {
         {isEditing && reviews.length > 0 && (
           <div className="flex flex-shrink-0 gap-2">
             {reviews.length >= 2 && (
-              <button
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() => openSidebar(sidebars.sortReviews)}
-                className="flex h-8 w-8 items-center justify-center rounded-full border border-[#E2E8F0] bg-white shadow-sm hover:bg-gray-50"
+                className="h-8 w-8 rounded-full border-[#E2E8F0] bg-white p-0 shadow-sm hover:bg-gray-50"
                 aria-label="Rearrange recommendations"
               >
                 <ChevronsUpDown className="h-3.5 w-3.5" />
-              </button>
+              </Button>
             )}
-            <button
+            <Button
+              variant="outline"
+              size="sm"
               onClick={() => openNewReview()}
-              className="flex h-8 items-center gap-1.5 rounded-full border border-[#E2E8F0] bg-white px-3 text-[12px] font-medium shadow-sm hover:bg-gray-50"
+              className="h-8 gap-1.5 rounded-full border-[#E2E8F0] bg-white px-3 text-[12px] font-medium shadow-sm hover:bg-gray-50"
             >
               <Plus className="h-3.5 w-3.5" />
               Add
-            </button>
+            </Button>
           </div>
         )}
       </div>
@@ -190,13 +199,13 @@ export default function DesignerRecommendations({ isEditing }) {
             Add recommendations to build trust and credibility.
           </p>
           {isEditing && (
-            <button
+            <Button
               onClick={() => openNewReview()}
               className="flex h-9 items-center gap-2 rounded-full bg-[#1A1A1A] px-5 text-[13px] font-medium text-white shadow-sm hover:bg-black/80"
             >
               <Plus className="h-3.5 w-3.5" />
               Add Testimonial
-            </button>
+            </Button>
           )}
         </div>
       ) : (
